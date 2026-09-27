@@ -9,9 +9,12 @@
 	</supportedVersions>
 	<description>Burn the trashbricks from Vanilla Recycling Expanded for power.
 
-Adds two Stirling-engine generators that burn trashbricks: a cobbled pellet stove (1000W, 20 bricks a day, a little pollution) and a trashbrick gasifier (1200W on 12 a day, clean). Feed them by hand or from a hopper on their intake. Switch them to turbine feed and pipe their heat to a steam turbine for about 40% more power.
+Adds two trashbrick stoves: a cobbled pellet stove and a cleaner, twice-as-efficient gasifier. Feed them by hand or from a hopper on their intake.
 
-With Dubs Bad Hygiene: fecal sludge pellets as a second fuel, and a plumbing connection - water-cool the engine for more power, or run it as a boiler for hot water and central heating at reduced power.
+Advanced play mode (default): the stoves are burners making 250, 350 or 500W of heat. Pipe them to a steam turbine, which turns up to 1500W of heat into 1500W of power; on their own they make only 100-300W.
+Simple play mode: the stoves are self-contained 1000W and 1200W generators.
+
+With Dubs Bad Hygiene: fecal sludge pellets as a second fuel, and a plumbing connection. Stoves heat the plumbing's hot water with whatever the turbines don't use.
 With Vanilla Furniture Expanded - Factory: belt-fed through factory hoppers.
 
 Needs Vanilla Recycling Expanded, and is researched after complex recycling.</description>

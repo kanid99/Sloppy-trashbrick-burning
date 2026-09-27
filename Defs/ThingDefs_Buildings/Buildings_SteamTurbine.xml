@@ -2,9 +2,8 @@
 <Defs>
 
 	<!--
-		Pressurised hot water: stoves switched to "turbine feed" send their heat down this network
-		to a steam turbine, which turns it into power more efficiently than each stove's own Stirling
-		engine. The network, pipes, overlay and valve are Vanilla Expanded Framework's PipeSystem
+		Pressurised hot water (advanced play mode): burners send their heat down this network to steam
+		turbines, which turn it into power far more efficiently than each burner's own small engine. The network, pipes, overlay and valve are Vanilla Expanded Framework's PipeSystem
 		(always present: Vanilla Recycling Expanded requires it). CompSteamTurbine does the sums.
 	-->
 	<PipeSystem.PipeNetDef>
@@ -68,7 +67,7 @@
 	<ThingDef ParentName="STB_HotWaterPipeBase">
 		<defName>STB_HotWaterPipe</defName>
 		<label>pressurised hot water pipe</label>
-		<description>Lagged, pressure-rated pipe that carries superheated water from trashbrick stoves in turbine feed mode to a steam turbine. Can be placed under walls and other buildings.</description>
+		<description>Lagged, pressure-rated pipe that carries superheated water from trashbrick burners to a steam turbine. Can be placed under walls and other buildings.</description>
 		<graphicData>
 			<texPath>Things/Building/Linked/STB_HotWaterPipe_Atlas</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -174,15 +173,15 @@
 	</ThingDef>
 
 	<!--
-		The turbine. Up to 5000W, shared by capacity between all turbines on one network. A cobbled
-		stove feeding it gives 1400W (1000W on its own), a gasifier 1700W (1200W on its own): about
-		40% more for the price of the turbine and the pipework. No intake - the network connects
-		wherever a pipe runs under it.
+		The turbine (advanced play mode). Takes up to 1500W of heat from the burners on its network
+		and turns it into 1500W of power, one to one, however many burners it takes: three at 500W,
+		or six at 250W for less fuel. More than one turbine on a network share the heat by capacity.
+		No intake - the network connects wherever a pipe runs under it.
 	-->
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_SteamTurbine</defName>
 		<label>trashbrick steam turbine</label>
-		<description>A compact steam turbine and generator, driven by pressurised hot water piped from trashbrick stoves in turbine feed mode. One turbine converts that heat to power more efficiently than each stove's own Stirling engine, up to 5000W, and can be fed by several stoves. Connect it by running a pressurised hot water pipe under it.</description>
+		<description>A compact steam turbine and generator, driven by pressurised hot water piped from trashbrick burners. It turns up to 1500W of their heat into 1500W of power, from as many burners as it takes, and a burner feeding a turbine shuts down its own small engine. Connect it by running a pressurised hot water pipe under it.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_SteamTurbine</texPath>
@@ -214,7 +213,7 @@
 			<li Class="TrashbrickBurning.CompProperties_SteamTurbine">
 				<basePowerConsumption>0</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
-				<capacityWatts>5000</capacityWatts>
+				<capacityWatts>1500</capacityWatts>
 				<soundAmbientProducingPower>ChemfuelFiredGenerator_Ambience</soundAmbientProducingPower>
 			</li>
 			<li Class="PipeSystem.CompProperties_Resource">

@@ -8,8 +8,8 @@ namespace TrashbrickBurning
 {
     public class CompProperties_SteamTurbine : CompProperties_Power
     {
-        /// <summary>The most this turbine can make, however much heat is piped to it.</summary>
-        public float capacityWatts = 5000f;
+        /// <summary>The most heat this turbine can take, converted one to one into power.</summary>
+        public float capacityWatts = 1500f;
 
         public CompProperties_SteamTurbine()
         {
@@ -18,34 +18,25 @@ namespace TrashbrickBurning
     }
 
     /// <summary>
-    /// A generator driven by the pressurised hot water network. Vanilla Expanded Framework's
-    /// PipeSystem carries the pipes, network, overlay and valves; this only does the sums. VEF's own
-    /// resource traders switch a consumer fully on or fully off, which would leave a big turbine idle
-    /// on one stove, so instead each turbine adds up the stoves on its network that are feeding
-    /// turbines, and takes its share by capacity.
+    /// Shares the heat on one pressurised hot water network between its turbines, turbines first:
+    /// they take up to their combined capacity, and each burner's leftover is what DBH's hot water
+    /// may take. Worked out once per network per tick and read by every burner and turbine on it.
+    /// Vanilla Expanded Framework's PipeSystem carries the pipes and networks; its own resource
+    /// traders switch a consumer fully on or off, which would idle a turbine short of heat, so the
+    /// sums are done here instead.
     /// </summary>
-    public class CompSteamTurbine : CompPowerPlant
+    public static class HotWaterAllocation
     {
-        private const int RecalcInterval = 60;
-
-        private float watts;
-
-        public float SuppliedWatts { get; private set; }
-
-        public new CompProperties_SteamTurbine Props => (CompProperties_SteamTurbine)props;
-
-        protected override float DesiredPowerOutput => watts;
-
-        public override void CompTick()
+        private struct Result
         {
-            if (parent.IsHashIntervalTick(RecalcInterval))
-            {
-                Recalculate();
-            }
-            base.CompTick();
+            public float heat, capacity, used;
+            public bool anyTurbine;
         }
 
-        private static PipeNet NetOf(ThingWithComps thing)
+        private static readonly Dictionary<PipeNet, Result> Cache = new Dictionary<PipeNet, Result>();
+        private static int cacheTick = -1;
+
+        public static PipeNet NetOf(ThingWithComps thing)
         {
             List<ThingComp> comps = thing.AllComps;
             for (int i = 0; i < comps.Count; i++)
@@ -58,16 +49,19 @@ namespace TrashbrickBurning
             return null;
         }
 
-        private void Recalculate()
+        private static Result Compute(PipeNet net)
         {
-            watts = 0f;
-            SuppliedWatts = 0f;
-            PipeNet net = NetOf(parent);
-            if (net == null)
+            int tick = Find.TickManager.TicksGame;
+            if (tick != cacheTick)
             {
-                return;
+                Cache.Clear();
+                cacheTick = tick;
             }
-            float supply = 0f, capacity = 0f;
+            if (Cache.TryGetValue(net, out Result cached))
+            {
+                return cached;
+            }
+            Result r = new Result();
             HashSet<Thing> seen = new HashSet<Thing>();
             foreach (CompResource connector in net.connectors)
             {
@@ -77,26 +71,67 @@ namespace TrashbrickBurning
                     continue;
                 }
                 CompStirlingEngine engine = thing.GetComp<CompStirlingEngine>();
-                if (engine != null && engine.FeedingTurbine)
+                if (engine != null)
                 {
-                    supply += engine.Props.turbineFeedWatts;
+                    r.heat += engine.HeatWatts;
                 }
                 CompSteamTurbine turbine = thing.GetComp<CompSteamTurbine>();
-                if (turbine != null && turbine.CanRun)
+                if (turbine != null)
                 {
-                    capacity += turbine.Props.capacityWatts;
+                    r.anyTurbine = true;
+                    if (turbine.CanRun)
+                    {
+                        r.capacity += turbine.Props.capacityWatts;
+                    }
                 }
             }
-            if (capacity <= 0f || !CanRun)
-            {
-                return;
-            }
-            // Share the network's heat by capacity, capped at this turbine's own.
-            SuppliedWatts = supply * Props.capacityWatts / capacity;
-            watts = Mathf.Min(SuppliedWatts, Props.capacityWatts);
+            r.used = Mathf.Min(r.heat, r.capacity);
+            Cache[net] = r;
+            return r;
         }
 
-        private bool CanRun
+        public static void UpdateBurner(CompStirlingEngine engine)
+        {
+            float heat = engine.HeatWatts;
+            PipeNet net = NetOf(engine.parent);
+            if (net == null)
+            {
+                engine.turbineConnected = false;
+                engine.toTurbinesWatts = 0f;
+                engine.surplusWatts = heat;
+                return;
+            }
+            Result r = Compute(net);
+            engine.turbineConnected = r.anyTurbine;
+            float share = r.heat > 0f ? r.used / r.heat : 0f;
+            engine.toTurbinesWatts = heat * share;
+            engine.surplusWatts = heat - engine.toTurbinesWatts;
+        }
+
+        public static float TurbineOutput(CompSteamTurbine turbine)
+        {
+            PipeNet net = NetOf(turbine.parent);
+            if (net == null || !turbine.CanRun)
+            {
+                return 0f;
+            }
+            Result r = Compute(net);
+            return r.capacity > 0f ? r.used * turbine.Props.capacityWatts / r.capacity : 0f;
+        }
+    }
+
+    /// <summary>A generator that turns the heat piped to it into power, one to one, up to its capacity.</summary>
+    public class CompSteamTurbine : CompPowerPlant
+    {
+        private const int RecalcInterval = 60;
+
+        private float watts;
+
+        public new CompProperties_SteamTurbine Props => (CompProperties_SteamTurbine)props;
+
+        protected override float DesiredPowerOutput => watts;
+
+        public bool CanRun
         {
             get
             {
@@ -105,28 +140,19 @@ namespace TrashbrickBurning
             }
         }
 
-        /// <summary>True if a turbine shares a hot water network with this building.</summary>
-        public static bool HasTurbine(ThingWithComps thing)
+        public override void CompTick()
         {
-            PipeNet net = NetOf(thing);
-            if (net == null)
+            if (parent.IsHashIntervalTick(RecalcInterval))
             {
-                return false;
+                watts = TrashbrickBurningMod.Advanced ? HotWaterAllocation.TurbineOutput(this) : 0f;
             }
-            foreach (CompResource connector in net.connectors)
-            {
-                if (connector.parent.GetComp<CompSteamTurbine>() != null)
-                {
-                    return true;
-                }
-            }
-            return false;
+            base.CompTick();
         }
 
         public override string CompInspectStringExtra()
         {
             string baseString = base.CompInspectStringExtra();
-            string line = "STB_TurbineLoad".Translate(SuppliedWatts.ToString("0"), Props.capacityWatts.ToString("0"));
+            string line = "STB_TurbineLoad".Translate(watts.ToString("0"), Props.capacityWatts.ToString("0"));
             return baseString.NullOrEmpty() ? line : baseString + "\n" + line;
         }
     }

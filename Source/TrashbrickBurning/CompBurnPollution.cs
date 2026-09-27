@@ -51,7 +51,12 @@ namespace TrashbrickBurning
             {
                 return;
             }
-            progress += Props.cellsPerDay * ticks / GenDate.TicksPerDay;
+            // cellsPerDay is at the simple play mode's burn rate; faster burns pollute faster.
+            CompStirlingEngine engine = parent.GetComp<CompStirlingEngine>();
+            float rate = engine != null && engine.Props.simpleFuelPerDay > 0f
+                ? engine.FuelPerDay / engine.Props.simpleFuelPerDay
+                : 1f;
+            progress += Props.cellsPerDay * rate * ticks / GenDate.TicksPerDay;
             if (progress >= 1f)
             {
                 int cells = (int)progress;

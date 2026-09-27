@@ -8,21 +8,39 @@ A RimWorld mod (1.5 / 1.6) for burning trash bricks, and maybe more, for power.
 - **Optional:** Vanilla Furniture Expanded - Factory. If it's loaded, conveyor compatibility switches on (see below).
 
 ## What it adds
-### Generators (Power tab)
-Both are Stirling engines on a 2x2 footprint that burn trashbricks. The high-tech build's main advantage is efficiency, with a little more output.
+### Play modes (Mod settings)
+**Advanced** (default): stoves are **burners** that feed **steam turbines** through pressurised hot water pipes.
+**Simple**: stoves are self-contained generators, and the turbine and pipes aren't in the build menu.
+Burn rates and power switch over straight away; the build menu updates after a restart.
+
+### The two stoves (Power tab)
+Both are 2x2 Stirling-engine stoves that burn trashbricks. The high-tech gasifier's advantage is fuel efficiency: it uses about half the fuel for the same heat, and it doesn't pollute.
 
 | | Cobbled pellet stove | Trashbrick gasifier |
 |---|---|---|
 | Research | Electricity + VRE complex recycling | Microelectronics + VRE complex recycling |
 | Cost | 120 steel, 2 components | 150 steel, 25 plasteel, 4 components |
-| Output | 1000W | 1200W |
-| Fuel/day | 20 | 12 |
-| **Power per brick** | **50 W-days** | **100 W-days** |
-| Fuel capacity | 50 | 60 |
-| Heat | 8/s, heats the room | 3/s, insulated |
-| Pollution | ~3 cells/day, **only while burning** | none, catalytic filters |
+| Pollution | ~3 cells/day at simple rate, scales with fuel burnt, **only while burning** | none, catalytic filters |
 
-One garbage compactor (25 bricks/day) runs one cobbled stove, or two gasifiers.
+**Simple mode:** the cobbled stove makes **1000W** on 20 bricks a day and heats the room; the gasifier makes **1200W** on 12 a day and is insulated.
+
+**Advanced mode:** each stove is a burner with a **burn rate** gizmo. Hotter burns cost more fuel per watt and dump more waste heat into the room:
+
+| Burn rate | Cobbled: fuel/day | Gasifier: fuel/day | Room heat (cobbled / gasifier) | Built-in engine, no turbine |
+|---|---|---|---|---|
+| 250W | 8 (32 per kW) | 4 (16 per kW) | 4 / 1.5 | 100W |
+| 350W | 12 (34 per kW) | 6 (17 per kW) | 6 / 2.5 | 200W |
+| 500W | 20 (40 per kW) | 9 (18 per kW) | 10 / 4 | 300W |
+
+A burner's heat goes to **turbines first**. Once a burner is connected to a turbine, its own small engine shuts off.
+
+### Steam turbine (advanced mode)
+- **Output:** turns up to **1500W of heat into 1500W of power**, from as many burners as it takes: three at 500W or six at 250W. The low burn rate uses less fuel for the same power; the high rate needs fewer burners. With more than one turbine on a network, the heat is shared by capacity.
+- **Pipes:** our own network on Vanilla Expanded Framework's PipeSystem, the same system VE's chemfuel pipes use. That gives the usual overlay, plus a visible pipe, a **hidden pipe** and a **valve**. A building joins the network where a pipe runs under it.
+- **Cost:** 2x3, 250 steel, 20 plasteel and 6 components. Needs Microelectronics and VRE complex recycling.
+- **Status:** each burner shows its heat, fuel use and where its heat is going; each turbine shows the heat it's getting against its capacity.
+
+For scale: a full turbine takes 48–60 bricks a day from cobbled stoves, or 24–27 from gasifiers. One garbage compactor makes 25.
 
 ### One intake, no output
 Each machine has a single intake, marked with a green in-arrow on the edge it faces. The stove only takes fuel from a hopper on the cells in front of that intake. Those cells are outlined in green while you place or select it.
@@ -46,14 +64,11 @@ Each stove's **engine mode** gizmo has a **turbine feed** setting. In it the sto
 No Dubs mod is needed for any of this.
 
 ### With Dubs Bad Hygiene
-**Sludge pellets:** a biofuel refinery recipe turns 75 fecal sludge into 100 sludge pellets, and both machines burn them. That's less energy than DBH's sludge-to-chemfuel recipe (35 chemfuel, about 7.8 generator-days), but pellets don't explode when damaged, catch fire less easily, and don't rot.
+**Sludge pellets:** a biofuel refinery recipe turns 75 fecal sludge into 100 sludge pellets, and both stoves burn them. That's less energy than DBH's sludge-to-chemfuel recipe (35 chemfuel, about 7.8 generator-days), but pellets don't explode when damaged, catch fire less easily, and don't rot.
 
-**Plumbing and engine modes:** both machines connect to DBH plumbing, and the engine mode gizmo gains two more settings:
-
-| Mode | Power | Plumbing |
-|---|---|---|
-| Water-cooled | 120% while water flows | draws 50/day (cobbled) or 40/day (gasifier) |
-| Heat recovery | 50% (cobbled) or 60% (gasifier) | works as a 1600-unit DBH boiler for hot water and central heating |
+**Plumbing:** both stoves connect to DBH plumbing.
+- **Advanced mode:** a stove on the plumbing is also a DBH boiler. **Turbines take their heat first**; whatever is left is offered to the plumbing's hot-water tanks and radiators, one boiler unit per watt. The share DBH actually draws (our boiler's capacity times the network's demand over its total boiler capacity) comes off the built-in engine's power, down to nothing.
+- **Simple mode:** an engine mode gizmo adds **water-cooled** (120% power while water flows, drawing 50 or 40 water a day) and **heat recovery** (a 1600-unit boiler for hot water and heating, at 50% power for the cobbled stove or 60% for the gasifier).
 
 Works with DBH's Lite mode too: that's a setting inside DBH, not a separate mod.
 
@@ -66,7 +81,7 @@ Defs/ThingDefs_Buildings/                both machines, the fuel hopper, the hot
 Mods/DubsBadHygiene/Defs, Patches/       sludge pellets, plumbing and engine modes
 Mods/DubsBadHygiene/1.5, 1.6/Assemblies/ TrashbrickBurning.DBH.dll (references BadHygiene.dll)
 Mods/VFEFactory/Patches/                 factory-hopper tag, hides our hopper
-Source/TrashbrickBurning/                CompHopperFeed, PlaceWorker_ShowIntake, CompStirlingEngine (modes), CompPowerPlantStirling, CompSteamTurbine, CompBurnPollution
+Source/TrashbrickBurning/                mod settings, CompStirlingEngine (burner), HotWaterAllocation + CompSteamTurbine, CompHopperFeed, PlaceWorker_ShowIntake, CompPowerPlantStirling, CompBurnPollution
 Source/TrashbrickBurning.DBH/            CompStirlingWater, CompStirlingBoiler
 Source/Art/                              draws, verifies and measures every texture
 ```

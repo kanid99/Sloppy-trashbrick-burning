@@ -51,24 +51,33 @@
 					</thingDefs>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+				<!-- CompStirlingEngine burns the fuel, at a rate that depends on the play mode and burn rate. -->
+				<externalTicking>true</externalTicking>
 			</li>
 			<li Class="CompProperties_Glower">
 				<glowRadius>6</glowRadius>
 				<glowColor>(217,112,33,0)</glowColor>
 			</li>
-			<li Class="CompProperties_HeatPusher">
-				<compClass>CompHeatPusherPowered</compClass>
-				<heatPerSecond>8</heatPerSecond>
-			</li>
 			<li Class="CompProperties_Breakdownable"/>
 			<!-- Pulls fuel from any adjacent hopper (ours, vanilla, or VFE Factory's). -->
 			<li Class="TrashbrickBurning.CompProperties_HopperFeed"/>
-			<!-- The engine's mode. Turbine feed sends 1400W worth of heat to a steam turbine. The
-			     water-cooled and heat recovery factors only apply with Dubs Bad Hygiene. -->
+			<!--
+				The firebox and engine: burns the fuel (so the refuelable is externally ticked), heats
+				the room, and sets the power output. Simple play mode uses the simple* values and the
+				power comp's output. Advanced play mode makes it a burner at one of these heat levels:
+				hotter burns cost more fuel per watt and waste more heat into the room. Its heat goes to
+				steam turbines first; with none connected, the built-in engine makes builtInWatts.
+			-->
 			<li Class="TrashbrickBurning.CompProperties_StirlingEngine">
-				<turbineFeedWatts>1400</turbineFeedWatts>
+				<simpleFuelPerDay>20</simpleFuelPerDay>
+				<simpleRoomHeatPerSecond>8</simpleRoomHeatPerSecond>
 				<cooledPowerFactor>1.2</cooledPowerFactor>
 				<heatRecoveryPowerFactor>0.5</heatRecoveryPowerFactor>
+				<heatLevels>
+					<li><watts>250</watts><fuelPerDay>8</fuelPerDay><roomHeatPerSecond>4</roomHeatPerSecond><builtInWatts>100</builtInWatts></li>
+					<li><watts>350</watts><fuelPerDay>12</fuelPerDay><roomHeatPerSecond>6</roomHeatPerSecond><builtInWatts>200</builtInWatts></li>
+					<li><watts>500</watts><fuelPerDay>20</fuelPerDay><roomHeatPerSecond>10</roomHeatPerSecond><builtInWatts>300</builtInWatts></li>
+				</heatLevels>
 			</li>
 			<!-- Joins the pressurised hot water network when a pipe runs under it. -->
 			<li Class="PipeSystem.CompProperties_Resource">
@@ -137,7 +146,7 @@
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
-				<!-- 100W-days per brick against the cobbled stove's 50. -->
+				<!-- Simple play mode's burn rate: 100W-days per brick against the cobbled stove's 50. -->
 				<fuelConsumptionRate>12.0</fuelConsumptionRate>
 				<fuelCapacity>60.0</fuelCapacity>
 				<fuelLabel>Trashbricks</fuelLabel>
@@ -147,23 +156,32 @@
 					</thingDefs>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+				<!-- CompStirlingEngine burns the fuel, at a rate that depends on the play mode and burn rate. -->
+				<externalTicking>true</externalTicking>
 			</li>
 			<li Class="CompProperties_Glower">
 				<glowRadius>3</glowRadius>
 				<glowColor>(70,200,190,0)</glowColor>
 			</li>
-			<li Class="CompProperties_HeatPusher">
-				<compClass>CompHeatPusherPowered</compClass>
-				<heatPerSecond>3</heatPerSecond>
-			</li>
 			<li Class="CompProperties_Breakdownable"/>
 			<li Class="TrashbrickBurning.CompProperties_HopperFeed"/>
-			<!-- The engine's mode. Turbine feed sends 1700W worth of heat to a steam turbine. The
-			     water-cooled and heat recovery factors only apply with Dubs Bad Hygiene. -->
+			<!--
+				The firebox and engine: burns the fuel (so the refuelable is externally ticked), heats
+				the room, and sets the power output. Simple play mode uses the simple* values and the
+				power comp's output. Advanced play mode makes it a burner at one of these heat levels:
+				hotter burns cost more fuel per watt and waste more heat into the room. Its heat goes to
+				steam turbines first; with none connected, the built-in engine makes builtInWatts.
+			-->
 			<li Class="TrashbrickBurning.CompProperties_StirlingEngine">
-				<turbineFeedWatts>1700</turbineFeedWatts>
+				<simpleFuelPerDay>12</simpleFuelPerDay>
+				<simpleRoomHeatPerSecond>3</simpleRoomHeatPerSecond>
 				<cooledPowerFactor>1.2</cooledPowerFactor>
 				<heatRecoveryPowerFactor>0.6</heatRecoveryPowerFactor>
+				<heatLevels>
+					<li><watts>250</watts><fuelPerDay>4</fuelPerDay><roomHeatPerSecond>1.5</roomHeatPerSecond><builtInWatts>100</builtInWatts></li>
+					<li><watts>350</watts><fuelPerDay>6</fuelPerDay><roomHeatPerSecond>2.5</roomHeatPerSecond><builtInWatts>200</builtInWatts></li>
+					<li><watts>500</watts><fuelPerDay>9</fuelPerDay><roomHeatPerSecond>4</roomHeatPerSecond><builtInWatts>300</builtInWatts></li>
+				</heatLevels>
 			</li>
 			<!-- Joins the pressurised hot water network when a pipe runs under it. -->
 			<li Class="PipeSystem.CompProperties_Resource">

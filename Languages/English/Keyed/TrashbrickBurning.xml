@@ -6,12 +6,23 @@
 	<STB_Mode_Power>Engine: power</STB_Mode_Power>
 	<STB_Mode_WaterCooled>Engine: water-cooled</STB_Mode_WaterCooled>
 	<STB_Mode_HeatRecovery>Engine: heat recovery</STB_Mode_HeatRecovery>
-	<STB_Mode_TurbineFeed>Engine: turbine feed</STB_Mode_TurbineFeed>
-	<STB_ModeDesc>What the Stirling engine does with its heat. Click to cycle.\n\nPower: makes its own power.\nTurbine feed: sends its heat down a pressurised hot water pipe to a steam turbine instead, worth {0}W there. It makes no power itself.</STB_ModeDesc>
-	<STB_ModeDescDBH>Water-cooled: draws water from the plumbing to run its cold side cooler, for {0} output while water is flowing.\nHeat recovery: sends its heat into the plumbing as a boiler, for hot water and central heating, at {1} output.</STB_ModeDescDBH>
-	<STB_NoTurbine>no turbine connected</STB_NoTurbine>
+	<STB_ModeDescDBH>What the Stirling engine's cold side does. Click to cycle.\n\nPower: makes its own power.\nWater-cooled: draws water from the plumbing to run its cold side cooler, for {0} output while water is flowing.\nHeat recovery: sends its heat into the plumbing as a boiler, for hot water and central heating, at {1} output.</STB_ModeDescDBH>
 	<STB_TurbineLoad>Heat supplied: {0}W of {1}W capacity</STB_TurbineLoad>
 	<STB_ValveLabel>Toggle valve</STB_ValveLabel>
 	<STB_ValveDesc>Open or close this pressurised hot water line.</STB_ValveDesc>
 	<STB_NoWater>no water</STB_NoWater>
+	<STB_SettingsCategory>Trashbrick Burning</STB_SettingsCategory>
+	<STB_SettingAdvanced>Advanced play mode (burners and steam turbines)</STB_SettingAdvanced>
+	<STB_SettingAdvancedDesc>On: stoves are burners that feed steam turbines through pressurised hot water pipes. Off: stoves are simple self-contained generators.</STB_SettingAdvancedDesc>
+	<STB_SettingAdvancedExplain>Advanced: each stove is a burner making 250, 350 or 500W of heat. Hotter burns cost more fuel per watt and heat the room more. Pipe burners to a steam turbine, which turns up to 1500W of heat into 1500W of power. With no turbine connected, a burner's own engine makes only 100, 200 or 300W. With Dubs Bad Hygiene, heat the turbines don't use goes to the plumbing's hot water and heating, and whatever it draws comes off the built-in engine's power.</STB_SettingAdvancedExplain>
+	<STB_SettingSimpleExplain>Simple: each stove is a self-contained generator - 1000W for the cobbled stove, 1200W for the gasifier - with no pipes or turbines. With Dubs Bad Hygiene, stoves can also be water-cooled or used as boilers.</STB_SettingSimpleExplain>
+	<STB_SettingRestart>Burn rates and power switch over straight away. Restart the game to add or remove the turbine and pipes in the build menu.</STB_SettingRestart>
+	<STB_BurnRate>Burn rate: {0}W</STB_BurnRate>
+	<STB_BurnRateDesc>How hard this burner runs. Click to cycle. Hotter burns cost more fuel per watt and heat the room more.\n{0}</STB_BurnRateDesc>
+	<STB_BurnRateLine>{0}W: {1} fuel a day ({2} per kW), room heat {3}, built-in engine {4}W</STB_BurnRateLine>
+	<STB_BurnerStatus>Burning at {0}W of heat, {1} fuel a day</STB_BurnerStatus>
+	<STB_ToTurbines>To turbines: {0}W</STB_ToTurbines>
+	<STB_NoTurbineBuiltIn>No turbine connected: built-in engine up to {0}W</STB_NoTurbineBuiltIn>
+	<STB_ToHotWater>Drawn by hot water: {0}W</STB_ToHotWater>
+	<STB_SimpleStatus>Burning {0} fuel a day</STB_SimpleStatus>
 </LanguageData>
