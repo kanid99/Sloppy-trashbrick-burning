@@ -295,54 +295,106 @@ def fuel_hopper(rot):
 
 # ------------------------------------------------------------------ steam turbine
 def steam_turbine(rot):
-    """2x3. A finned turbine casing lying along the machine, a generator block behind it and a stop
-    valve on the steam chest. Hot-water orange marks only where the pipe network comes in."""
+    """2x3. A real steam turbine set, laid out along the machine: steam chest and stop valve at the
+    front, a rotor casing stepping WIDER from the high to the low pressure end with a bolted flange
+    ring between each stage, bearing pedestals, a coupling, then the generator and its exciter.
+
+    Rules as everywhere here: the casing and generator are round forms lying down (`drum`, shaded
+    across their axis), detail is rows of identical marks - the casing's split-line bolts, flange
+    bolts, generator ribs, walkway grating - and the hot-water orange appears ONLY where the pipe
+    network comes in: the inlet line and the steam chest's ring.
+    """
     v = View(rot, 2, 3, MARGIN_2X2)
     c = Canvas(v)
-    body = (128, 130, 132)
-    skid(c, shade(body, 0.62), chamfer=0.24)
+    steel = (132, 132, 130)
+    casing = (140, 138, 134)
+    gen = (120, 126, 132)          # generator: a cool step off the casing, not a colour
+    skid(c, shade(steel, 0.6), chamfer=0.24)
 
-    # Turbine casing: a drum lying along f, fins across it - the repeated mark.
-    def casing_top(box, lift):
-        x0, y0, x1, y1 = box
-        fins = 9
-        for k in range(1, fins):
-            if v.along_a():
-                y = y0 + (y1 - y0) * k / fins
-                c.seam((x0 + c.px(0.05), y), (x1 - c.px(0.05), y), width=4 / 192, tone=shade(body, 0.74))
-            else:
-                x = x0 + (x1 - x0) * k / fins
-                c.seam((x, y0 + c.px(0.05)), (x, y1 - c.px(0.05)), width=4 / 192, tone=shade(body, 0.74))
-    c.slab(0.32, 0.3, 1.68, 1.86, 0.07, 0.36, shade(body, 1.08), top_fn=casing_top, radius=0.3)
+    def pt_px(a, f, lift):
+        x, y = v.pt(a, f)
+        return x, y - lift
 
-    # Coupling and generator block, with a vent rack.
-    c.slab(0.82, 1.86, 1.18, 2.02, 0.16, 0.16, shade(body, 0.85), radius=0.03)
-    def gen_top(box, lift):
-        x0, y0, x1, y1 = box
-        n = 6
-        for k in range(n):
-            if v.along_a():
-                x = x0 + (x1 - x0) * (0.2 + 0.6 * k / (n - 1))
-                c.seam((x, y0 + (y1 - y0) * 0.25), (x, y1 - (y1 - y0) * 0.25), width=5 / 192, tone=shade(body, 0.72))
-            else:
-                y = y0 + (y1 - y0) * (0.2 + 0.6 * k / (n - 1))
-                c.seam((x0 + (x1 - x0) * 0.25, y), (x1 - (x1 - x0) * 0.25, y), width=5 / 192, tone=shade(body, 0.72))
-    c.slab(0.36, 2.02, 1.64, 2.8, 0.07, 0.34, body, top_fn=gen_top, radius=0.08, chamfer=0.08)
+    # Walkway grating across the front of the skid: a rack of identical short marks.
+    def grating(box, lift):
+        for k in range(12):
+            a = 0.3 + k * 0.12
+            p0, p1 = pt_px(a, 0.1, lift), pt_px(a, 0.24, lift)
+            c.seam((c.px(p0[0]), c.px(p0[1])), (c.px(p1[0]), c.px(p1[1])), width=3 / 192,
+                   tone=shade(steel, 0.5))
+    c.slab(0.24, 0.08, 1.76, 0.26, 0.07, 0.015, shade(steel, 0.72), top_fn=grating, shadow=False, radius=0.01)
 
-    # Steam chest and stop valve on the casing: the round form, with the hot accent.
-    def valve_cap(X, Y, R):
+    # Steam inlet: the network comes in at the front and runs straight to the steam chest.
+    c.pipe(0.38, 0.1, 0.38, 0.54, 0.07, 0.11, HOT)
+
+    def chest_cap(X, Y, R):
         w = max(2, c.px(6 / 192))
-        r = int(R * 0.72)
+        r = int(R * 0.74)
         c.d.ellipse([X - r, Y - r - R // 12, X + r, Y + r - R // 12], outline=HOT + (255,), width=w)
-        c.d.line([(X - r, Y - R // 12), (X + r, Y - R // 12)], fill=HOT + (255,), width=w)
-        c.d.line([(X, Y - r - R // 12), (X, Y + r - R // 12)], fill=HOT + (255,), width=w)
-        rr = int(R * 0.18)
-        c.d.ellipse([X - rr, Y - rr - R // 12, X + rr, Y + rr - R // 12], fill=shade(body, 1.2) + (255,))
-    c.cylinder(1.0, 0.72, 0.26, 0.43, 0.12, shade(body, 1.02), rings=1, cap_fn=valve_cap)
+        rr = int(R * 0.3)
+        c.d.ellipse([X - rr, Y - rr - R // 10, X + rr, Y + rr - R // 10], fill=shade(steel, 0.85) + (255,))
+    c.cylinder(0.38, 0.74, 0.2, 0.07, 0.36, shade(steel, 1.05), rings=2, cap_fn=chest_cap)
+    c.pipe(0.58, 0.74, 0.68, 0.74, 0.28, 0.08, shade(steel, 0.95))      # chest to casing
 
-    # Inlet flange stubs on the skid where the network joins, and a condensate line down one side.
-    c.pipe(0.12, 0.24, 0.12, 2.8, 0.07, 0.09, shade(HOT, 0.9))
-    c.pipe(1.88, 0.24, 1.88, 1.9, 0.07, 0.07, (150, 156, 164))
+    # Front bearing pedestal.
+    c.slab(0.8, 0.3, 1.2, 0.48, 0.07, 0.2, shade(steel, 0.9), radius=0.03)
+
+    def split_line(a0, a1, f0, f1):
+        """The casing's horizontal joint: a seam down the middle and a row of bolts either side."""
+        def fn(box, lift):
+            p0, p1 = pt_px(1.0, f0 + 0.04, lift), pt_px(1.0, f1 - 0.04, lift)
+            c.seam((c.px(p0[0]), c.px(p0[1])), (c.px(p1[0]), c.px(p1[1])), width=4 / 192,
+                   tone=shade(casing, 0.62))
+            n = max(2, int((f1 - f0) / 0.1))
+            pts = []
+            for k in range(n):
+                f = f0 + 0.07 + (f1 - f0 - 0.14) * k / max(1, n - 1)
+                for da in (-0.07, 0.07):
+                    pts.append(pt_px(1.0 + da, f, lift))
+            c.dots(pts, 0.014, shade(casing, 1.22))
+        return fn
+
+    def flange_bolts(a0, a1, f):
+        def fn(box, lift):
+            n = 7
+            c.dots([pt_px(a0 + 0.06 + (a1 - a0 - 0.12) * k / (n - 1), f, lift) for k in range(n)],
+                   0.013, shade(casing, 1.25))
+        return fn
+
+    # Low pressure exhaust hood: the boxy base the widest stage sits on.
+    c.slab(0.34, 1.54, 1.66, 1.98, 0.07, 0.16, shade(steel, 0.8), radius=0.03, chamfer=0.06)
+    # Rotor casing, high to low pressure, stepping wider, with a flange ring at each step.
+    stages = [(0.66, 1.34, 0.48, 1.0, 0.26), (0.56, 1.44, 1.04, 1.46, 0.3), (0.44, 1.56, 1.5, 1.96, 0.36)]
+    for a0, a1, f0, f1, h in stages:
+        c.drum(a0, f0, a1, f1, 0.07 if h < 0.36 else 0.23, h if h < 0.36 else 0.22, casing, axis="f",
+               radius=0.08, top_fn=split_line(a0, a1, f0, f1))
+    for a0, a1, f, h in ((0.62, 1.38, 1.02, 0.3), (0.52, 1.48, 1.48, 0.36)):
+        c.drum(a0, f - 0.03, a1, f + 0.03, 0.07, h + 0.02, shade(casing, 1.1), axis="f", radius=0.02,
+               shadow=False, top_fn=flange_bolts(a0, a1, f))
+
+    # Rear bearing, coupling, generator with its cooling ribs, and the exciter behind it.
+    c.slab(0.8, 1.96, 1.2, 2.12, 0.07, 0.24, shade(steel, 0.9), radius=0.03)
+    c.drum(0.9, 1.98, 1.1, 2.14, 0.2, 0.1, shade(steel, 1.1), axis="f", radius=0.02, shadow=False)
+    c.drum(0.5, 2.14, 1.5, 2.72, 0.07, 0.38, gen, axis="f", radius=0.1, ribs=7)
+    c.drum(0.72, 2.72, 1.28, 2.9, 0.07, 0.26, shade(gen, 0.95), axis="f", radius=0.06)
+
+    # Lube oil: an upright tank on the far side, a straight feed line along the bearings.
+    c.cylinder(1.72, 0.56, 0.15, 0.07, 0.3, shade(steel, 1.0), rings=1)
+    c.pipe(1.72, 0.72, 1.72, 2.26, 0.07, 0.06, shade(steel, 0.85))
+    # Generator terminal box, a rack of slats on it.
+    def tbox(box, lift):
+        x0, y0, x1, y1 = box
+        for k in range(4):
+            t = 0.25 + 0.17 * k
+            if v.along_a():
+                y = y0 + (y1 - y0) * t
+                c.seam((x0 + c.px(0.03), y), (x1 - c.px(0.03), y), tone=shade(steel, 0.66))
+            else:
+                x = x0 + (x1 - x0) * t
+                c.seam((x, y0 + c.px(0.03)), (x, y1 - c.px(0.03)), tone=shade(steel, 0.66))
+    c.slab(1.6, 2.28, 1.9, 2.7, 0.07, 0.22, shade(steel, 0.92), top_fn=tbox, radius=0.02)
+    # Condensate line back from the exhaust hood, straight down the near side.
+    c.pipe(0.16, 1.6, 0.16, 2.86, 0.07, 0.08, shade(steel, 0.9))
     c.flush()
     c.save(f"{OUT}/Things/Building/Power/STB_SteamTurbine_{rot}.png")
 

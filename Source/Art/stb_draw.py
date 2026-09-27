@@ -157,6 +157,67 @@ class Canvas:
 
         self.add(sy1, draw, z0)
 
+    def drum(self, a0, f0, a1, f1, z0, h, col, axis="f", radius=0.06, ribs=0, top_fn=None, shadow=True):
+        """A cylinder LYING along `axis` ("a" or "f"), standing on z0, h tall.
+
+        Shaded ACROSS its axis, which is what makes it read as round rather than as a block: lit a
+        third of the way in from the top or left edge (the light is always at the top of the
+        screen), falling off to both sides. When its axis runs down the screen, its near end is the
+        visible wall, a tone darker with a seam; when the axis runs across the screen, the wall is
+        just the underside of the same curve, so there's no seam. `ribs` puts that many identical
+        marks across it, perpendicular to the axis.
+        """
+        sx0, sy0, sx1, sy1 = self.v.rect(a0, f0, a1, f1)
+        vertical = (axis == "f") == self.v.along_a()
+
+        def paint(box, base, across_x, bias=0.36):
+            x0, y0, x1, y1 = box
+            w, hgt = max(1, x1 - x0), max(1, y1 - y0)
+            g = Image.new("RGBA", (w, hgt))
+            gd = ImageDraw.Draw(g)
+            n = w if across_x else hgt
+            for k in range(n):
+                t = abs(k / max(1, n - 1) - bias) / (1 - bias)
+                c = shade(base, 1.2 - 0.55 * t) + (255,)
+                if across_x:
+                    gd.line([(k, 0), (k, hgt)], fill=c)
+                else:
+                    gd.line([(0, k), (w, k)], fill=c)
+            m = Image.new("L", (w, hgt), 0)
+            ImageDraw.Draw(m).rounded_rectangle([0, 0, w - 1, hgt - 1], radius=self.px(radius), fill=255)
+            self.img.paste(g, (x0, y0), m)
+
+        def draw():
+            lift0, lift1 = z0 * LIFT, (z0 + h) * LIFT
+            topbox = self.box_px(sx0, sy0 - lift1, sx1, sy1 - lift1)
+            whole = self.box_px(sx0, sy0 - lift1, sx1, sy1 - lift0)
+            if shadow:
+                self.cast_shadow(whole, self.px(radius))
+            if vertical:
+                paint(whole, shade(col, 0.74), True)          # the near end face
+                paint(topbox, col, True)
+                y = topbox[3]
+                r = self.px(radius) // 2
+                self.seam((topbox[0] + r, y), (topbox[2] - r, y), tone=shade(col, 0.5))
+            else:
+                paint(whole, col, False, bias=0.3)            # one curve, top to underside
+            if ribs:
+                x0, y0, x1, y1 = topbox if vertical else whole
+                for k in range(1, ribs + 1):
+                    t = k / (ribs + 1)
+                    if vertical:
+                        yy = y0 + (y1 - y0) * t
+                        self.seam((x0 + self.px(0.03), yy), (x1 - self.px(0.03), yy), width=4 / 192,
+                                  tone=shade(col, 0.72))
+                    else:
+                        xx = x0 + (x1 - x0) * t
+                        self.seam((xx, y0 + self.px(0.03)), (xx, y1 - self.px(0.03)), width=4 / 192,
+                                  tone=shade(col, 0.72))
+            if top_fn:
+                top_fn(topbox if vertical else whole, lift1)
+
+        self.add(sy1, draw, z0)
+
     def cylinder(self, a, f, r, z0, h, cap, wall=None, rings=0, cap_fn=None):
         """A round form standing upright: wall, banded, then a cap lit by stacked discs."""
         wall = wall or shade(cap, 0.72)
