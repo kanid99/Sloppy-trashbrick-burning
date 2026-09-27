@@ -8,8 +8,11 @@ namespace TrashbrickBurning
 {
     public class CompProperties_SteamTurbine : CompProperties_Power
     {
-        /// <summary>The most heat this turbine can take, converted one to one into power.</summary>
+        /// <summary>The most heat this turbine can take.</summary>
         public float capacityWatts = 1500f;
+
+        /// <summary>Power made per watt of heat taken. The cobbled turbine wastes a quarter of it.</summary>
+        public float efficiency = 1f;
 
         public CompProperties_SteamTurbine()
         {
@@ -116,16 +119,19 @@ namespace TrashbrickBurning
                 return 0f;
             }
             Result r = Compute(net);
-            return r.capacity > 0f ? r.used * turbine.Props.capacityWatts / r.capacity : 0f;
+            float heat = r.capacity > 0f ? r.used * turbine.Props.capacityWatts / r.capacity : 0f;
+            return heat * turbine.Props.efficiency;
         }
     }
 
-    /// <summary>A generator that turns the heat piped to it into power, one to one, up to its capacity.</summary>
+    /// <summary>A generator that turns the heat piped to it into power at its efficiency, up to its capacity.</summary>
     public class CompSteamTurbine : CompPowerPlant
     {
         private const int RecalcInterval = 60;
 
         private float watts;
+
+        private float heatWatts;
 
         public new CompProperties_SteamTurbine Props => (CompProperties_SteamTurbine)props;
 
@@ -145,6 +151,7 @@ namespace TrashbrickBurning
             if (parent.IsHashIntervalTick(RecalcInterval))
             {
                 watts = TrashbrickBurningMod.Advanced ? HotWaterAllocation.TurbineOutput(this) : 0f;
+                heatWatts = Props.efficiency > 0f ? watts / Props.efficiency : 0f;
             }
             base.CompTick();
         }
@@ -152,7 +159,8 @@ namespace TrashbrickBurning
         public override string CompInspectStringExtra()
         {
             string baseString = base.CompInspectStringExtra();
-            string line = "STB_TurbineLoad".Translate(watts.ToString("0"), Props.capacityWatts.ToString("0"));
+            string line = "STB_TurbineLoad".Translate(heatWatts.ToString("0"), Props.capacityWatts.ToString("0"),
+                Props.efficiency.ToStringPercent());
             return baseString.NullOrEmpty() ? line : baseString + "\n" + line;
         }
     }

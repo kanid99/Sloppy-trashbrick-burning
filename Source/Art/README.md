@@ -68,6 +68,28 @@ in, on the inlet line and the steam chest's ring, so it carries 1.6% saturated p
 VFE mean of 12.5%. It's the quietest sprite in the set, which suits a machine that sits at the end
 of a pipe.
 
+## Jerry-rigged: the low-tech look
+
+The cobbled stove and cobbled turbine share one vocabulary, so the low-tech tier reads as one
+set. Nothing on them was made to go together:
+
+* **Patchwork deck.** Mismatched scrap plates over a dark base, weld beads down one edge of each,
+  bolts in their corners. They sort just below the deck's own height, so nothing standing on the
+  deck is ever painted over. When they didn't, `verify_art.py` caught a plate covering half the
+  stove's intake in its east view.
+* **Mismatched stages.** Each casing stage (or firebox plate) is a different scrap: rust, grey,
+  olive. On the turbine each one sits a little off the line of the last.
+* **Straps and welds, not flanges.** Joints are a strap with a weld bead at each end, and seams are
+  rows of weld beads. The high-tech turbine uses neat rows of bolts instead.
+* **Timber.** Chocks shim the drums up: the one thing on them that isn't metal.
+* **Bolted-on salvage.** A radiator, a spare tank, a junction box, a bypass pipe lifted over the
+  top, pressure gauges stuck on wherever there was room, and a taped pipe joint.
+* **Wear.** Bare-metal scrapes, a couple of tones lighter. This is tone, not outline, and it's what
+  lifted the turbine's contrast into VFE's range.
+
+The only saturated colour is still the one that means something: the fire on the stove, and the
+hot-water inlet on the turbine.
+
 ## The hot water pipe atlas
 
 `STB_HotWaterPipe_Atlas` is a `Graphic_Linked` atlas: 4x4 tiles of 128px, tile *i* for the link
@@ -87,7 +109,7 @@ VE's hidden pipes do.
 | texture | size | why |
 | --- | --- | --- |
 | `STB_CobbledPelletStove_*`, `STB_TrashbrickGasifier_*` | 576x576 | 2x2 footprint drawn at `drawSize (3,3)`: half a cell of margin all round so raised parts aren't clipped, as VFE draws its machines a cell larger than they stand |
-| `STB_SteamTurbine_*` | 576x768 / 768x576 | 2x3 at `drawSize (3,4)`, axes swapped for east and west |
+| `STB_SteamTurbine_*`, `STB_CobbledTurbine_*` | 576x768 / 768x576 | 2x3 at `drawSize (3,4)`, axes swapped for east and west |
 | `STB_FuelHopper_*` | 288x288 | 1x1 at `drawSize (1.5,1.5)` |
 | `STB_HotWaterPipe_Atlas`, `_Blueprint_Atlas` | 512x512 | 4x4 linked atlas, 128px tiles |
 | `STB_HotWaterValve` | 288x288 | 1x1 at `drawSize (1.5,1.5)` |
@@ -98,29 +120,31 @@ VE's hidden pipes do.
 ## Measured against VFE Factory
 
 `measure.py` is the mending mod's, unchanged apart from where it finds VFE's textures. All nine
-metrics fall inside VFE's observed range for every machine:
+metrics fall inside VFE's observed range for every machine (south views):
 
-| | cobbled stove | gasifier | turbine | VFE mean | VFE range |
-| --- | --- | --- | --- | --- | --- |
-| contrast (std) | 0.120 | 0.153 | 0.126 | 0.151 | 0.11-0.23 |
-| p99 highlight | 179 | 192 | 164 | 166 | 133-255 |
-| median luminance | 89 | 99 | 89 | 93 | 48-116 |
-| near-black | 3.4% | 2.6% | 2.0% | 6.6% | 0-19.7% |
-| saturated pixels | 17.4% | 7.3% | 1.6% | 12.5% | 1.0-33.3% |
-| hard-edge density | 6.7 | 6.9 | 6.1 | 6.7 | 3.3-9.7 |
-| warm-hued | 16.7% | 0.0% | 1.6% | 8.8% | 0-33.3% |
-| cool-hued | 0.1% | 6.6% | 0.0% | 2.9% | 0-24.3% |
-| diagonal silhouette | 0.129 | 0.139 | 0.094 | 0.054 | 0-0.22 |
+| | cobbled stove | gasifier | cobbled turbine | steam turbine | VFE mean | VFE range |
+| --- | --- | --- | --- | --- | --- | --- |
+| contrast (std) | 0.137 | 0.153 | 0.118 | 0.126 | 0.151 | 0.11-0.23 |
+| p99 highlight | 185 | 192 | 150 | 164 | 166 | 133-255 |
+| median luminance | 92 | 99 | 90 | 89 | 93 | 48-116 |
+| near-black | 3.6% | 2.6% | 2.0% | 2.0% | 6.6% | 0-19.7% |
+| saturated pixels | 24.0% | 7.3% | 20.5% | 1.6% | 12.5% | 1.0-33.3% |
+| hard-edge density | 8.0 | 6.9 | 6.6 | 6.1 | 6.7 | 3.3-9.7 |
+| warm-hued | 23.3% | 0.0% | 20.4% | 1.6% | 8.8% | 0-33.3% |
+| cool-hued | 0.0% | 6.6% | 0.0% | 0.0% | 2.9% | 0-24.3% |
+| diagonal silhouette | 0.114 | 0.139 | 0.059 | 0.094 | 0.054 | 0-0.22 |
 
-The cobbled stove runs warm (rust plates plus the fire) and the gasifier runs cool (its teal),
-which is the tier difference, and both are inside VFE's range.
+The low-tech pair runs warm (rust, olive and timber) and the high-tech pair runs cool or neutral,
+which is the tier difference, and all four are inside VFE's range. The cobbled turbine first came
+in at 0.097 contrast, below VFE's floor: tidy scrap is still tidy. The jerry-rigging pass (below)
+is what brought it into range.
 
 ## Scripts
 
 | script | does |
 | --- | --- |
 | `stb_draw.py` | primitives: `View` (per-rotation placement), `Canvas` (slab, cylinder, pipe, seams, glow, painter's order), supersampling and the silhouette |
-| `draw_sprites.py` | the layouts: cobbled stove, gasifier, steam turbine, fuel hopper, hot water pipe atlas and valve, sludge pellets |
+| `draw_sprites.py` | the jerry-rig helpers and the layouts: cobbled stove, gasifier, cobbled and steam turbines, fuel hopper, hot water pipe atlas and valve, sludge pellets |
 | `verify_art.py` | textures vs defs (files, sizes, blueprints, icons, atlas tile order) and vs the C# (intake edge, outline colour) |
 | `measure.py` | nine style metrics against VFE Factory's machine sprites |
 | `make_about_art.py` | the store preview and mod icon |

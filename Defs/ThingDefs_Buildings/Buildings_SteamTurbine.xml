@@ -59,7 +59,7 @@
 		<constructEffect>ConstructMetal</constructEffect>
 		<clearBuildingArea>false</clearBuildingArea>
 		<researchPrerequisites>
-			<li>MicroelectronicsBasics</li>
+			<li>Electricity</li>
 			<li>VRecyclingE_ComplexRecycling</li>
 		</researchPrerequisites>
 	</ThingDef>
@@ -167,7 +167,69 @@
 		<designationCategory>Power</designationCategory>
 		<constructEffect>ConstructMetal</constructEffect>
 		<researchPrerequisites>
-			<li>MicroelectronicsBasics</li>
+			<li>Electricity</li>
+			<li>VRecyclingE_ComplexRecycling</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+	<!--
+		The cobbled turbine: the low-tech one. Same 2x3 set, built from scrap at Electricity. It
+		takes up to 1000W of heat and loses a quarter of it, so 750W at most - two burners at 500W,
+		or four at 250W.
+	-->
+	<ThingDef ParentName="BuildingBase">
+		<defName>STB_CobbledTurbine</defName>
+		<label>cobbled steam turbine</label>
+		<description>A steam turbine pieced together from scrap plate and a salvaged generator, driven by pressurised hot water piped from trashbrick burners. It takes up to 1000W of their heat, but its worn blades and leaky seals waste a quarter of it, so it makes at most 750W. A burner feeding a turbine shuts down its own small engine. Connect it by running a pressurised hot water pipe under it.</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Power/STB_CobbledTurbine</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<drawSize>(3,4)</drawSize>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<pathCost>150</pathCost>
+		<blockWind>true</blockWind>
+		<fillPercent>1.0</fillPercent>
+		<castEdgeShadows>false</castEdgeShadows>
+		<rotatable>true</rotatable>
+		<size>(2,3)</size>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<MaxHitPoints>300</MaxHitPoints>
+			<WorkToBuild>4000</WorkToBuild>
+			<Flammability>0.5</Flammability>
+			<Beauty>-25</Beauty>
+		</statBases>
+		<costList>
+			<Steel>200</Steel>
+			<ComponentIndustrial>3</ComponentIndustrial>
+		</costList>
+		<comps>
+			<li Class="TrashbrickBurning.CompProperties_SteamTurbine">
+				<basePowerConsumption>0</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+				<capacityWatts>1000</capacityWatts>
+				<efficiency>0.75</efficiency>
+				<soundAmbientProducingPower>WoodFiredGenerator_Ambience</soundAmbientProducingPower>
+			</li>
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Breakdownable"/>
+			<li Class="CompProperties_HeatPusher">
+				<compClass>CompHeatPusherPowered</compClass>
+				<heatPerSecond>4</heatPerSecond>
+			</li>
+		</comps>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<designationCategory>Power</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<constructionSkillPrerequisite>4</constructionSkillPrerequisite>
+		<researchPrerequisites>
+			<li>Electricity</li>
 			<li>VRecyclingE_ComplexRecycling</li>
 		</researchPrerequisites>
 	</ThingDef>

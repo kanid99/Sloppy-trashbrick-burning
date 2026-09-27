@@ -52,7 +52,7 @@ namespace TrashbrickBurning
     {
         private static readonly string[] AdvancedOnly =
         {
-            "STB_SteamTurbine", "STB_HotWaterPipe", "STB_HotWaterPipeHidden", "STB_HotWaterValve"
+            "STB_SteamTurbine", "STB_CobbledTurbine", "STB_HotWaterPipe", "STB_HotWaterPipeHidden", "STB_HotWaterValve"
         };
 
         static ApplyPlayMode()

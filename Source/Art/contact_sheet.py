@@ -4,7 +4,7 @@ import sys
 from PIL import Image, ImageDraw
 
 T = "Textures/Things/Building/Power/"
-ROWS = ["STB_CobbledPelletStove", "STB_TrashbrickGasifier", "STB_SteamTurbine", "STB_FuelHopper"]
+ROWS = ["STB_CobbledPelletStove", "STB_TrashbrickGasifier", "STB_CobbledTurbine", "STB_SteamTurbine", "STB_FuelHopper"]
 ROTS = ["north", "east", "south", "west"]
 pad, cell = 16, 768
 sheet = Image.new("RGBA", (pad + (cell + pad) * 4, pad + (cell + pad) * len(ROWS) + 20), (96, 104, 70, 255))

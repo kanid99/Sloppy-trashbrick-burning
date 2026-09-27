@@ -85,6 +85,82 @@ def skid(c, col, chamfer):
     c.slab(0.05, 0.05, W - 0.05, D - 0.05, 0, 0.07, col, chamfer=chamfer, radius=0, top_fn=top)
 
 
+# ------------------------------------------------------------------ jerry-rigging
+WOOD = (122, 94, 66)           # timber chocks: the one thing on these that isn't metal
+
+
+def patchwork_skid(c, rnd, plates):
+    """A deck of mismatched scrap plates instead of one clean skid: a dark base, then plates of
+    different tones overlapping it, weld beads down one edge of each, bolts in their corners."""
+    W, D = c.v.W, c.v.D
+    c.slab(0.05, 0.05, W - 0.05, D - 0.05, 0, 0.07, shade(DECK, 0.7), chamfer=0.2, radius=0)
+    tones = [shade(DECK, 1.28), shade(RUST, 0.72), shade(OLIVE, 0.92), shade(STEEL, 1.02), shade(RUST, 0.56)]
+    for i, (a0, f0, a1, f1) in enumerate(plates):
+        col = tones[i % len(tones)]
+
+        def top(box, lift, col=col, a0=a0, f0=f0, a1=a1, f1=f1):
+            n = max(3, int((f1 - f0) / 0.08))
+            bead = [c.v.pt(a0 + 0.02, f0 + 0.03 + (f1 - f0 - 0.06) * k / (n - 1)) for k in range(n)]
+            c.dots([(x, y - lift) for x, y in bead], 0.009, shade(col, 1.3))
+            corners = [c.v.pt(a, f) for a in (a0 + 0.05, a1 - 0.05) for f in (f0 + 0.05, f1 - 0.05)]
+            c.dots([(x, y - lift) for x, y in corners], 0.012, shade(col, 1.35))
+        # Just under the deck's own height in the draw order, so nothing standing on the deck -
+        # the intake port included - is ever painted over by a plate.
+        c.slab(a0, f0, a1, f1, 0.066, 0.018, col, top_fn=top, shadow=False, radius=0.01)
+
+
+def scrapes(c, rnd, a0, f0, a1, f1, lift, col, n=4):
+    """Bare metal where the paint has worn: short bright marks. Tone, not outline."""
+    for _ in range(n):
+        a = rnd.uniform(a0, a1)
+        f = rnd.uniform(f0, f1)
+        (x0, y0), (x1, y1) = c.v.pt(a, f), c.v.pt(a + rnd.uniform(-0.04, 0.04), f + rnd.uniform(0.03, 0.08))
+        c.d.line([(c.px(x0), c.px(y0 - lift)), (c.px(x1), c.px(y1 - lift))],
+                 fill=shade(col, 1.45) + (255,), width=max(2, c.px(0.01)))
+
+
+def chock(c, a0, f0, a1, f1):
+    """A timber block shimming something up, grain as two seams along it."""
+    def top(box, lift):
+        x0, y0, x1, y1 = box
+        horiz = (x1 - x0) > (y1 - y0)
+        for t in (0.35, 0.68):
+            if horiz:
+                c.seam((x0 + c.px(0.02), y0 + (y1 - y0) * t), (x1 - c.px(0.02), y0 + (y1 - y0) * t),
+                       width=2 / 192, tone=shade(WOOD, 0.74))
+            else:
+                c.seam((x0 + (x1 - x0) * t, y0 + c.px(0.02)), (x0 + (x1 - x0) * t, y1 - c.px(0.02)),
+                       width=2 / 192, tone=shade(WOOD, 0.74))
+    c.slab(a0, f0, a1, f1, 0.07, 0.09, WOOD, top_fn=top, radius=0.01)
+
+
+def gauge(c, a, f, z):
+    """A salvaged pressure gauge: a pale dial and a dark needle, on a stalk."""
+    def face(X, Y, R):
+        r = int(R * 0.74)
+        c.d.ellipse([X - r, Y - r - R // 10, X + r, Y + r - R // 10], fill=(214, 208, 190, 255))
+        c.d.line([(X, Y - R // 10), (X + r * 0.6, Y - r * 0.5 - R // 10)], fill=(50, 46, 42, 255),
+                 width=max(2, c.px(0.008)))
+    c.cylinder(a, f, 0.05, z, 0.04, (150, 144, 132), cap_fn=face)
+
+
+def radiator(c, a0, f0, a1, f1, col):
+    """A salvaged radiator bolted on the side: a flat block with a rack of fins."""
+    def top(box, lift):
+        x0, y0, x1, y1 = box
+        tall = (y1 - y0) > (x1 - x0)
+        n = 8
+        for k in range(1, n):
+            t = k / n
+            if tall:
+                y = y0 + (y1 - y0) * t
+                c.seam((x0 + c.px(0.025), y), (x1 - c.px(0.025), y), width=3 / 192, tone=shade(col, 0.66))
+            else:
+                x = x0 + (x1 - x0) * t
+                c.seam((x, y0 + c.px(0.025)), (x, y1 - c.px(0.025)), width=3 / 192, tone=shade(col, 0.66))
+    c.slab(a0, f0, a1, f1, 0.07, 0.2, col, top_fn=top, radius=0.02)
+
+
 # ------------------------------------------------------------------ tier 1: cobbled pellet stove
 def cobbled_stove(rot):
     """Salvage: three mismatched plates welded into a firebox, a scavenged generator drum, a
@@ -92,7 +168,8 @@ def cobbled_stove(rot):
     v = View(rot, 2, 2, MARGIN_2X2)
     c = Canvas(v)
     rnd = random.Random(11)
-    skid(c, DECK, chamfer=0.2)
+    patchwork_skid(c, rnd, [(0.1, 0.1, 0.56, 0.62), (1.44, 0.12, 1.9, 0.5), (0.12, 1.1, 0.7, 1.9),
+                            (1.3, 1.24, 1.9, 1.9), (0.8, 1.35, 1.2, 1.9)])
     intake(c, 0.62, 0.34, INTAKE_Z, STEEL)
 
     # Firebox: three plates of different scrap side by side, welded. Each is its own slab, so
@@ -109,6 +186,7 @@ def cobbled_stove(rot):
                 n = 9
                 pts = [(sx + (ex - sx) * k / n, sy0 + (ey - sy0) * k / n - lift) for k in range(n + 1)]
                 c.dots(pts, 0.012, shade(col, 1.25))
+            scrapes(c, rnd, a0 + 0.05, FB0 + 0.05, a1 - 0.05, FB1 - 0.2, lift, col, n=2)
             # Streaks and scuffs, faint tone marks.
             for _ in range(4):
                 px = rnd.uniform(x0 + (x1 - x0) * 0.15, x1 - (x1 - x0) * 0.15)
@@ -161,7 +239,9 @@ def cobbled_stove(rot):
             for k in range(1, fins):
                 y = y0 + (y1 - y0) * k / fins
                 c.seam((x0 + c.px(0.02), y), (x1 - c.px(0.02), y), width=3 / 192, tone=shade(OLIVE, 0.72))
-    c.slab(1.06, 1.42, 1.86, 1.86, 0.07, 0.3, shade(OLIVE, 1.05), top_fn=drum_top, radius=0.1)
+    chock(c, 1.1, 1.4, 1.22, 1.9)
+    chock(c, 1.7, 1.4, 1.82, 1.9)
+    c.slab(1.06, 1.42, 1.86, 1.86, 0.11, 0.3, shade(OLIVE, 1.05), top_fn=drum_top, radius=0.1)
     c.slab(1.18, 1.3, 1.36, 1.42, 0.14, 0.14, shade(STEEL, 0.9), radius=0.02)   # coupling
 
     # Junction box on the right flank, and salvaged pipes up the left: straight runs only.
@@ -177,6 +257,8 @@ def cobbled_stove(rot):
                 c.seam((x0 + (x1 - x0) * t, y0 + c.px(0.03)), (x0 + (x1 - x0) * t, y1 - c.px(0.03)),
                        tone=shade(STEEL, 0.78))
     c.slab(1.56, 0.56, 1.88, 1.16, 0.07, 0.2, shade(STEEL, 0.92), top_fn=jbox_top, radius=0.02)
+    gauge(c, 1.4, 0.56, 0.41)
+    gauge(c, 0.48, 0.58, 0.41)
     c.pipe(0.14, 0.44, 0.14, 1.84, 0.07, 0.085, (104, 116, 120))
     c.pipe(0.26, 0.5, 0.26, 1.3, 0.07, 0.065, shade(RUST, 1.05))
     c.flush()
@@ -399,6 +481,103 @@ def steam_turbine(rot):
     c.save(f"{OUT}/Things/Building/Power/STB_SteamTurbine_{rot}.png")
 
 
+# ------------------------------------------------------------------ cobbled steam turbine
+def cobbled_turbine(rot):
+    """2x3, the low-tech turbine, jerry-rigged. Same anatomy as the steam turbine - steam chest at
+    the front, casing stepping wider towards the exhaust, bearings, coupling, generator - so it still
+    reads as a turbine, but nothing about it was made to go together: each casing stage is a
+    different scrap and sits a little off the line of the last, straps and weld beads hold the
+    joints, timber chocks shim the drums up, a salvaged radiator and a spare tank are bolted on the
+    side, a bypass pipe is lifted over the top, and gauges are stuck on where there was room. It
+    stands on a patchwork of scrap plates. The only saturated colour is still the hot-water inlet."""
+    v = View(rot, 2, 3, MARGIN_2X2)
+    c = Canvas(v)
+    rnd = random.Random(23)
+    patchwork_skid(c, rnd, [(0.1, 0.1, 0.84, 0.44), (1.06, 0.1, 1.9, 0.62), (0.1, 1.2, 0.5, 2.3),
+                            (1.5, 1.7, 1.9, 2.9), (0.3, 2.5, 1.2, 2.9), (0.6, 0.5, 1.4, 1.1)])
+
+    def pt_px(a, f, lift):
+        x, y = v.pt(a, f)
+        return x, y - lift
+
+    # Steam inlet, and a squat steam chest made from an old tank, a gauge on a stalk beside it.
+    c.pipe(0.38, 0.1, 0.38, 0.56, 0.07, 0.11, HOT)
+
+    def chest_cap(X, Y, R):
+        w = max(2, c.px(6 / 192))
+        r = int(R * 0.72)
+        c.d.ellipse([X - r, Y - r - R // 12, X + r, Y + r - R // 12], outline=HOT + (255,), width=w)
+        rr = int(R * 0.34)
+        c.d.ellipse([X - rr, Y - rr - R // 10, X + rr, Y + rr - R // 10], fill=shade(RUST, 0.72) + (255,))
+    c.cylinder(0.38, 0.74, 0.2, 0.07, 0.3, shade(RUST, 1.05), rings=3, cap_fn=chest_cap)
+    gauge(c, 0.18, 0.58, 0.14)
+    c.pipe(0.58, 0.74, 0.7, 0.74, 0.25, 0.08, shade(STEEL, 0.9))
+
+    # Front bearing: a block of plate shimmed up on timber.
+    chock(c, 0.76, 0.28, 1.24, 0.36)
+    c.slab(0.8, 0.32, 1.2, 0.5, 0.1, 0.16, shade(STEEL, 0.82), radius=0.02)
+
+    def welded(col, a_mid, f0, f1, patch=None):
+        """A casing stage: weld beads down its own split line, scrapes, maybe a bolted patch."""
+        def fn(box, lift):
+            n = max(4, int((f1 - f0) / 0.05))
+            c.dots([pt_px(a_mid, f0 + 0.05 + (f1 - f0 - 0.1) * k / (n - 1), lift) for k in range(n)],
+                   0.011, shade(col, 1.28))
+            scrapes(c, rnd, a_mid - 0.25, f0 + 0.06, a_mid + 0.25, f1 - 0.12, lift, col, n=3)
+            if patch:
+                pa0, pf0, pa1, pf1 = patch
+                b = v.rect(pa0, pf0, pa1, pf1)
+                x0, y0, x1, y1 = c.box_px(b[0], b[1] - lift, b[2], b[3] - lift)
+                c.d.rounded_rectangle([x0, y0, x1, y1], radius=c.px(0.01), fill=shade(STEEL, 1.12) + (255,))
+                c.dots([pt_px(a, f, lift) for a in (pa0 + 0.03, pa1 - 0.03) for f in (pf0 + 0.03, pf1 - 0.03)],
+                       0.01, shade(STEEL, 1.3))
+        return fn
+
+    def strap(a0, a1, f):
+        def fn(box, lift):
+            c.dots([pt_px(a0 + 0.05, f, lift), pt_px(a1 - 0.05, f, lift)], 0.014, shade(STEEL, 1.25))
+        return fn
+
+    # Exhaust end on a plain box; chocks under the middle stage where the casing sags.
+    c.slab(0.38, 1.56, 1.62, 1.98, 0.07, 0.12, shade(STEEL, 0.66), radius=0.02)
+    chock(c, 0.5, 1.12, 0.62, 1.4)
+    chock(c, 1.38, 1.12, 1.5, 1.4)
+    # Three stages of three scraps, each a little off the line of the last.
+    stages = [(0.69, 1.37, 0.48, 1.0, 0.07, 0.26, RUST, (0.8, 0.6, 0.96, 0.78)),
+              (0.54, 1.42, 1.04, 1.46, 0.1, 0.28, STEEL, None),
+              (0.42, 1.54, 1.5, 1.96, 0.19, 0.22, OLIVE, (1.18, 1.62, 1.42, 1.84))]
+    for a0, a1, f0, f1, z0, h, col, patch in stages:
+        c.drum(a0, f0, a1, f1, z0, h, col, axis="f", radius=0.06,
+               top_fn=welded(col, (a0 + a1) / 2, f0, f1, patch))
+    for a0, a1, f, h in ((0.64, 1.38, 1.02, 0.3), (0.5, 1.46, 1.48, 0.36)):
+        c.drum(a0, f - 0.025, a1, f + 0.025, 0.07, h + 0.02, shade(STEEL, 0.74), axis="f", radius=0.01,
+               shadow=False, top_fn=strap(a0, a1, f))
+
+    # Rear bearing, a flywheel, and the salvaged generator on timber, a mismatched end cap.
+    c.slab(0.8, 1.96, 1.2, 2.1, 0.07, 0.22, shade(STEEL, 0.82), radius=0.02)
+    c.drum(0.3, 2.04, 1.7, 2.14, 0.07, 0.42, shade(STEEL, 0.95), axis="f", radius=0.05)
+    chock(c, 0.44, 2.22, 1.56, 2.3)
+    chock(c, 0.44, 2.6, 1.56, 2.68)
+    c.drum(0.5, 2.18, 1.5, 2.72, 0.12, 0.34, shade(OLIVE, 1.05), axis="f", radius=0.1, ribs=6)
+    c.drum(0.76, 2.72, 1.28, 2.88, 0.07, 0.22, shade(RUST, 0.9), axis="f", radius=0.05)
+
+    # Bolted on down the far side: a salvaged radiator, a spare tank, a junction box.
+    radiator(c, 1.62, 0.66, 1.92, 1.36, shade(STEEL, 0.9))
+    c.cylinder(1.77, 1.62, 0.13, 0.07, 0.28, shade(OLIVE, 0.95), rings=1)
+    def jbox(box, lift):
+        x0, y0, x1, y1 = box
+        c.seam((x0 + c.px(0.03), (y0 + y1) / 2), (x1 - c.px(0.03), (y0 + y1) / 2), tone=shade(OLIVE, 0.7))
+    c.slab(1.62, 2.3, 1.9, 2.66, 0.07, 0.2, shade(OLIVE, 0.9), top_fn=jbox, radius=0.02)
+    gauge(c, 1.76, 2.2, 0.1)
+
+    # Salvaged pipes: one up the near side with a taped joint, and a bypass lifted over the top.
+    c.pipe(0.14, 0.9, 0.14, 2.86, 0.07, 0.085, (104, 116, 120))
+    c.slab(0.1, 1.9, 0.18, 2.0, 0.12, 0.02, (170, 160, 120), shadow=False, radius=0.01)
+    c.pipe(0.3, 0.62, 0.3, 1.56, 0.36, 0.06, shade(RUST, 1.1))
+    c.flush()
+    c.save(f"{OUT}/Things/Building/Power/STB_CobbledTurbine_{rot}.png")
+
+
 # ------------------------------------------------------------------ hot water pipe
 PIPE_TILE = 128
 
@@ -566,6 +745,7 @@ if __name__ == "__main__":
         gasifier(r)
         fuel_hopper(r)
         steam_turbine(r)
+        cobbled_turbine(r)
     hot_water_pipe()
     hot_water_valve()
     pellets()

@@ -10,7 +10,7 @@ A RimWorld mod (1.5 / 1.6) for burning trash bricks, and maybe more, for power.
 ## What it adds
 ### Play modes (Mod settings)
 **Advanced** (default): stoves are **burners** that feed **steam turbines** through pressurised hot water pipes.
-**Simple**: stoves are self-contained generators, and the turbine and pipes aren't in the build menu.
+**Simple**: stoves are self-contained generators, and the turbines and pipes aren't in the build menu.
 Burn rates and power switch over straight away; the build menu updates after a restart.
 
 ### The two stoves (Power tab)
@@ -34,13 +34,21 @@ Both are 2x2 Stirling-engine stoves that burn trashbricks. The high-tech gasifie
 
 A burner's heat goes to **turbines first**. Once a burner is connected to a turbine, its own small engine shuts off.
 
-### Steam turbine (advanced mode)
-- **Output:** turns up to **1500W of heat into 1500W of power**, from as many burners as it takes: three at 500W or six at 250W. The low burn rate uses less fuel for the same power; the high rate needs fewer burners. With more than one turbine on a network, the heat is shared by capacity.
-- **Pipes:** our own network on Vanilla Expanded Framework's PipeSystem, the same system VE's chemfuel pipes use. That gives the usual overlay, plus a visible pipe, a **hidden pipe** and a **valve**. A building joins the network where a pipe runs under it.
-- **Cost:** 2x3, 250 steel, 20 plasteel and 6 components. Needs Microelectronics and VRE complex recycling.
-- **Status:** each burner shows its heat, fuel use and where its heat is going; each turbine shows the heat it's getting against its capacity.
+### Steam turbines (advanced mode)
+Two tiers, both 2x3. Each turns the heat piped to it into power, from as many burners as it takes. With more than one turbine on a network, the heat is shared by capacity.
 
-For scale: a full turbine takes 48–60 bricks a day from cobbled stoves, or 24–27 from gasifiers. One garbage compactor makes 25.
+| | Cobbled steam turbine | Steam turbine |
+|---|---|---|
+| Research | Electricity + VRE complex recycling | Microelectronics + VRE complex recycling |
+| Cost | 200 steel, 3 components | 250 steel, 20 plasteel, 6 components |
+| Heat taken | up to 1000W | up to 1500W |
+| Conversion | 75%, **750W max** | 100%, **1500W max** |
+| Burners to fill it | 2 at 500W, or 4 at 250W | 3 at 500W, or 6 at 250W |
+
+- **Pipes:** our own network on Vanilla Expanded Framework's PipeSystem, the same system VE's chemfuel pipes use. That gives the usual overlay, plus a visible pipe, a **hidden pipe** and a **valve**, all at the Electricity tier. A building joins the network where a pipe runs under it.
+- **Status:** each burner shows its heat, fuel use and where its heat is going; each turbine shows the heat it's getting, its capacity and its conversion rate.
+
+For scale: a full steam turbine takes 48–60 bricks a day from cobbled stoves, or 24–27 from gasifiers. One garbage compactor makes 25.
 
 ### One intake, no output
 Each machine has a single intake, marked with a green in-arrow on the edge it faces. The stove only takes fuel from a hopper on the cells in front of that intake. Those cells are outlined in green while you place or select it.
@@ -93,4 +101,4 @@ Source/build.sh   # needs mono's mcs, curl, unzip and git
 This compiles against the Krafs.Rimworld.Ref reference assemblies from NuGet, VEF's `PipeSystem.dll`, and (for the DBH bridge) DBH's own `BadHygiene.dll`, the last two from their public repos. The game doesn't need to be installed.
 
 ## Art
-Every sprite is drawn by `Source/Art/draw_sprites.py`, following the rules the SloppyMods mending and Riimba art settled on: four real views per machine, black only on the silhouette, height from walls and shadows, one meaningful accent colour, and straight pipe runs. `verify_art.py` checks the art against the C#. See [`Source/Art/README.md`](Source/Art/README.md).
+Every sprite is drawn by `Source/Art/draw_sprites.py`, following the rules the SloppyMods mending and Riimba art settled on: four real views per machine, black only on the silhouette, height from walls and shadows, one meaningful accent colour, and straight pipe runs. The low-tech machines share a jerry-rigged look (scrap-plate decks, timber chocks, bolted-on salvage); the high-tech ones are neat and bolted. `verify_art.py` checks the art against the C#. See [`Source/Art/README.md`](Source/Art/README.md).

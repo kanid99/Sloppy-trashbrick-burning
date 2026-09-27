@@ -7,7 +7,7 @@
 	<STB_Mode_WaterCooled>Engine: water-cooled</STB_Mode_WaterCooled>
 	<STB_Mode_HeatRecovery>Engine: heat recovery</STB_Mode_HeatRecovery>
 	<STB_ModeDescDBH>What the Stirling engine's cold side does. Click to cycle.\n\nPower: makes its own power.\nWater-cooled: draws water from the plumbing to run its cold side cooler, for {0} output while water is flowing.\nHeat recovery: sends its heat into the plumbing as a boiler, for hot water and central heating, at {1} output.</STB_ModeDescDBH>
-	<STB_TurbineLoad>Heat supplied: {0}W of {1}W capacity</STB_TurbineLoad>
+	<STB_TurbineLoad>Heat supplied: {0}W of {1}W capacity, converted at {2}</STB_TurbineLoad>
 	<STB_ValveLabel>Toggle valve</STB_ValveLabel>
 	<STB_ValveDesc>Open or close this pressurised hot water line.</STB_ValveDesc>
 	<STB_NoWater>no water</STB_NoWater>
