@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+	<!-- Modelled on the vanilla wood-fired generator, fuelled by trashbricks from Vanilla Recycling Expanded. -->
+	<ThingDef ParentName="BuildingBase">
+		<defName>STB_TrashbrickPelletStove</defName>
+		<label>trashbrick pellet stove</label>
+		<description>A sealed pellet stove that burns compressed trashbricks and drives a small generator. It has to be refilled by hand, and it heats the room while it runs. Trashbricks burn longer than wood, but the stove is dirtier and uglier than a wood-fired generator.</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<!-- Reuses the vanilla wood-fired generator texture, darkened to trashbrick grey. -->
+			<texPath>Things/Building/Power/WoodFiredGenerator</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<color>(120,120,130)</color>
+			<drawSize>(2,2)</drawSize>
+			<shadowData>
+				<volume>(1.93,1,1.69)</volume>
+				<offset>(-0.03,0,-0.1)</offset>
+			</shadowData>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<pathCost>150</pathCost>
+		<blockWind>true</blockWind>
+		<fillPercent>1.0</fillPercent>
+		<castEdgeShadows>false</castEdgeShadows>
+		<rotatable>false</rotatable>
+		<size>(2,2)</size>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<MaxHitPoints>300</MaxHitPoints>
+			<WorkToBuild>2800</WorkToBuild>
+			<Flammability>1.0</Flammability>
+			<Beauty>-30</Beauty>
+		</statBases>
+		<costList>
+			<Steel>120</Steel>
+			<ComponentIndustrial>2</ComponentIndustrial>
+		</costList>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerPlant</compClass>
+				<basePowerConsumption>-1000</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+				<soundAmbientProducingPower>WoodFiredGenerator_Ambience</soundAmbientProducingPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Refuelable">
+				<!-- Trashbricks per day at full burn. One garbage compactor makes 25 a day. -->
+				<fuelConsumptionRate>20.0</fuelConsumptionRate>
+				<fuelCapacity>50.0</fuelCapacity>
+				<fuelLabel>Trashbricks</fuelLabel>
+				<fuelFilter>
+					<thingDefs>
+						<li>VRecyclingE_TrashBrick</li>
+					</thingDefs>
+				</fuelFilter>
+				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+			</li>
+			<li Class="CompProperties_Glower">
+				<glowRadius>6</glowRadius>
+				<glowColor>(217,112,33,0)</glowColor>
+			</li>
+			<li Class="CompProperties_HeatPusher">
+				<compClass>CompHeatPusherPowered</compClass>
+				<heatPerSecond>8</heatPerSecond>
+			</li>
+			<li Class="CompProperties_Breakdownable"/>
+		</comps>
+		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+		<designationCategory>Power</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<constructionSkillPrerequisite>4</constructionSkillPrerequisite>
+		<researchPrerequisites>
+			<li>Electricity</li>
+			<li>VRecyclingE_ComplexRecycling</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+</Defs>

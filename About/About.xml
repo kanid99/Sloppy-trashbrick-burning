@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>Sloppy Trashbrick Burning</name>
+	<author>kanid99</author>
+	<packageId>kanid99.SloppyTrashbrickBurning</packageId>
+	<supportedVersions>
+		<li>1.5</li>
+		<li>1.6</li>
+	</supportedVersions>
+	<description>Burn the trashbricks from Vanilla Recycling Expanded for power.
+
+Adds a trashbrick pellet stove: a small generator that you fill with trashbricks. It produces 1000W and warms the room it stands in, like the wood-fired generator. One garbage compactor makes about enough bricks to keep one stove running.
+
+Needs Vanilla Recycling Expanded, and is researched after complex recycling.</description>
+	<modDependencies>
+		<li>
+			<packageId>VanillaExpanded.Recycling</packageId>
+			<displayName>Vanilla Recycling Expanded</displayName>
+			<steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=3155781848</steamWorkshopUrl>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>VanillaExpanded.Recycling</li>
+	</loadAfter>
+</ModMetaData>
