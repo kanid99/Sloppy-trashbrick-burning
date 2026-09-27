@@ -154,6 +154,42 @@ for name, td in defs.items():
         else:
             fail(f"{name}: {tex} tiles out of order (v={vertical} h={horizontal} isolated-clear={empty_ok})")
 
+# 2c. loose-part layers (CompLooseParts): every layer in all four views at the building's own size,
+# the building drawn in real time so they can move, and none of them covering the intake.
+for name, td in defs.items():
+    comps = td.find("comps")
+    if comps is None:
+        continue
+    loose = [li for li in comps if (li.get("Class") or "").endswith("CompProperties_LooseParts")]
+    if not loose:
+        continue
+    if lookup(td, "drawerType") != "MapMeshAndRealTime":
+        fail(f"{name}: has loose parts but drawerType isn't MapMeshAndRealTime, so they'd never be drawn")
+    base_tex = td.find("graphicData").findtext("texPath")
+    feeds = any((li.get("Class") or "").endswith("CompProperties_HopperFeed") for li in comps)
+    for layer in loose[0].find("layers"):
+        tex = layer.findtext("texPath")
+        for rot in FACING:
+            try:
+                im = Image.open(f"Textures/{tex}_{rot}.png").convert("RGBA")
+            except FileNotFoundError:
+                fail(f"{name}: missing loose layer Textures/{tex}_{rot}.png")
+                continue
+            base = Image.open(f"Textures/{base_tex}_{rot}.png").convert("RGBA")
+            if im.size != base.size:
+                fail(f"{name}: {tex}_{rot} is {im.size}, the building is {base.size}")
+                continue
+            if feeds:
+                covered = 0
+                for y in range(0, base.height, 2):
+                    for x in range(0, base.width, 2):
+                        if is_green(base.getpixel((x, y))) and im.getpixel((x, y))[3] > 60:
+                            covered += 1
+                if covered:
+                    fail(f"{name}: {tex}_{rot} covers the intake ({covered} samples)")
+        print(f"ok   {name}: loose layer {tex} in four views, clear of the intake" if feeds
+              else f"ok   {name}: loose layer {tex} in four views")
+
 # 3. the C# outline colour matches the art
 cs = open("Source/TrashbrickBurning/CompHopperFeed.cs").read()
 m = re.search(r"IntakeColor = new UnityEngine.Color\(([\d.]+)f, ([\d.]+)f, ([\d.]+)f\)", cs)

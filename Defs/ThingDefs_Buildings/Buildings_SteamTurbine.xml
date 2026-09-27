@@ -180,7 +180,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_CobbledTurbine</defName>
 		<label>cobbled steam turbine</label>
-		<description>A steam turbine pieced together from scrap plate and a salvaged generator, driven by pressurised hot water piped from trashbrick burners. It takes up to 1000W of their heat, but its worn blades and leaky seals waste a quarter of it, so it makes at most 750W. A burner feeding a turbine shuts down its own small engine. Connect it by running a pressurised hot water pipe under it.</description>
+		<description>A steam turbine pieced together from scrap plate and a salvaged generator, driven by pressurised hot water piped from trashbrick burners. It takes up to 1000W of their heat, but its worn blades and leaky seals waste a quarter of it, so it makes at most 750W - and it rattles. A burner feeding a turbine shuts down its own small engine. Connect it by running a pressurised hot water pipe under it.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_CobbledTurbine</texPath>
@@ -188,6 +188,8 @@
 			<drawSize>(3,4)</drawSize>
 		</graphicData>
 		<altitudeLayer>Building</altitudeLayer>
+		<!-- RealTime as well, so CompLooseParts can draw and shake the loose parts every frame. -->
+		<drawerType>MapMeshAndRealTime</drawerType>
 		<passability>PassThroughOnly</passability>
 		<pathCost>150</pathCost>
 		<blockWind>true</blockWind>
@@ -216,6 +218,13 @@
 			</li>
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+			<!-- The parts that rattle while it turns: two layers drawn over the sprite and shaken. -->
+			<li Class="TrashbrickBurning.CompProperties_LooseParts">
+				<layers>
+					<li><texPath>Things/Building/Power/STB_CobbledTurbine_LooseA</texPath><amplitude>0.012</amplitude><frequency>2.2</frequency><phase>0.4</phase></li>
+					<li><texPath>Things/Building/Power/STB_CobbledTurbine_LooseB</texPath><amplitude>0.009</amplitude><frequency>3.1</frequency><phase>2.1</phase></li>
+				</layers>
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Breakdownable"/>

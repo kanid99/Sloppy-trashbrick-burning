@@ -3,7 +3,12 @@ store page always shows what is actually in the game. Re-run after any texture c
 
     python3 Source/Art/make_about_art.py
 """
+import sys
+
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
+
+sys.path.insert(0, "Source/Art")
+from compose import composite  # noqa: E402
 
 TEX = "Textures/Things/Building/Power/"
 BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
@@ -18,7 +23,8 @@ for y in range(H):
 
 
 def fit(name, width):
-    im = Image.open(TEX + name).convert("RGBA")
+    stem, rot = name[:-4].rsplit("_", 1)
+    im = composite(stem, rot)
     im = im.crop(im.getbbox())
     return im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
 
@@ -53,7 +59,7 @@ card.convert("RGB").save("About/Preview.png")
 # ModMetaData.ModIconImagePath - shown at about 32px in the mod list, so one machine, filling it.
 ICON = 256
 icon = Image.new("RGBA", (ICON, ICON), (0, 0, 0, 0))
-src = Image.open(TEX + "STB_CobbledPelletStove_south.png").convert("RGBA")
+src = composite("STB_CobbledPelletStove", "south")
 src = src.crop(src.getbbox())
 scale = min(ICON / src.width, ICON / src.height) * 0.98
 small = src.resize((round(src.width * scale), round(src.height * scale)), Image.LANCZOS)

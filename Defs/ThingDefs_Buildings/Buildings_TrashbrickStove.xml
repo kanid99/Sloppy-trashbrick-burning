@@ -14,6 +14,8 @@
 			<drawSize>(3,3)</drawSize>
 		</graphicData>
 		<altitudeLayer>Building</altitudeLayer>
+		<!-- RealTime as well, so CompLooseParts can draw and shake the loose parts every frame. -->
+		<drawerType>MapMeshAndRealTime</drawerType>
 		<passability>PassThroughOnly</passability>
 		<pathCost>150</pathCost>
 		<blockWind>true</blockWind>
@@ -78,6 +80,13 @@
 					<li><watts>350</watts><fuelPerDay>12</fuelPerDay><roomHeatPerSecond>6</roomHeatPerSecond><builtInWatts>200</builtInWatts></li>
 					<li><watts>500</watts><fuelPerDay>20</fuelPerDay><roomHeatPerSecond>10</roomHeatPerSecond><builtInWatts>300</builtInWatts></li>
 				</heatLevels>
+			</li>
+			<!-- The parts that rattle while it burns: two layers drawn over the sprite and shaken. -->
+			<li Class="TrashbrickBurning.CompProperties_LooseParts">
+				<layers>
+					<li><texPath>Things/Building/Power/STB_CobbledPelletStove_LooseA</texPath><amplitude>0.012</amplitude><frequency>1.9</frequency><phase>0</phase></li>
+					<li><texPath>Things/Building/Power/STB_CobbledPelletStove_LooseB</texPath><amplitude>0.009</amplitude><frequency>2.7</frequency><phase>1.3</phase></li>
+				</layers>
 			</li>
 			<!-- Joins the pressurised hot water network when a pipe runs under it. -->
 			<li Class="PipeSystem.CompProperties_Resource">

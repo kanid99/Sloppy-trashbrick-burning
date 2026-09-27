@@ -89,7 +89,7 @@ Defs/ThingDefs_Buildings/                both machines, the fuel hopper, the hot
 Mods/DubsBadHygiene/Defs, Patches/       sludge pellets, plumbing and engine modes
 Mods/DubsBadHygiene/1.5, 1.6/Assemblies/ TrashbrickBurning.DBH.dll (references BadHygiene.dll)
 Mods/VFEFactory/Patches/                 factory-hopper tag, hides our hopper
-Source/TrashbrickBurning/                mod settings, CompStirlingEngine (burner), HotWaterAllocation + CompSteamTurbine, CompHopperFeed, PlaceWorker_ShowIntake, CompPowerPlantStirling, CompBurnPollution
+Source/TrashbrickBurning/                mod settings, CompStirlingEngine (burner), HotWaterAllocation + CompSteamTurbine, CompLooseParts, CompHopperFeed, PlaceWorker_ShowIntake, CompPowerPlantStirling, CompBurnPollution
 Source/TrashbrickBurning.DBH/            CompStirlingWater, CompStirlingBoiler
 Source/Art/                              draws, verifies and measures every texture
 ```
@@ -101,4 +101,4 @@ Source/build.sh   # needs mono's mcs, curl, unzip and git
 This compiles against the Krafs.Rimworld.Ref reference assemblies from NuGet, VEF's `PipeSystem.dll`, and (for the DBH bridge) DBH's own `BadHygiene.dll`, the last two from their public repos. The game doesn't need to be installed.
 
 ## Art
-Every sprite is drawn by `Source/Art/draw_sprites.py`, following the rules the SloppyMods mending and Riimba art settled on: four real views per machine, black only on the silhouette, height from walls and shadows, one meaningful accent colour, and straight pipe runs. The low-tech machines share a jerry-rigged look (scrap-plate decks, timber chocks, bolted-on salvage); the high-tech ones are neat and bolted. `verify_art.py` checks the art against the C#. See [`Source/Art/README.md`](Source/Art/README.md).
+Every sprite is drawn by `Source/Art/draw_sprites.py`, following the rules the SloppyMods mending and Riimba art settled on: four real views per machine, black only on the silhouette, height from walls and shadows, one meaningful accent colour, and straight pipe runs. The low-tech machines share a home-brew, jerry-rigged look (scrap-plate decks, timber chocks, bolted-on salvage, a car battery, tape, a drip bucket), and their loose parts (dangling cables, a pipe on one clamp, gauges on wobbly stalks, loose nuts) **rattle while they run**, drawn and shaken by `CompLooseParts`. The high-tech ones are neat and bolted. `verify_art.py` checks the art against the C#. See [`Source/Art/README.md`](Source/Art/README.md).

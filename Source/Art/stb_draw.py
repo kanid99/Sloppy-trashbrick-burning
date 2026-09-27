@@ -292,6 +292,35 @@ class Canvas:
 
         self.add(max(y0, y1) + 0.001, draw, z)
 
+    def cable(self, a0, f0, z0, a1, f1, z1, sag, width, col):
+        """A flexible cable between two points on the machine, sagging `sag` cells down the screen
+        at its middle. Pipes are rigid and run straight; cables hang, and a sagging line is what
+        tells the two apart at play zoom. Tone only: a darker body and a thin lit line along it."""
+        (x0, y0), (x1, y1) = self.v.pt(a0, f0), self.v.pt(a1, f1)
+        y0 -= z0 * LIFT
+        y1 -= z1 * LIFT
+        n = 24
+        pts = []
+        for k in range(n + 1):
+            t = k / n
+            pts.append((x0 + (x1 - x0) * t, y0 + (y1 - y0) * t + sag * 4 * t * (1 - t)))
+
+        def draw():
+            px = [(self.px(x), self.px(y)) for x, y in pts]
+            sh = [(self.px(x + 0.03), self.px(y + 0.04)) for x, y in pts]
+            shadow = Image.new("RGBA", self.img.size, (0, 0, 0, 0))
+            ImageDraw.Draw(shadow).line(sh, fill=(0, 0, 0, 70), width=self.px(width), joint="curve")
+            self.img.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(self.px(0.015))))
+            d = self.d
+            d.line(px, fill=shade(col, 0.7) + (255,), width=self.px(width), joint="curve")
+            d.line([(x, y - self.px(width * 0.2)) for x, y in px], fill=shade(col, 1.3) + (255,),
+                   width=max(1, self.px(width * 0.3)), joint="curve")
+            for x, y in (px[0], px[-1]):
+                r = self.px(width * 0.8)
+                d.ellipse([x - r, y - r, x + r, y + r], fill=shade(col, 0.9) + (255,))
+
+        self.add(max(y0, y1) + sag, draw, max(z0, z1))
+
     # --- flat marks: greebles are a couple of tone steps off what they sit on, never black
     def dots(self, pts, r, col):
         for x, y in pts:

@@ -161,12 +161,54 @@ def radiator(c, a0, f0, a1, f1, col):
     c.slab(a0, f0, a1, f1, 0.07, 0.2, col, top_fn=top, radius=0.02)
 
 
+TAPE = (176, 166, 128)         # duct tape
+BATTERY = (58, 60, 62)
+
+
+def tape(c, a0, f0, a1, f1, z):
+    """A wrap of duct tape: a pale band, flat, no shadow."""
+    c.slab(a0, f0, a1, f1, z, 0.015, TAPE, shadow=False, radius=0.008)
+
+
+def battery(c, a0, f0, a1, f1):
+    """A car battery wired into the machine: a dark block, two terminal posts."""
+    def top(box, lift):
+        pts = [c.v.pt(a0 + (a1 - a0) * t, (f0 + f1) / 2) for t in (0.22, 0.78)]
+        c.dots([(x, y - lift) for x, y in pts], 0.018, (150, 146, 138))
+    c.slab(a0, f0, a1, f1, 0.07, 0.14, BATTERY, top_fn=top, radius=0.015)
+
+
+def bucket(c, a, f):
+    """A galvanised bucket catching drips, dark water in it."""
+    def inside(X, Y, R):
+        r = int(R * 0.78)
+        c.d.ellipse([X - r, Y - r - R // 12, X + r, Y + r - R // 12], fill=(52, 58, 60, 255))
+    c.cylinder(a, f, 0.09, 0.07, 0.12, (156, 158, 154), rings=1, cap_fn=inside)
+
+
+def loose_nuts(c, pts, lift=0.07 * LIFT):
+    """Loose nuts and washers that have walked off across the deck."""
+    c.add(0, lambda: c.dots([(c.v.pt(a, f)[0], c.v.pt(a, f)[1] - lift) for a, f in pts], 0.016,
+                            (150, 146, 138)), 0.07)
+
+
+def save_loose(layer, name, rot):
+    """A loose-part layer: the same canvas as the building, only the parts that rattle on it.
+    CompLooseParts draws it over the building and shakes it while the machine runs."""
+    layer.flush()
+    layer.save(f"{OUT}/Things/Building/Power/{name}_{rot}.png", silhouette_px=4)
+
+
 # ------------------------------------------------------------------ tier 1: cobbled pellet stove
 def cobbled_stove(rot):
     """Salvage: three mismatched plates welded into a firebox, a scavenged generator drum, a
-    flue stack. The fire is its one accent and the only saturated colour on it."""
+    flue stack, home-brewed together with a car battery, tape and a drip bucket. The fire is its
+    one accent and the only saturated colour on it. The parts that rattle - a dangling cable, a
+    patch held on by one bolt, a pipe end hanging off a clamp, the gauges, loose nuts - are in two
+    separate layers that CompLooseParts shakes while it burns."""
     v = View(rot, 2, 2, MARGIN_2X2)
     c = Canvas(v)
+    la, lb = Canvas(v), Canvas(v)
     rnd = random.Random(11)
     patchwork_skid(c, rnd, [(0.1, 0.1, 0.56, 0.62), (1.44, 0.12, 1.9, 0.5), (0.12, 1.1, 0.7, 1.9),
                             (1.3, 1.24, 1.9, 1.9), (0.8, 1.35, 1.2, 1.9)])
@@ -200,7 +242,8 @@ def cobbled_stove(rot):
         m = c.px(0.02)
         pts = [(x0 + m, y0 + m), (x1 - m, y0 + m), (x0 + m, y1 - m), (x1 - m, y1 - m)]
         c.dots([(x / (CELL * SS), y / (CELL * SS)) for x, y in pts], 0.012, shade(STEEL, 1.2))
-    c.slab(0.42, 0.98, 0.64, 1.2, 0.41, 0.02, shade(STEEL, 1.1), top_fn=patch_top, shadow=False, radius=0.01)
+    # Held on by one bolt: it rattles.
+    la.slab(0.42, 0.98, 0.64, 1.2, 0.41, 0.02, shade(STEEL, 1.1), top_fn=patch_top, shadow=False, radius=0.01)
 
     # Fire window on top of the firebox: the one accent. A grate of bars over a hot ramp.
     def fire_top(box, lift):
@@ -257,12 +300,28 @@ def cobbled_stove(rot):
                 c.seam((x0 + (x1 - x0) * t, y0 + c.px(0.03)), (x0 + (x1 - x0) * t, y1 - c.px(0.03)),
                        tone=shade(STEEL, 0.78))
     c.slab(1.56, 0.56, 1.88, 1.16, 0.07, 0.2, shade(STEEL, 0.92), top_fn=jbox_top, radius=0.02)
-    gauge(c, 1.4, 0.56, 0.41)
-    gauge(c, 0.48, 0.58, 0.41)
     c.pipe(0.14, 0.44, 0.14, 1.84, 0.07, 0.085, (104, 116, 120))
     c.pipe(0.26, 0.5, 0.26, 1.3, 0.07, 0.065, shade(RUST, 1.05))
+    tape(c, 0.1, 1.02, 0.18, 1.1, 0.12)
+    tape(c, 0.22, 0.86, 0.3, 0.92, 0.11)
+    # Home-brew: a car battery wired to the junction box, and a bucket under the pipe ends.
+    battery(c, 1.5, 0.14, 1.86, 0.4)
+    c.cable(1.62, 0.4, 0.2, 1.66, 0.58, 0.27, 0.04, 0.035, (70, 70, 72))
+    bucket(c, 0.2, 1.86)
+
+    # Loose layer A: a cable dangling from the junction box to the drum, a pipe end on one clamp.
+    la.cable(1.72, 1.12, 0.27, 1.44, 1.48, 0.41, 0.14, 0.04, (66, 64, 62))
+    la.cable(1.84, 1.12, 0.27, 1.84, 1.5, 0.3, 0.1, 0.03, shade(RUST, 0.9))
+    la.pipe(0.26, 1.34, 0.26, 1.62, 0.09, 0.065, shade(RUST, 1.0))
+    # Loose layer B: the gauges on their stalks, a cable from the battery, nuts on the deck.
+    gauge(lb, 1.4, 0.56, 0.41)
+    gauge(lb, 0.48, 0.58, 0.41)
+    lb.cable(1.78, 0.4, 0.2, 1.46, 0.64, 0.41, 0.08, 0.03, (80, 76, 72))
+    loose_nuts(lb, [(0.9, 1.9), (1.0, 1.84), (0.34, 1.62), (1.5, 1.22)])
     c.flush()
     c.save(f"{OUT}/Things/Building/Power/STB_CobbledPelletStove_{rot}.png")
+    save_loose(la, "STB_CobbledPelletStove_LooseA", rot)
+    save_loose(lb, "STB_CobbledPelletStove_LooseB", rot)
 
 
 # ------------------------------------------------------------------ tier 2: gasifier
@@ -492,6 +551,7 @@ def cobbled_turbine(rot):
     stands on a patchwork of scrap plates. The only saturated colour is still the hot-water inlet."""
     v = View(rot, 2, 3, MARGIN_2X2)
     c = Canvas(v)
+    la, lb = Canvas(v), Canvas(v)
     rnd = random.Random(23)
     patchwork_skid(c, rnd, [(0.1, 0.1, 0.84, 0.44), (1.06, 0.1, 1.9, 0.62), (0.1, 1.2, 0.5, 2.3),
                             (1.5, 1.7, 1.9, 2.9), (0.3, 2.5, 1.2, 2.9), (0.6, 0.5, 1.4, 1.1)])
@@ -510,7 +570,7 @@ def cobbled_turbine(rot):
         rr = int(R * 0.34)
         c.d.ellipse([X - rr, Y - rr - R // 10, X + rr, Y + rr - R // 10], fill=shade(RUST, 0.72) + (255,))
     c.cylinder(0.38, 0.74, 0.2, 0.07, 0.3, shade(RUST, 1.05), rings=3, cap_fn=chest_cap)
-    gauge(c, 0.18, 0.58, 0.14)
+    gauge(lb, 0.18, 0.58, 0.14)
     c.pipe(0.58, 0.74, 0.7, 0.74, 0.25, 0.08, shade(STEEL, 0.9))
 
     # Front bearing: a block of plate shimmed up on timber.
@@ -568,14 +628,30 @@ def cobbled_turbine(rot):
         x0, y0, x1, y1 = box
         c.seam((x0 + c.px(0.03), (y0 + y1) / 2), (x1 - c.px(0.03), (y0 + y1) / 2), tone=shade(OLIVE, 0.7))
     c.slab(1.62, 2.3, 1.9, 2.66, 0.07, 0.2, shade(OLIVE, 0.9), top_fn=jbox, radius=0.02)
-    gauge(c, 1.76, 2.2, 0.1)
 
-    # Salvaged pipes: one up the near side with a taped joint, and a bypass lifted over the top.
+    # Salvaged pipes up the near side, taped at the joints; a battery and a drip bucket.
     c.pipe(0.14, 0.9, 0.14, 2.86, 0.07, 0.085, (104, 116, 120))
-    c.slab(0.1, 1.9, 0.18, 2.0, 0.12, 0.02, (170, 160, 120), shadow=False, radius=0.01)
-    c.pipe(0.3, 0.62, 0.3, 1.56, 0.36, 0.06, shade(RUST, 1.1))
+    tape(c, 0.1, 1.9, 0.18, 2.0, 0.12)
+    tape(c, 0.1, 1.2, 0.18, 1.27, 0.12)
+    battery(c, 1.3, 0.12, 1.62, 0.34)
+    bucket(c, 0.34, 2.76)
+    c.cable(1.46, 0.34, 0.2, 1.72, 0.62, 0.27, 0.05, 0.035, (70, 70, 72))
+
+    # Loose layer A: the bypass pipe lifted over the casing, hanging off its clamps, a cover plate
+    # held by one bolt on the exhaust stage, and a cable looped from the junction box.
+    la.pipe(0.3, 0.62, 0.3, 1.56, 0.36, 0.06, shade(RUST, 1.1))
+    la.slab(0.62, 1.58, 0.9, 1.76, 0.43, 0.015, shade(STEEL, 1.12), shadow=False, radius=0.01)
+    la.cable(1.72, 2.32, 0.27, 1.46, 2.36, 0.46, 0.12, 0.04, (66, 64, 62))
+    la.cable(1.84, 2.3, 0.27, 1.8, 1.36, 0.27, 0.16, 0.03, shade(RUST, 0.9))
+    # Loose layer B: gauges on wobbly stalks, a second cable, nuts walking across the deck.
+    gauge(lb, 1.76, 2.2, 0.1)
+    gauge(lb, 1.1, 0.24, 0.1)
+    lb.cable(1.62, 0.24, 0.2, 1.24, 0.42, 0.26, 0.06, 0.03, (80, 76, 72))
+    loose_nuts(lb, [(0.6, 2.9), (0.72, 2.84), (1.5, 1.2), (0.26, 0.4)])
     c.flush()
     c.save(f"{OUT}/Things/Building/Power/STB_CobbledTurbine_{rot}.png")
+    save_loose(la, "STB_CobbledTurbine_LooseA", rot)
+    save_loose(lb, "STB_CobbledTurbine_LooseB", rot)
 
 
 # ------------------------------------------------------------------ hot water pipe

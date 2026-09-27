@@ -36,6 +36,8 @@ settled on; see their `Source/Art/README.md` for how each was arrived at.
   fire. On the gasifier, teal marks what's powered: the chamber seal, the status panel and the
   pilot lamp. The intake green is VFE Factory's input colour.
 * **Straight pipe runs only.** `Canvas.pipe` asserts it. Bends read as debris at play zoom.
+  **Cables sag.** Pipes are rigid and cables aren't: `Canvas.cable` hangs between its two ends,
+  and that sag is what tells a cable from a pipe at play zoom.
 * **Round forms.** Each machine has at least one cylinder (flue, chamber, filters, exhaust), and
   the skids are chamfered, not square.
 * **Supersampled** at 4x, reduced with LANCZOS.
@@ -87,8 +89,32 @@ set. Nothing on them was made to go together:
 * **Wear.** Bare-metal scrapes, a couple of tones lighter. This is tone, not outline, and it's what
   lifted the turbine's contrast into VFE's range.
 
+* **Home-brew.** A car battery wired in, duct tape round the pipe joints, a galvanised bucket
+  catching drips, cables sagging across the deck.
+
 The only saturated colour is still the one that means something: the fire on the stove, and the
 hot-water inlet on the turbine.
+
+## Loose parts that rattle
+
+A building's texture is baked into the map mesh and can't move. So on the two jerry-rigged
+machines, the parts that should rattle are drawn into two extra textures per view,
+`<name>_LooseA_<rot>` and `<name>_LooseB_<rot>`: the same canvas as the building, holding only
+those parts.
+
+* **Layer A:** the dangling cables, a pipe hanging off one clamp, a cover or patch held by one bolt.
+* **Layer B:** the gauges on their stalks, a second cable, and loose nuts walking across the deck.
+
+`CompLooseParts` draws both layers over the building every frame (the def needs `drawerType
+MapMeshAndRealTime`). While the machine runs it shakes each one by about two pixels, as two sines at
+unrelated rates per axis, so it's a rattle rather than a sway. The two layers run at different
+rates, so they rattle out of step. The shake is driven by game ticks: it stops when paused, speeds
+up with the game, and sits still when the machine is off.
+
+`verify_art.py` checks every layer exists in all four views at the building's size, that the
+building is drawn in real time, and that no layer covers the intake. Painting a block over the
+stove's intake in one layer makes it fail. `compose.py` puts building and layers together the way
+the game does, for the contact sheet and store art; given offsets, it renders a shaken frame.
 
 ## The hot water pipe atlas
 
@@ -110,6 +136,7 @@ VE's hidden pipes do.
 | --- | --- | --- |
 | `STB_CobbledPelletStove_*`, `STB_TrashbrickGasifier_*` | 576x576 | 2x2 footprint drawn at `drawSize (3,3)`: half a cell of margin all round so raised parts aren't clipped, as VFE draws its machines a cell larger than they stand |
 | `STB_SteamTurbine_*`, `STB_CobbledTurbine_*` | 576x768 / 768x576 | 2x3 at `drawSize (3,4)`, axes swapped for east and west |
+| `*_LooseA_*`, `*_LooseB_*` | as their building | loose-part layers for the cobbled stove and turbine |
 | `STB_FuelHopper_*` | 288x288 | 1x1 at `drawSize (1.5,1.5)` |
 | `STB_HotWaterPipe_Atlas`, `_Blueprint_Atlas` | 512x512 | 4x4 linked atlas, 128px tiles |
 | `STB_HotWaterValve` | 288x288 | 1x1 at `drawSize (1.5,1.5)` |
@@ -145,7 +172,8 @@ is what brought it into range.
 | --- | --- |
 | `stb_draw.py` | primitives: `View` (per-rotation placement), `Canvas` (slab, cylinder, pipe, seams, glow, painter's order), supersampling and the silhouette |
 | `draw_sprites.py` | the jerry-rig helpers and the layouts: cobbled stove, gasifier, cobbled and steam turbines, fuel hopper, hot water pipe atlas and valve, sludge pellets |
-| `verify_art.py` | textures vs defs (files, sizes, blueprints, icons, atlas tile order) and vs the C# (intake edge, outline colour) |
+| `verify_art.py` | textures vs defs (files, sizes, blueprints, icons, atlas tile order, loose layers) and vs the C# (intake edge, outline colour) |
 | `measure.py` | nine style metrics against VFE Factory's machine sprites |
 | `make_about_art.py` | the store preview and mod icon |
-| `contact_sheet.py` | every building view on one sheet |
+| `contact_sheet.py` | every building view on one sheet, loose parts included |
+| `compose.py` | a building plus its loose-part layers, optionally shaken |
