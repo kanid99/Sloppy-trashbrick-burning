@@ -7,15 +7,21 @@ A RimWorld mod (1.5 / 1.6) for burning trash bricks, and maybe more, for power.
 - **Optional:** Vanilla Furniture Expanded - Factory. If it's loaded, conveyor compatibility switches on (see below).
 
 ## What it adds
-### Trashbrick pellet stove (Power tab)
-- Research: Electricity + VRE *complex recycling* (the same research that unlocks the garbage compactor)
-- Cost: 120 steel, 2 components, 2x2
-- Makes **1000W**, burns **20 fuel/day**, holds 50
-- Heats the room while it runs, like the wood-fired generator
-- One garbage compactor makes 25 trashbricks a day, which is enough for about one stove
+### Generators (Power tab)
+| | Cobbled pellet stove | Trashbrick gasifier |
+|---|---|---|
+| Research | Electricity + VRE complex recycling | Microelectronics + VRE complex recycling |
+| Cost | 120 steel, 2 components | 150 steel, 25 plasteel, 4 components |
+| Output | 1000W | 1800W |
+| Fuel/day | 20 | 15 |
+| Fuel capacity | 50 | 75 |
+| Heat | 8/s, heats the room like a wood generator | 3/s, insulated |
+| Pollution | ~3 cells/day, **only while burning** | none, catalytic filters |
+
+Both are 2x2, take trashbricks (plus sludge pellets with DBH), and feed from hoppers. One garbage compactor (25 bricks/day) keeps about one cobbled stove or one and a half gasifiers running.
 
 ### Fuel hopper and auto-feeding
-- Build any hopper against any side of the stove and the stove pulls fuel from it each rare tick until it reaches its target fuel level (the refuel slider).
+- Build any hopper against any side of a stove and the stove pulls fuel from it each rare tick until it reaches its target fuel level (the refuel slider).
 - Works with **this mod's fuel hopper**, the **vanilla hopper**, and the **VFE Factory hopper**. Any building with `isHopper` counts.
 - Fuel hopper: 1x1, 25 steel, holds 3 stacks, and its storage filter is locked to stove fuels at Important priority, so haulers keep it full.
 - Each stove has a **Draw from hoppers** toggle.
@@ -43,7 +49,9 @@ Defs/ThingDefs_Buildings/                the pellet stove
 Mods/DubsBadHygiene/Defs/                sludge pellet item + recipe
 Mods/DubsBadHygiene/Patches/             adds pellets to the stove and hopper filters
 Mods/VFEFactory/Patches/                 factory-hopper tag, hides our hopper
-Source/TrashbrickBurning/                CompHopperFeed (C#)
+Source/TrashbrickBurning/                CompHopperFeed, CompBurnPollution (C#)
+Source/Art/draw_sprites.py               draws all textures
+Textures/                                output of draw_sprites.py
 1.5/, 1.6/Assemblies/                    compiled DLLs
 ```
 
@@ -53,4 +61,10 @@ Source/build.sh   # needs mono's mcs, curl, unzip; fetches Krafs.Rimworld.Ref fr
 ```
 
 ## Art
-No custom textures yet. The stove uses the vanilla wood-fired generator sprite tinted grey, and the pellets use the vanilla kibble sprite tinted brown, and the fuel hopper uses the vanilla hopper sprite tinted grey.
+Every sprite is drawn by `Source/Art/draw_sprites.py` (Pillow). Nothing is generated or hand-painted, so the art rebuilds whenever a footprint changes:
+```sh
+python3 Source/Art/draw_sprites.py
+```
+- Cobbled pellet stove: mismatched scrap plates, glowing grate, salvaged pipes, a flue stack
+- Trashbrick gasifier: clean housing, sealed chamber, filter stack, teal status panel
+- Fuel hopper and the sludge pellet stacks (`_a`/`_b`/`_c` for Graphic_StackCount)

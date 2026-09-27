@@ -7,10 +7,8 @@
 		<label>sludge pellets</label>
 		<description>Fecal sludge that has been dried, pressed and baked into hard fuel pellets for a pellet stove. Pellets give less energy than refining the sludge into chemfuel, but they don't explode when damaged, burn slowly, and don't rot.</description>
 		<graphicData>
-			<!-- Reuses the vanilla kibble texture, tinted brown. -->
-			<texPath>Things/Item/Resource/Kibble</texPath>
+			<texPath>Things/Item/Resource/STB_SludgePellets</texPath>
 			<graphicClass>Graphic_StackCount</graphicClass>
-			<color>(110,80,50)</color>
 		</graphicData>
 		<soundInteract>Stone_Drop</soundInteract>
 		<soundDrop>Stone_Drop</soundDrop>
@@ -33,7 +31,7 @@
 
 	<!--
 		Chemfuel route (DBH): 75 sludge -> 35 chemfuel, about 7.8 days of a chemfuel generator.
-		Pellet route: 75 sludge -> 100 pellets, 5 days of a pellet stove. You give up some energy for fuel that is safe to store.
+		Pellet route: 75 sludge -> 100 pellets, 5 days of a cobbled stove or about 6.7 of a gasifier (at 1800W). You give up some energy for fuel that is safe to store.
 	-->
 	<RecipeDef>
 		<defName>STB_Make_SludgePellets</defName>

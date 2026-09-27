@@ -4,14 +4,12 @@
 	<!-- Modelled on the vanilla wood-fired generator, fuelled by trashbricks from Vanilla Recycling Expanded. -->
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_TrashbrickPelletStove</defName>
-		<label>trashbrick pellet stove</label>
-		<description>A sealed pellet stove that burns compressed trashbricks and drives a small generator. Refill it by hand, or build a hopper against any side and it will draw fuel from that. It also heats the room while it runs. Trashbricks burn longer than wood, but the stove is dirtier and uglier than a wood-fired generator.</description>
+		<label>cobbled pellet stove</label>
+		<description>A firebox welded together from scrap plate, burning compressed trashbricks to turn a salvaged generator. Refill it by hand, or build a hopper against any side and it will draw fuel from that. It heats the room while it runs, and the smoke slowly pollutes the ground around it.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
-			<!-- Reuses the vanilla wood-fired generator texture, darkened to trashbrick grey. -->
-			<texPath>Things/Building/Power/WoodFiredGenerator</texPath>
+			<texPath>Things/Building/Power/STB_CobbledPelletStove</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
-			<color>(120,120,130)</color>
 			<drawSize>(2,2)</drawSize>
 			<shadowData>
 				<volume>(1.93,1,1.69)</volume>
@@ -68,6 +66,10 @@
 			<li Class="CompProperties_Breakdownable"/>
 			<!-- Pulls fuel from any adjacent hopper (ours, vanilla, or VFE Factory's). -->
 			<li Class="TrashbrickBurning.CompProperties_HopperFeed"/>
+			<!-- Only while burning. Needs Biotech, which VRE already requires. -->
+			<li Class="TrashbrickBurning.CompProperties_BurnPollution">
+				<cellsPerDay>3</cellsPerDay>
+			</li>
 		</comps>
 		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
 		<designationCategory>Power</designationCategory>
@@ -80,6 +82,85 @@
 	</ThingDef>
 
 	<!--
+		Tier 2: sealed gasifier. It gets more power per brick than the cobbled stove (1800W on 15 a
+		day, against 1000W on 20), doesn't pollute, and leaks only a little heat. It costs
+		microelectronics and some plasteel.
+	-->
+	<ThingDef ParentName="BuildingBase">
+		<defName>STB_TrashbrickGasifier</defName>
+		<label>trashbrick gasifier</label>
+		<description>A sealed gasifier that bakes trashbricks into syngas and runs it through a catalytic filter before burning it in a small turbine. It gets far more power from each brick than a pellet stove, and the filters catch the fumes, so it doesn't pollute. The housing is insulated, so it leaks only a little heat. Refill it by hand, or build a hopper against any side and it will draw fuel from that.</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Power/STB_TrashbrickGasifier</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(2,2)</drawSize>
+			<shadowData>
+				<volume>(1.93,1,1.69)</volume>
+				<offset>(-0.03,0,-0.1)</offset>
+			</shadowData>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<pathCost>150</pathCost>
+		<blockWind>true</blockWind>
+		<fillPercent>1.0</fillPercent>
+		<castEdgeShadows>false</castEdgeShadows>
+		<rotatable>false</rotatable>
+		<size>(2,2)</size>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<MaxHitPoints>400</MaxHitPoints>
+			<WorkToBuild>5000</WorkToBuild>
+			<Flammability>0.5</Flammability>
+			<Beauty>-10</Beauty>
+		</statBases>
+		<costList>
+			<Steel>150</Steel>
+			<Plasteel>25</Plasteel>
+			<ComponentIndustrial>4</ComponentIndustrial>
+		</costList>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerPlant</compClass>
+				<basePowerConsumption>-1800</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+				<soundAmbientProducingPower>ChemfuelFiredGenerator_Ambience</soundAmbientProducingPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Refuelable">
+				<fuelConsumptionRate>15.0</fuelConsumptionRate>
+				<fuelCapacity>75.0</fuelCapacity>
+				<fuelLabel>Trashbricks</fuelLabel>
+				<fuelFilter>
+					<thingDefs>
+						<li>VRecyclingE_TrashBrick</li>
+					</thingDefs>
+				</fuelFilter>
+				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+			</li>
+			<li Class="CompProperties_Glower">
+				<glowRadius>3</glowRadius>
+				<glowColor>(70,200,190,0)</glowColor>
+			</li>
+			<li Class="CompProperties_HeatPusher">
+				<compClass>CompHeatPusherPowered</compClass>
+				<heatPerSecond>3</heatPerSecond>
+			</li>
+			<li Class="CompProperties_Breakdownable"/>
+			<li Class="TrashbrickBurning.CompProperties_HopperFeed"/>
+		</comps>
+		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+		<designationCategory>Power</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
+		<researchPrerequisites>
+			<li>MicroelectronicsBasics</li>
+			<li>VRecyclingE_ComplexRecycling</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+	<!--
 		A buffer for the stove: haulers or a conveyor fill it, and the stove next to it pulls fuel as
 		it burns. Any building with isHopper works as a feed; this one exists so you don't need
 		nutrient paste research or VFE Factory. Mods/VFEFactory hides it when VFE Factory is loaded.
@@ -87,13 +168,11 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_FuelHopper</defName>
 		<label>fuel hopper</label>
-		<description>A hopper for pellet stove fuel. Build it touching a trashbrick pellet stove and the stove pulls fuel from it as it burns. Haulers or a conveyor belt can fill it. It holds up to three stacks.</description>
+		<description>A hopper for trashbrick fuel. Build it touching a pellet stove or gasifier and the machine pulls fuel from it as it burns. Haulers or a conveyor belt can fill it. It holds up to three stacks.</description>
 		<thingClass>Building_Storage</thingClass>
 		<graphicData>
-			<!-- Vanilla hopper texture, darkened to trashbrick grey. -->
-			<texPath>Things/Building/Production/Hopper</texPath>
-			<graphicClass>Graphic_Multi</graphicClass>
-			<color>(120,120,130)</color>
+			<texPath>Things/Building/Power/STB_FuelHopper</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
 			<damageData>
 				<rect>(0.05,0.1,0.9,0.9)</rect>
 				<cornerTL>Damage/Corner</cornerTL>
@@ -107,7 +186,7 @@
 		<pathCost>42</pathCost>
 		<canOverlapZones>false</canOverlapZones>
 		<drawerType>MapMeshAndRealTime</drawerType>
-		<rotatable>true</rotatable>
+		<rotatable>false</rotatable>
 		<castEdgeShadows>true</castEdgeShadows>
 		<surfaceType>Item</surfaceType>
 		<constructEffect>ConstructMetal</constructEffect>

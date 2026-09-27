@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Patch>
 
-	<!-- Let the pellet stove burn sludge pellets as well as trashbricks. -->
+	<!-- Let both stoves burn sludge pellets as well as trashbricks. -->
 	<Operation Class="PatchOperationAdd">
-		<xpath>Defs/ThingDef[defName="STB_TrashbrickPelletStove"]/comps/li[@Class="CompProperties_Refuelable"]/fuelFilter/thingDefs</xpath>
+		<xpath>Defs/ThingDef[defName="STB_TrashbrickPelletStove" or defName="STB_TrashbrickGasifier"]/comps/li[@Class="CompProperties_Refuelable"]/fuelFilter/thingDefs</xpath>
 		<value>
 			<li>STB_SludgePellets</li>
 		</value>
 	</Operation>
 
 	<Operation Class="PatchOperationReplace">
-		<xpath>Defs/ThingDef[defName="STB_TrashbrickPelletStove"]/comps/li[@Class="CompProperties_Refuelable"]/fuelLabel</xpath>
+		<xpath>Defs/ThingDef[defName="STB_TrashbrickPelletStove" or defName="STB_TrashbrickGasifier"]/comps/li[@Class="CompProperties_Refuelable"]/fuelLabel</xpath>
 		<value>
 			<fuelLabel>Pellet fuel</fuelLabel>
 		</value>
