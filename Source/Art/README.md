@@ -56,12 +56,29 @@ Map z runs up and screen y runs down, so **north's front is the TOP of the textu
 is what the mending mod once shipped backwards. Swapping the east and west textures makes
 `verify_art.py` fail on both, which is how the check itself was tested.
 
+## The hot water pipe atlas
+
+`STB_HotWaterPipe_Atlas` is a `Graphic_Linked` atlas: 4x4 tiles of 128px, tile *i* for the link
+bits N=1, E=2, S=4, W=8, at column `i % 4` and row `3 - i // 4` from the top (the UV origin is
+bottom-left). That order was read off a working VE atlas (Vanilla Chemfuel Expanded's), not
+remembered. `verify_art.py` checks that tile 5 is the vertical straight, tile 10 the horizontal one
+and tile 0 an isolated stub, in both the pipe and its blueprint atlas. Flipping the atlas makes it
+fail.
+
+The pipe is styled after, not copied from, the Dubs pipes: lagged warm grey with steel straps
+every quarter tile, a thin hot-orange line down its crown as the network's one accent, and a round
+flange boss at every joint and dead end. The hidden pipe uses VEF's own hidden-conduit texture, as
+VE's hidden pipes do.
+
 ## Sizes
 
 | texture | size | why |
 | --- | --- | --- |
 | `STB_CobbledPelletStove_*`, `STB_TrashbrickGasifier_*` | 576x576 | 2x2 footprint drawn at `drawSize (3,3)`: half a cell of margin all round so raised parts aren't clipped, as VFE draws its machines a cell larger than they stand |
+| `STB_SteamTurbine_*` | 576x768 / 768x576 | 2x3 at `drawSize (3,4)`, axes swapped for east and west |
 | `STB_FuelHopper_*` | 288x288 | 1x1 at `drawSize (1.5,1.5)` |
+| `STB_HotWaterPipe_Atlas`, `_Blueprint_Atlas` | 512x512 | 4x4 linked atlas, 128px tiles |
+| `STB_HotWaterValve` | 288x288 | 1x1 at `drawSize (1.5,1.5)` |
 | `STB_SludgePellets/*_a,_b,_c` | 128x128 | `Graphic_StackCount`, small to large |
 | `About/Preview.png` | 640x360 | composited from the shipped textures |
 | `About/ModIcon.png` | 256x256 | the cobbled stove alone, which still reads at 32px |
@@ -69,19 +86,19 @@ is what the mending mod once shipped backwards. Swapping the east and west textu
 ## Measured against VFE Factory
 
 `measure.py` is the mending mod's, unchanged apart from where it finds VFE's textures. All nine
-metrics fall inside VFE's observed range for both machines:
+metrics fall inside VFE's observed range for every machine:
 
-| | cobbled stove | gasifier | VFE mean | VFE range |
-| --- | --- | --- | --- | --- |
-| contrast (std) | 0.120 | 0.153 | 0.151 | 0.11-0.23 |
-| p99 highlight | 179 | 192 | 166 | 133-255 |
-| median luminance | 89 | 99 | 93 | 48-116 |
-| near-black | 3.4% | 2.6% | 6.6% | 0-19.7% |
-| saturated pixels | 17.4% | 7.3% | 12.5% | 1.0-33.3% |
-| hard-edge density | 6.7 | 6.9 | 6.7 | 3.3-9.7 |
-| warm-hued | 16.7% | 0.0% | 8.8% | 0-33.3% |
-| cool-hued | 0.1% | 6.6% | 2.9% | 0-24.3% |
-| diagonal silhouette | 0.129 | 0.139 | 0.054 | 0-0.22 |
+| | cobbled stove | gasifier | turbine | VFE mean | VFE range |
+| --- | --- | --- | --- | --- | --- |
+| contrast (std) | 0.120 | 0.153 | 0.130 | 0.151 | 0.11-0.23 |
+| p99 highlight | 179 | 192 | 155 | 166 | 133-255 |
+| median luminance | 89 | 99 | 112 | 93 | 48-116 |
+| near-black | 3.4% | 2.6% | 2.0% | 6.6% | 0-19.7% |
+| saturated pixels | 17.4% | 7.3% | 5.3% | 12.5% | 1.0-33.3% |
+| hard-edge density | 6.7 | 6.9 | 6.2 | 6.7 | 3.3-9.7 |
+| warm-hued | 16.7% | 0.0% | 5.3% | 8.8% | 0-33.3% |
+| cool-hued | 0.1% | 6.6% | 0.0% | 2.9% | 0-24.3% |
+| diagonal silhouette | 0.129 | 0.139 | 0.102 | 0.054 | 0-0.22 |
 
 The cobbled stove runs warm (rust plates plus the fire) and the gasifier runs cool (its teal),
 which is the tier difference, and both are inside VFE's range.
@@ -91,8 +108,8 @@ which is the tier difference, and both are inside VFE's range.
 | script | does |
 | --- | --- |
 | `stb_draw.py` | primitives: `View` (per-rotation placement), `Canvas` (slab, cylinder, pipe, seams, glow, painter's order), supersampling and the silhouette |
-| `draw_sprites.py` | the layouts: cobbled stove, gasifier, fuel hopper, sludge pellets |
-| `verify_art.py` | textures vs defs (files, sizes) and vs the C# (intake edge, outline colour) |
+| `draw_sprites.py` | the layouts: cobbled stove, gasifier, steam turbine, fuel hopper, hot water pipe atlas and valve, sludge pellets |
+| `verify_art.py` | textures vs defs (files, sizes, blueprints, icons, atlas tile order) and vs the C# (intake edge, outline colour) |
 | `measure.py` | nine style metrics against VFE Factory's machine sprites |
 | `make_about_art.py` | the store preview and mod icon |
 | `contact_sheet.py` | every building view on one sheet |

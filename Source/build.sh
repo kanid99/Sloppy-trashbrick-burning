@@ -18,9 +18,19 @@ build() {
   mcs -target:library -optimize+ -nostdlib -noconfig \
     -r:"$r/mscorlib.dll" -r:"$r/System.dll" -r:"$r/System.Core.dll" $extra \
     -r:"$r/Assembly-CSharp.dll" -r:"$r/UnityEngine.CoreModule.dll" \
+    -r:"$VEF_DIR/$game/Assemblies/PipeSystem.dll" \
     -out:"$game/Assemblies/TrashbrickBurning.dll" Source/TrashbrickBurning/*.cs
   echo "built $game"
 }
+
+# Vanilla Expanded Framework's PipeSystem, for the pressurised hot water network. VEF is always
+# present at runtime: Vanilla Recycling Expanded, a hard dependency, requires it.
+VEF_DIR="$REF_DIR/vef"
+if [ ! -f "$VEF_DIR/1.6/Assemblies/PipeSystem.dll" ]; then
+  rm -rf "$VEF_DIR"
+  git clone -q --depth 1 --filter=blob:none --sparse https://github.com/Vanilla-Expanded/VanillaExpandedFramework.git "$VEF_DIR"
+  git -C "$VEF_DIR" sparse-checkout set 1.5/Assemblies 1.6/Assemblies
+fi
 
 build 1.5 1.5.4409
 build 1.6 1.6.4871 "-r:$REF_DIR/1.6.4871/ref/net472/netstandard.dll"

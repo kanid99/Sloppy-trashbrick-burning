@@ -63,6 +63,17 @@
 			<li Class="CompProperties_Breakdownable"/>
 			<!-- Pulls fuel from any adjacent hopper (ours, vanilla, or VFE Factory's). -->
 			<li Class="TrashbrickBurning.CompProperties_HopperFeed"/>
+			<!-- The engine's mode. Turbine feed sends 1400W worth of heat to a steam turbine. The
+			     water-cooled and heat recovery factors only apply with Dubs Bad Hygiene. -->
+			<li Class="TrashbrickBurning.CompProperties_StirlingEngine">
+				<turbineFeedWatts>1400</turbineFeedWatts>
+				<cooledPowerFactor>1.2</cooledPowerFactor>
+				<heatRecoveryPowerFactor>0.5</heatRecoveryPowerFactor>
+			</li>
+			<!-- Joins the pressurised hot water network when a pipe runs under it. -->
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
 			<!-- Only while burning. Needs Biotech, which VRE already requires. -->
 			<li Class="TrashbrickBurning.CompProperties_BurnPollution">
 				<cellsPerDay>3</cellsPerDay>
@@ -147,6 +158,17 @@
 			</li>
 			<li Class="CompProperties_Breakdownable"/>
 			<li Class="TrashbrickBurning.CompProperties_HopperFeed"/>
+			<!-- The engine's mode. Turbine feed sends 1700W worth of heat to a steam turbine. The
+			     water-cooled and heat recovery factors only apply with Dubs Bad Hygiene. -->
+			<li Class="TrashbrickBurning.CompProperties_StirlingEngine">
+				<turbineFeedWatts>1700</turbineFeedWatts>
+				<cooledPowerFactor>1.2</cooledPowerFactor>
+				<heatRecoveryPowerFactor>0.6</heatRecoveryPowerFactor>
+			</li>
+			<!-- Joins the pressurised hot water network when a pipe runs under it. -->
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
 		</comps>
 		<placeWorkers>
 			<li>TrashbrickBurning.PlaceWorker_ShowIntake</li>

@@ -6,6 +6,12 @@
 	<STB_Mode_Power>Engine: power</STB_Mode_Power>
 	<STB_Mode_WaterCooled>Engine: water-cooled</STB_Mode_WaterCooled>
 	<STB_Mode_HeatRecovery>Engine: heat recovery</STB_Mode_HeatRecovery>
-	<STB_ModeDesc>What the Stirling engine's cold side does. Click to cycle.\n\nPower: normal output, no plumbing needed.\nWater-cooled: draws water from the plumbing to run its cold side cooler, for {0} output while water is flowing.\nHeat recovery: sends waste heat into the plumbing as a boiler, for hot water and central heating, at {1} output.</STB_ModeDesc>
+	<STB_Mode_TurbineFeed>Engine: turbine feed</STB_Mode_TurbineFeed>
+	<STB_ModeDesc>What the Stirling engine does with its heat. Click to cycle.\n\nPower: makes its own power.\nTurbine feed: sends its heat down a pressurised hot water pipe to a steam turbine instead, worth {0}W there. It makes no power itself.</STB_ModeDesc>
+	<STB_ModeDescDBH>Water-cooled: draws water from the plumbing to run its cold side cooler, for {0} output while water is flowing.\nHeat recovery: sends its heat into the plumbing as a boiler, for hot water and central heating, at {1} output.</STB_ModeDescDBH>
+	<STB_NoTurbine>no turbine connected</STB_NoTurbine>
+	<STB_TurbineLoad>Heat supplied: {0}W of {1}W capacity</STB_TurbineLoad>
+	<STB_ValveLabel>Toggle valve</STB_ValveLabel>
+	<STB_ValveDesc>Open or close this pressurised hot water line.</STB_ValveDesc>
 	<STB_NoWater>no water</STB_NoWater>
 </LanguageData>

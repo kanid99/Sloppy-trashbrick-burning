@@ -29,6 +29,7 @@ RUST = (126, 98, 82)           # desaturated: rust as a tone, not a colour
 OLIVE = (112, 116, 102)
 FIRE_HOT, FIRE_DEEP = (255, 200, 110), (214, 92, 36)
 TEAL = (92, 156, 150)          # subdued, as in the mending repair centre
+HOT = (190, 98, 68)            # pressurised hot water: the pipe network's one accent
 INTAKE_Z, INTAKE_H = 0.07, 0.12  # the port stands on the skid; verify_art.py allows for its lift
 
 
@@ -292,6 +293,182 @@ def fuel_hopper(rot):
     c.save(f"{OUT}/Things/Building/Power/STB_FuelHopper_{rot}.png")
 
 
+# ------------------------------------------------------------------ steam turbine
+def steam_turbine(rot):
+    """2x3. A finned turbine casing lying along the machine, a generator block behind it and a stop
+    valve on the steam chest. Hot-water orange marks only where the pipe network comes in."""
+    v = View(rot, 2, 3, MARGIN_2X2)
+    c = Canvas(v)
+    body = (128, 130, 132)
+    skid(c, shade(body, 0.62), chamfer=0.24)
+
+    # Turbine casing: a drum lying along f, fins across it - the repeated mark.
+    def casing_top(box, lift):
+        x0, y0, x1, y1 = box
+        fins = 9
+        for k in range(1, fins):
+            if v.along_a():
+                y = y0 + (y1 - y0) * k / fins
+                c.seam((x0 + c.px(0.05), y), (x1 - c.px(0.05), y), width=4 / 192, tone=shade(body, 0.74))
+            else:
+                x = x0 + (x1 - x0) * k / fins
+                c.seam((x, y0 + c.px(0.05)), (x, y1 - c.px(0.05)), width=4 / 192, tone=shade(body, 0.74))
+    c.slab(0.32, 0.3, 1.68, 1.86, 0.07, 0.36, shade(body, 1.08), top_fn=casing_top, radius=0.3)
+
+    # Coupling and generator block, with a vent rack.
+    c.slab(0.82, 1.86, 1.18, 2.02, 0.16, 0.16, shade(body, 0.85), radius=0.03)
+    def gen_top(box, lift):
+        x0, y0, x1, y1 = box
+        n = 6
+        for k in range(n):
+            if v.along_a():
+                x = x0 + (x1 - x0) * (0.2 + 0.6 * k / (n - 1))
+                c.seam((x, y0 + (y1 - y0) * 0.25), (x, y1 - (y1 - y0) * 0.25), width=5 / 192, tone=shade(body, 0.72))
+            else:
+                y = y0 + (y1 - y0) * (0.2 + 0.6 * k / (n - 1))
+                c.seam((x0 + (x1 - x0) * 0.25, y), (x1 - (x1 - x0) * 0.25, y), width=5 / 192, tone=shade(body, 0.72))
+    c.slab(0.36, 2.02, 1.64, 2.8, 0.07, 0.34, body, top_fn=gen_top, radius=0.08, chamfer=0.08)
+
+    # Steam chest and stop valve on the casing: the round form, with the hot accent.
+    def valve_cap(X, Y, R):
+        w = max(2, c.px(6 / 192))
+        r = int(R * 0.72)
+        c.d.ellipse([X - r, Y - r - R // 12, X + r, Y + r - R // 12], outline=HOT + (255,), width=w)
+        c.d.line([(X - r, Y - R // 12), (X + r, Y - R // 12)], fill=HOT + (255,), width=w)
+        c.d.line([(X, Y - r - R // 12), (X, Y + r - R // 12)], fill=HOT + (255,), width=w)
+        rr = int(R * 0.18)
+        c.d.ellipse([X - rr, Y - rr - R // 12, X + rr, Y + rr - R // 12], fill=shade(body, 1.2) + (255,))
+    c.cylinder(1.0, 0.72, 0.26, 0.43, 0.12, shade(body, 1.02), rings=1, cap_fn=valve_cap)
+
+    # Inlet flange stubs on the skid where the network joins, and a condensate line down one side.
+    c.pipe(0.12, 0.24, 0.12, 2.8, 0.07, 0.09, shade(HOT, 0.9))
+    c.pipe(1.88, 0.24, 1.88, 1.9, 0.07, 0.07, (150, 156, 164))
+    c.flush()
+    c.save(f"{OUT}/Things/Building/Power/STB_SteamTurbine_{rot}.png")
+
+
+# ------------------------------------------------------------------ hot water pipe
+PIPE_TILE = 128
+
+
+def _pipe_tile(links, blueprint=False):
+    """One 128px tile of the linked atlas. links = (north, east, south, west). Drawn at SS and
+    reduced, tone only inside, the silhouette ring outside, like everything else here."""
+    T = PIPE_TILE * SS
+    img = Image.new("RGBA", (T, T), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    w = int(T * 0.26)          # lagged pipe: a little thicker than a chemfuel line
+    cx = cy = T // 2
+    n, e, s_, wst = links
+    lag = (104, 100, 96)       # lagging, a warm grey
+    band = (150, 146, 140)     # steel strapping round the lagging
+
+    def run(horiz, a, b):
+        """A straight run from a to b along one axis, through the tile centre."""
+        if blueprint:
+            box = [a, cy - w // 2, b, cy + w // 2] if horiz else [cx - w // 2, a, cx + w // 2, b]
+            d.rectangle(box, fill=(150, 200, 240, 150))
+            return
+        L = abs(b - a)
+        g = Image.new("RGBA", (L, w) if horiz else (w, L))
+        gd = ImageDraw.Draw(g)
+        for k in range(w):
+            t = abs(k / (w - 1) - 0.35) / 0.65          # lit from above / the left
+            col = shade(lag, 1.22 - 0.5 * t) + (255,)
+            if horiz:
+                gd.line([(0, k), (L, k)], fill=col)
+            else:
+                gd.line([(k, 0), (k, L)], fill=col)
+        # The hot line: a thin orange stripe down the pipe's crown, the network's one accent.
+        stripe = max(2, w // 7)
+        off = int(w * 0.3)
+        if horiz:
+            gd.rectangle([0, off, L, off + stripe], fill=HOT + (255,))
+        else:
+            gd.rectangle([off, 0, off + stripe, L], fill=HOT + (255,))
+        # Straps every quarter tile, a tone step lighter - greebles, not outlines.
+        step = T // 4
+        for p in range(step // 2, L, step):
+            sw = max(2, T // 40)
+            if horiz:
+                gd.rectangle([p, 0, p + sw, w], fill=band + (255,))
+            else:
+                gd.rectangle([0, p, w, p + sw], fill=band + (255,))
+        img.paste(g, (a, cy - w // 2) if horiz else (cx - w // 2, a))
+
+    count = sum(links)
+    if count == 0:
+        run(True, int(T * 0.2), int(T * 0.8))
+    if n:
+        run(False, 0, cy + w // 2 if count > 1 else cy)
+    if s_:
+        run(False, cy - w // 2 if count > 1 else cy, T)
+    if e:
+        run(True, cx - w // 2 if count > 1 else cx, T)
+    if wst:
+        run(True, 0, cx + w // 2 if count > 1 else cx)
+    # Joints and dead ends get a flange boss: a round form, a tone lighter.
+    straight = count == 2 and ((n and s_) or (e and wst))
+    if not straight:
+        R = int(w * 0.72)
+        if blueprint:
+            d.ellipse([cx - R, cy - R, cx + R, cy + R], fill=(150, 200, 240, 150))
+        else:
+            d.ellipse([cx - R, cy - R + R // 6, cx + R, cy + R + R // 6], fill=shade(band, 0.7) + (255,))
+            d.ellipse([cx - R, cy - R, cx + R, cy + R], fill=band + (255,))
+            r2 = int(R * 0.62)
+            d.ellipse([cx - r2, cy - r2 - R // 10, cx + r2, cy + r2 - R // 10], fill=shade(band, 1.12) + (255,))
+    if not blueprint:
+        from stb_draw import SILHOUETTE
+        from PIL import ImageFilter
+        a = img.split()[3].point(lambda v: 255 if v > 150 else 0)
+        ring = a.filter(ImageFilter.MaxFilter(2 * 2 * SS // 2 + 1))
+        base = Image.new("RGBA", img.size, SILHOUETTE + (255,))
+        base.putalpha(ring)
+        base.alpha_composite(img)
+        img = base
+    return img.resize((PIPE_TILE, PIPE_TILE), Image.LANCZOS)
+
+
+def hot_water_pipe():
+    """Graphic_Linked atlas: 4x4 tiles, tile i for link bits N=1 E=2 S=4 W=8, placed at column
+    i % 4 and row 3 - i // 4 from the top (the UV origin is bottom-left). Read off a working VE
+    atlas rather than remembered; verify_art.py checks the straights land in the right tiles."""
+    import os
+    for name, bp in (("STB_HotWaterPipe_Atlas", False), ("STB_HotWaterPipe_Blueprint_Atlas", True)):
+        atlas = Image.new("RGBA", (PIPE_TILE * 4, PIPE_TILE * 4), (0, 0, 0, 0))
+        for i in range(16):
+            links = (bool(i & 1), bool(i & 2), bool(i & 4), bool(i & 8))
+            atlas.alpha_composite(_pipe_tile(links, bp), ((i % 4) * PIPE_TILE, (3 - i // 4) * PIPE_TILE))
+        path = f"{OUT}/Things/Building/Linked/{name}.png"
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        atlas.save(path)
+        print("wrote", path, atlas.size)
+    icon = _pipe_tile((False, True, False, True))
+    icon.save(f"{OUT}/Things/Building/Linked/STB_HotWaterPipe_MenuIcon.png")
+    print("wrote", f"{OUT}/Things/Building/Linked/STB_HotWaterPipe_MenuIcon.png")
+
+
+def hot_water_valve():
+    """1x1 at drawSize 1.5: a flange block across the line with a handwheel on top."""
+    v = View("south", 1, 1, MARGIN_1X1)
+    c = Canvas(v)
+    c.pipe(0.0, 0.5, 1.0, 0.5, 0.0, 0.2, (104, 100, 96))
+    c.slab(0.26, 0.28, 0.74, 0.72, 0.0, 0.2, (140, 136, 130), radius=0.04, chamfer=0.06)
+    def wheel(X, Y, R):
+        w = max(2, c.px(7 / 192))
+        r = int(R * 1.0)
+        c.d.ellipse([X - r, Y - r, X + r, Y + r], outline=HOT + (255,), width=w)
+        for ang in (0, 60, 120):
+            dx, dy = math.cos(math.radians(ang)) * r, math.sin(math.radians(ang)) * r
+            c.d.line([(X - dx, Y - dy), (X + dx, Y + dy)], fill=HOT + (255,), width=max(2, w * 2 // 3))
+        rr = int(R * 0.25)
+        c.d.ellipse([X - rr, Y - rr, X + rr, Y + rr], fill=(170, 166, 160, 255))
+    c.cylinder(0.5, 0.5, 0.2, 0.2, 0.12, (120, 116, 110), cap_fn=wheel)
+    c.flush()
+    c.save(f"{OUT}/Things/Building/Linked/STB_HotWaterValve.png")
+
+
 # ------------------------------------------------------------------ sludge pellets
 def pellets():
     """Graphic_StackCount: three piles, small to large. Items are 128px, one cell."""
@@ -336,4 +513,7 @@ if __name__ == "__main__":
         cobbled_stove(r)
         gasifier(r)
         fuel_hopper(r)
+        steam_turbine(r)
+    hot_water_pipe()
+    hot_water_valve()
     pellets()

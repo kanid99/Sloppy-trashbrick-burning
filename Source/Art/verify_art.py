@@ -23,6 +23,9 @@ sys.path.insert(0, "Source/Art")
 from draw_sprites import INTAKE_GREEN, INTAKE_H, INTAKE_Z  # noqa: E402
 from stb_draw import CELL, LIFT  # noqa: E402
 
+# Textures another mod ships. VEF provides the hidden-conduit texture VE's hidden pipes all use.
+EXTERNAL = {"UI/CSG/IConduit"}
+
 FACING = {"north": (0, 1), "east": (1, 0), "south": (0, -1), "west": (-1, 0)}
 fails = []
 
@@ -36,13 +39,25 @@ def vec(s):
     return tuple(float(x) for x in s.strip("() ").split(","))
 
 
-defs = {}
+defs, named = {}, {}
 for path in glob.glob("Defs/**/*.xml", recursive=True) + glob.glob("Mods/*/Defs/**/*.xml", recursive=True):
     for td in ET.parse(path).getroot().iter("ThingDef"):
+        if td.get("Name"):
+            named[td.get("Name")] = td
         gd = td.find("graphicData")
         if gd is None or td.findtext("defName") is None:
             continue
         defs[td.findtext("defName")] = td
+
+
+def lookup(td, path):
+    """findtext that follows ParentName through this mod's own abstract defs."""
+    while td is not None:
+        v = td.findtext(path)
+        if v:
+            return v
+        td = named.get(td.get("ParentName"))
+    return None
 
 # 1. files and sizes
 for name, td in defs.items():
@@ -65,11 +80,18 @@ for name, td in defs.items():
     elif cls == "Graphic_StackCount":
         if not glob.glob(f"{base}/*.png"):
             fail(f"{name}: no textures in {base}/")
-    else:
+    elif tex not in EXTERNAL:
         try:
             Image.open(f"{base}.png")
         except FileNotFoundError:
             fail(f"{name}: missing {base}.png")
+    # Blueprint atlases and menu icons.
+    for extra in (lookup(td, "building/blueprintGraphicData/texPath"), lookup(td, "uiIconPath")):
+        if extra and extra not in EXTERNAL:
+            try:
+                Image.open(f"Textures/{extra}.png")
+            except FileNotFoundError:
+                fail(f"{name}: missing Textures/{extra}.png")
     print(f"ok   {name}: {cls} textures present" if not any(name in f for f in fails) else "", end="")
     print()
 
@@ -107,6 +129,30 @@ for name, td in defs.items():
         msg = f"{name} {rot}: intake at ({cx:.2f},{cy:.2f}) cells, facing edge mid ({ex:.2f},{ey:.2f}), " \
               f"off-centre {along:.2f}, in from edge {across:.2f}, on far side {len(opposite)}px"
         print(("ok   " if ok else "") + msg) if ok else fail(msg)
+
+# 2b. linked atlases: tile i (links N=1 E=2 S=4 W=8) at column i % 4, row 3 - i // 4. Tile 5 is
+# the vertical straight and tile 10 the horizontal one, so each must be solid through its middle
+# along its own axis and clear at the ends of the other.
+for name, td in defs.items():
+    gd = td.find("graphicData")
+    if gd.findtext("linkType") is None or gd.findtext("texPath") in EXTERNAL:
+        continue
+    for tex in (gd.findtext("texPath"), lookup(td, "building/blueprintGraphicData/texPath")):
+        if not tex:
+            continue
+        im = Image.open(f"Textures/{tex}.png").convert("RGBA")
+        t = im.width // 4
+
+        def alpha(i, fx, fy):
+            col, row = i % 4, 3 - i // 4
+            return im.getpixel((int(col * t + fx * t), int(row * t + fy * t)))[3]
+        vertical = alpha(5, 0.5, 0.02) > 100 and alpha(5, 0.5, 0.98) > 100 and alpha(5, 0.02, 0.5) < 50
+        horizontal = alpha(10, 0.02, 0.5) > 100 and alpha(10, 0.98, 0.5) > 100 and alpha(10, 0.5, 0.02) < 50
+        empty_ok = alpha(0, 0.5, 0.02) < 50 and alpha(0, 0.02, 0.5) < 50
+        if vertical and horizontal and empty_ok:
+            print(f"ok   {name}: {tex} atlas tiles in link order")
+        else:
+            fail(f"{name}: {tex} tiles out of order (v={vertical} h={horizontal} isolated-clear={empty_ok})")
 
 # 3. the C# outline colour matches the art
 cs = open("Source/TrashbrickBurning/CompHopperFeed.cs").read()

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+	<!--
+		Pressurised hot water: stoves switched to "turbine feed" send their heat down this network
+		to a steam turbine, which turns it into power more efficiently than each stove's own Stirling
+		engine. The network, pipes, overlay and valve are Vanilla Expanded Framework's PipeSystem
+		(always present: Vanilla Recycling Expanded requires it). CompSteamTurbine does the sums.
+	-->
+	<PipeSystem.PipeNetDef>
+		<defName>STB_HotWaterNet</defName>
+		<resource>
+			<name>Pressurised hot water</name>
+			<unit>kW</unit>
+			<color>(0.80, 0.36, 0.22)</color>
+			<onlyShowStored>True</onlyShowStored>
+		</resource>
+		<pipeDefs>
+			<li>STB_HotWaterPipe</li>
+			<li>STB_HotWaterPipeHidden</li>
+		</pipeDefs>
+		<overlayOptions>
+			<overlayColor>(0.80, 0.36, 0.22)</overlayColor>
+		</overlayOptions>
+		<noStorageAlert>true</noStorageAlert>
+	</PipeSystem.PipeNetDef>
+
+	<ThingDef Name="STB_HotWaterPipeBase" ParentName="BuildingBase" Abstract="True">
+		<thingClass>PipeSystem.Building_Pipe</thingClass>
+		<category>Building</category>
+		<tickerType>Rare</tickerType>
+		<building>
+			<ai_chillDestination>false</ai_chillDestination>
+			<isInert>true</isInert>
+			<isEdifice>false</isEdifice>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Linked/STB_HotWaterPipe_Blueprint_Atlas</texPath>
+			</blueprintGraphicData>
+			<canConstructInCorner>true</canConstructInCorner>
+		</building>
+		<drawerType>MapMeshOnly</drawerType>
+		<altitudeLayer>Conduits</altitudeLayer>
+		<passability>Standable</passability>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<drawStyleCategory>Conduits</drawStyleCategory>
+		<comps>
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+		</comps>
+		<placeWorkers>
+			<li>PipeSystem.PlaceWorker_Pipe</li>
+		</placeWorkers>
+		<rotatable>false</rotatable>
+		<selectable>true</selectable>
+		<neverMultiSelect>true</neverMultiSelect>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<designationCategory>Power</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<clearBuildingArea>false</clearBuildingArea>
+		<researchPrerequisites>
+			<li>MicroelectronicsBasics</li>
+			<li>VRecyclingE_ComplexRecycling</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+	<ThingDef ParentName="STB_HotWaterPipeBase">
+		<defName>STB_HotWaterPipe</defName>
+		<label>pressurised hot water pipe</label>
+		<description>Lagged, pressure-rated pipe that carries superheated water from trashbrick stoves in turbine feed mode to a steam turbine. Can be placed under walls and other buildings.</description>
+		<graphicData>
+			<texPath>Things/Building/Linked/STB_HotWaterPipe_Atlas</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<linkType>Basic</linkType>
+			<linkFlags>
+				<li>Custom7</li>
+			</linkFlags>
+			<damageData>
+				<rect>(0,0.35,1,0.3)</rect>
+			</damageData>
+		</graphicData>
+		<uiIconPath>Things/Building/Linked/STB_HotWaterPipe_MenuIcon</uiIconPath>
+		<uiIconScale>0.7</uiIconScale>
+		<statBases>
+			<MaxHitPoints>60</MaxHitPoints>
+			<WorkToBuild>60</WorkToBuild>
+			<Flammability>0</Flammability>
+		</statBases>
+		<costList>
+			<Steel>3</Steel>
+		</costList>
+	</ThingDef>
+
+	<ThingDef ParentName="STB_HotWaterPipeBase">
+		<defName>STB_HotWaterPipeHidden</defName>
+		<label>hidden pressurised hot water pipe</label>
+		<description>Pressurised hot water pipe buried out of sight. Can be placed under walls and other buildings.</description>
+		<graphicData>
+			<!-- Vanilla Expanded Framework's own hidden-conduit texture, as VE's hidden pipes use. -->
+			<texPath>UI/CSG/IConduit</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<linkType>Basic</linkType>
+			<linkFlags>
+				<li>Custom7</li>
+			</linkFlags>
+			<damageData>
+				<rect>(0,0.35,1,0.3)</rect>
+			</damageData>
+		</graphicData>
+		<uiIconPath>Things/Building/Linked/STB_HotWaterPipe_MenuIcon</uiIconPath>
+		<uiIconScale>0.7</uiIconScale>
+		<statBases>
+			<MaxHitPoints>60</MaxHitPoints>
+			<WorkToBuild>280</WorkToBuild>
+			<Flammability>0</Flammability>
+		</statBases>
+		<costList>
+			<Steel>5</Steel>
+		</costList>
+	</ThingDef>
+
+	<ThingDef ParentName="BuildingBase">
+		<defName>STB_HotWaterValve</defName>
+		<label>pressurised hot water valve</label>
+		<description>Opens or closes a pressurised hot water line, to split stoves between turbines or cut a turbine off.</description>
+		<thingClass>PipeSystem.Building_PipeValve</thingClass>
+		<category>Building</category>
+		<graphicData>
+			<texPath>Things/Building/Linked/STB_HotWaterValve</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(1.5,1.5)</drawSize>
+			<damageData>
+				<rect>(0.2,0.2,0.6,0.6)</rect>
+			</damageData>
+		</graphicData>
+		<building>
+			<ai_chillDestination>false</ai_chillDestination>
+			<allowWireConnection>false</allowWireConnection>
+		</building>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Standable</passability>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<statBases>
+			<MaxHitPoints>120</MaxHitPoints>
+			<WorkToBuild>200</WorkToBuild>
+			<Flammability>0</Flammability>
+			<Beauty>-2</Beauty>
+		</statBases>
+		<costList>
+			<Steel>15</Steel>
+			<ComponentIndustrial>1</ComponentIndustrial>
+		</costList>
+		<comps>
+			<li Class="PipeSystem.CompProperties_PipeValve">
+				<pipeNet>STB_HotWaterNet</pipeNet>
+				<alwaysLinkToPipes>true</alwaysLinkToPipes>
+			</li>
+			<li Class="CompProperties_Flickable">
+				<commandTexture>Things/Building/Linked/STB_HotWaterValve</commandTexture>
+				<commandLabelKey>STB_ValveLabel</commandLabelKey>
+				<commandDescKey>STB_ValveDesc</commandDescKey>
+			</li>
+		</comps>
+		<rotatable>false</rotatable>
+		<selectable>true</selectable>
+		<tickerType>Normal</tickerType>
+		<designationCategory>Power</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<researchPrerequisites>
+			<li>MicroelectronicsBasics</li>
+			<li>VRecyclingE_ComplexRecycling</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+	<!--
+		The turbine. Up to 5000W, shared by capacity between all turbines on one network. A cobbled
+		stove feeding it gives 1400W (1000W on its own), a gasifier 1700W (1200W on its own): about
+		40% more for the price of the turbine and the pipework. No intake - the network connects
+		wherever a pipe runs under it.
+	-->
+	<ThingDef ParentName="BuildingBase">
+		<defName>STB_SteamTurbine</defName>
+		<label>trashbrick steam turbine</label>
+		<description>A compact steam turbine and generator, driven by pressurised hot water piped from trashbrick stoves in turbine feed mode. One turbine converts that heat to power more efficiently than each stove's own Stirling engine, up to 5000W, and can be fed by several stoves. Connect it by running a pressurised hot water pipe under it.</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Power/STB_SteamTurbine</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<!-- Drawn a margin larger than its 2x3 footprint so raised parts aren't clipped. -->
+			<drawSize>(3,4)</drawSize>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<pathCost>150</pathCost>
+		<blockWind>true</blockWind>
+		<fillPercent>1.0</fillPercent>
+		<castEdgeShadows>false</castEdgeShadows>
+		<rotatable>true</rotatable>
+		<size>(2,3)</size>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<MaxHitPoints>400</MaxHitPoints>
+			<WorkToBuild>6000</WorkToBuild>
+			<Flammability>0.3</Flammability>
+			<Beauty>-15</Beauty>
+		</statBases>
+		<costList>
+			<Steel>250</Steel>
+			<Plasteel>20</Plasteel>
+			<ComponentIndustrial>6</ComponentIndustrial>
+		</costList>
+		<comps>
+			<li Class="TrashbrickBurning.CompProperties_SteamTurbine">
+				<basePowerConsumption>0</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+				<capacityWatts>5000</capacityWatts>
+				<soundAmbientProducingPower>ChemfuelFiredGenerator_Ambience</soundAmbientProducingPower>
+			</li>
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Breakdownable"/>
+			<li Class="CompProperties_HeatPusher">
+				<compClass>CompHeatPusherPowered</compClass>
+				<heatPerSecond>2</heatPerSecond>
+			</li>
+		</comps>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<designationCategory>Power</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
+		<researchPrerequisites>
+			<li>MicroelectronicsBasics</li>
+			<li>VRecyclingE_ComplexRecycling</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+</Defs>

@@ -9,7 +9,7 @@
 	</supportedVersions>
 	<description>Burn the trashbricks from Vanilla Recycling Expanded for power.
 
-Adds two Stirling-engine generators that burn trashbricks: a cobbled pellet stove (1000W, 20 bricks a day, a little pollution) and a trashbrick gasifier (1200W on 12 a day, clean). Feed them by hand or from a hopper on their intake.
+Adds two Stirling-engine generators that burn trashbricks: a cobbled pellet stove (1000W, 20 bricks a day, a little pollution) and a trashbrick gasifier (1200W on 12 a day, clean). Feed them by hand or from a hopper on their intake. Switch them to turbine feed and pipe their heat to a steam turbine for about 40% more power.
 
 With Dubs Bad Hygiene: fecal sludge pellets as a second fuel, and a plumbing connection - water-cool the engine for more power, or run it as a boiler for hot water and central heating at reduced power.
 With Vanilla Furniture Expanded - Factory: belt-fed through factory hoppers.
@@ -17,12 +17,18 @@ With Vanilla Furniture Expanded - Factory: belt-fed through factory hoppers.
 Needs Vanilla Recycling Expanded, and is researched after complex recycling.</description>
 	<modDependencies>
 		<li>
+			<packageId>OskarPotocki.VanillaFactionsExpanded.Core</packageId>
+			<displayName>Vanilla Expanded Framework</displayName>
+			<steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=2023507013</steamWorkshopUrl>
+		</li>
+		<li>
 			<packageId>VanillaExpanded.Recycling</packageId>
 			<displayName>Vanilla Recycling Expanded</displayName>
 			<steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=3155781848</steamWorkshopUrl>
 		</li>
 	</modDependencies>
 	<loadAfter>
+		<li>OskarPotocki.VanillaFactionsExpanded.Core</li>
 		<li>VanillaExpanded.Recycling</li>
 		<li>Dubwise.DubsBadHygiene</li>
 		<li>VanillaExpanded.VFEFactory</li>
