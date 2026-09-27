@@ -374,6 +374,62 @@
 		<designationCategory>Temperature</designationCategory>
 		<constructEffect>ConstructMetal</constructEffect>
 		<researchPrerequisites>
+			<li>MicroelectronicsBasics</li>
+			<li>VRecyclingE_ComplexRecycling</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+	<!--
+		The cobbled radiator: the low-tech one. A serpentine of salvaged pipe on timber chocks.
+		Cheaper, at Electricity, but only 150W, and it springs leaks about three times as often.
+	-->
+	<ThingDef ParentName="BuildingBase">
+		<defName>STB_CobbledRadiator</defName>
+		<label>cobbled radiator</label>
+		<description>A radiator knocked together from three lengths of salvaged pipe, lashed with wire and propped on timber. It heats its room with pressurised hot water from trashbrick burners, up to the temperature you set - just not much, and its joints weep steam more often than a proper radiator's. Radiators only get heat the steam turbines on their network leave over. Connect it by running a pressurised hot water pipe under it.</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Power/STB_CobbledRadiator</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(1.5,1.5)</drawSize>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<pathCost>42</pathCost>
+		<fillPercent>0.4</fillPercent>
+		<rotatable>false</rotatable>
+		<size>(1,1)</size>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<MaxHitPoints>70</MaxHitPoints>
+			<WorkToBuild>400</WorkToBuild>
+			<Flammability>0.3</Flammability>
+			<Beauty>-8</Beauty>
+		</statBases>
+		<costList>
+			<Steel>20</Steel>
+			<WoodLog>10</WoodLog>
+		</costList>
+		<comps>
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+			<li Class="TrashbrickBurning.CompProperties_HotWaterRadiator">
+				<maxWatts>150</maxWatts>
+			</li>
+			<li Class="CompProperties_TempControl">
+				<energyPerSecond>0</energyPerSecond>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<!-- Weeps steam about three times as often as a cast radiator. -->
+			<li Class="TrashbrickBurning.CompProperties_SteamLeak">
+				<mtbDaysPerNetwork>7</mtbDaysPerNetwork>
+			</li>
+		</comps>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<designationCategory>Temperature</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<researchPrerequisites>
 			<li>Electricity</li>
 			<li>VRecyclingE_ComplexRecycling</li>
 		</researchPrerequisites>

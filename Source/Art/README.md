@@ -148,6 +148,7 @@ VE's hidden pipes do.
 | `STB_HotWaterPipe_Atlas`, `_Blueprint_Atlas` | 512x512 | 4x4 linked atlas, 128px tiles |
 | `STB_HotWaterValve` | 288x288 | 1x1 at `drawSize (1.5,1.5)` |
 | `STB_HotWaterRadiator` | 288x288 | 1x1 at `drawSize (1.5,1.5)`: a row of identical cast columns |
+| `STB_CobbledRadiator` | 288x288 | 1x1 at `drawSize (1.5,1.5)`: a serpentine of three salvaged pipes, straight runs joined by elbow blocks, on timber |
 | `STB_HeatAccumulator` | 576x576 | 2x2 at `drawSize (3,3)`: a lagged tank with a bolted manway |
 | `STB_FireGlow` | 128x128 | the firebox flicker's soft blob, drawn by CompMachineEffects with the MoteGlow shader |
 | `STB_Ash/*`, `STB_AshcreteBlocks/*` | 128x128 | `Graphic_StackCount`, small to large |

@@ -794,6 +794,35 @@ def hot_water_radiator():
     c.save(f"{OUT}/Things/Building/Power/STB_HotWaterRadiator.png")
 
 
+def cobbled_radiator():
+    """1x1 at drawSize 1.5, the low-tech radiator. A serpentine of salvaged pipe - three straight
+    runs of three different scraps, joined by crude elbow blocks at alternate ends (the runs stay
+    straight; the bends are blocks) - lashed with wire, one joint taped, sitting on timber chocks
+    over a rust-stained plate. The hot-water inlet is still the only orange."""
+    v = View("south", 1, 1, MARGIN_1X1)
+    c = Canvas(v)
+    rnd = random.Random(31)
+    c.slab(0.12, 0.14, 0.88, 0.86, 0.0, 0.02, shade(RUST, 0.62), shadow=False, radius=0.02)
+    chock(c, 0.14, 0.2, 0.86, 0.28)
+    chock(c, 0.14, 0.72, 0.86, 0.8)
+    runs = [(0.32, (104, 116, 120)), (0.5, shade(RUST, 1.05)), (0.68, shade(STEEL, 0.95))]
+    for a, col in runs:
+        c.pipe(a, 0.2, a, 0.8, 0.16, 0.13, col)
+    # Elbow blocks at alternate ends: the serpentine's bends.
+    c.slab(0.26, 0.74, 0.56, 0.86, 0.16, 0.12, shade(STEEL, 0.8), radius=0.02)
+    c.slab(0.44, 0.14, 0.74, 0.26, 0.16, 0.12, shade(STEEL, 0.8), radius=0.02)
+    # Wire lashing across the runs, a taped joint, the inlet.
+    for f in (0.4, 0.62):
+        p0, p1 = v.pt(0.24, f), v.pt(0.76, f)
+        c.add(p1[1], lambda p0=p0, p1=p1: c.seam((c.px(p0[0]), c.px(p0[1] - 0.26 * LIFT)),
+                                                 (c.px(p1[0]), c.px(p1[1] - 0.26 * LIFT)),
+                                                 width=3 / 192, tone=(150, 144, 130)), 0.3)
+    tape(c, 0.62, 0.46, 0.74, 0.54, 0.28)
+    c.pipe(0.08, 0.8, 0.26, 0.8, 0.14, 0.1, HOT)
+    c.flush()
+    c.save(f"{OUT}/Things/Building/Power/STB_CobbledRadiator.png")
+
+
 def heat_accumulator():
     """2x2 at drawSize 3. A big lagged tank standing on a skid: the round form, lagging bands as
     its repeated marks, a manway and a gauge on the cap, a hot-water inlet the only orange."""
@@ -939,6 +968,7 @@ if __name__ == "__main__":
     hot_water_pipe()
     hot_water_valve()
     hot_water_radiator()
+    cobbled_radiator()
     heat_accumulator()
     fire_glow()
     ash_items()

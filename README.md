@@ -53,7 +53,7 @@ For scale: a full steam turbine takes 48–60 bricks a day from cobbled stoves, 
 ### The heat network (advanced mode)
 A burner's heat goes, in order:
 1. **Steam turbines**, up to their capacity. An accumulator tops them up if the burners fall short.
-2. **Hot water radiators**: 1x1, up to 250W each, heat their room to the target temperature you set, through vanilla's own temperature system.
+2. **Radiators**: 1x1, heating their room to the target temperature you set through vanilla's own temperature system. The **cobbled radiator** (Electricity: 20 steel, 10 wood) takes up to 150W and leaks about three times as often; the **cast-iron radiator** (Microelectronics: 45 steel) takes up to 250W.
 3. **Heat accumulators**: 2x2, store 24 kWh, charging and discharging at up to 750W. A battery for steam that keeps turbines turning while burners are refuelled or switched off.
 4. **Dubs Bad Hygiene hot water and heating**, if installed.
 5. Whatever's left **builds pressure**.
