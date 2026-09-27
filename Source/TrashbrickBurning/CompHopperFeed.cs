@@ -12,11 +12,25 @@ namespace TrashbrickBurning
         }
     }
 
+    /// <summary>Outlines the intake cells while the building is being placed.</summary>
+    public class PlaceWorker_ShowIntake : PlaceWorker
+    {
+        // VFE Factory's input-rail green, which the sprite's intake chevron also uses.
+        public static readonly UnityEngine.Color IntakeColor = new UnityEngine.Color(0.36f, 0.69f, 0.37f);
+
+        public override void DrawGhost(ThingDef def, IntVec3 center, Rot4 rot, UnityEngine.Color ghostCol, Thing thing = null)
+        {
+            GenDraw.DrawFieldEdges(new List<IntVec3>(CompHopperFeed.IntakeCells(center, rot, def.size)), IntakeColor);
+        }
+    }
+
     /// <summary>
-    /// Tops up the parent's CompRefuelable from any hopper touching one of its edges: the vanilla
-    /// hopper, the Vanilla Furniture Expanded - Factory hopper, or this mod's fuel hopper. The hopper
-    /// is the buffer; filling it (by hand or by conveyor) is the player's problem, and this only moves
-    /// fuel the last cell across. Nothing here references VFE, so it works with or without it.
+    /// Tops up the parent's CompRefuelable from a hopper standing on its INTAKE: the row of cells
+    /// just outside the edge the building faces, which is where its sprite draws the one intake
+    /// port (Source/Art/verify_art.py checks the two agree). Any building with isHopper counts -
+    /// the vanilla hopper, the Vanilla Furniture Expanded - Factory hopper, or this mod's fuel
+    /// hopper. The hopper is the buffer; filling it, by hand or by conveyor, is the player's job,
+    /// and this only moves fuel the last cell across. Nothing here references VFE.
     /// </summary>
     public class CompHopperFeed : ThingComp
     {
@@ -56,7 +70,7 @@ namespace TrashbrickBurning
             }
 
             Map map = parent.Map;
-            foreach (IntVec3 cell in GenAdj.CellsAdjacentCardinal(parent))
+            foreach (IntVec3 cell in IntakeCells(parent.Position, parent.Rotation, parent.def.size))
             {
                 if (fuel.Fuel >= fuel.TargetFuelLevel)
                 {
@@ -84,6 +98,23 @@ namespace TrashbrickBurning
                     fuel.Refuel(new List<Thing> { thing });
                 }
             }
+        }
+
+        /// <summary>The cells just outside the building's front edge, i.e. in its FacingCell direction.</summary>
+        public static IEnumerable<IntVec3> IntakeCells(IntVec3 center, Rot4 rot, IntVec2 size)
+        {
+            CellRect rect = GenAdj.OccupiedRect(center, rot, size);
+            foreach (IntVec3 edge in rect.GetEdgeCells(rot))
+            {
+                yield return edge + rot.FacingCell;
+            }
+        }
+
+        public override void PostDrawExtraSelectionOverlays()
+        {
+            base.PostDrawExtraSelectionOverlays();
+            GenDraw.DrawFieldEdges(new List<IntVec3>(IntakeCells(parent.Position, parent.Rotation, parent.def.size)),
+                PlaceWorker_ShowIntake.IntakeColor);
         }
 
         private static bool IsHopperAt(IntVec3 cell, Map map)

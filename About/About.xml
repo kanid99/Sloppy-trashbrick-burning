@@ -9,7 +9,10 @@
 	</supportedVersions>
 	<description>Burn the trashbricks from Vanilla Recycling Expanded for power.
 
-Adds a trashbrick pellet stove: a small generator that you fill with trashbricks. It produces 1000W and warms the room it stands in, like the wood-fired generator. One garbage compactor makes about enough bricks to keep one stove running.
+Adds two Stirling-engine generators that burn trashbricks: a cobbled pellet stove (1000W, 20 bricks a day, a little pollution) and a trashbrick gasifier (1200W on 12 a day, clean). Feed them by hand or from a hopper on their intake.
+
+With Dubs Bad Hygiene: fecal sludge pellets as a second fuel, and a plumbing connection - water-cool the engine for more power, or run it as a boiler for hot water and central heating at reduced power.
+With Vanilla Furniture Expanded - Factory: belt-fed through factory hoppers.
 
 Needs Vanilla Recycling Expanded, and is researched after complex recycling.</description>
 	<modDependencies>
@@ -21,5 +24,7 @@ Needs Vanilla Recycling Expanded, and is researched after complex recycling.</de
 	</modDependencies>
 	<loadAfter>
 		<li>VanillaExpanded.Recycling</li>
+		<li>Dubwise.DubsBadHygiene</li>
+		<li>VanillaExpanded.VFEFactory</li>
 	</loadAfter>
 </ModMetaData>

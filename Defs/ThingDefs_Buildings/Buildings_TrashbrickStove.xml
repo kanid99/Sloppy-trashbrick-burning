@@ -5,16 +5,13 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_TrashbrickPelletStove</defName>
 		<label>cobbled pellet stove</label>
-		<description>A firebox welded together from scrap plate, burning compressed trashbricks to turn a salvaged generator. Refill it by hand, or build a hopper against any side and it will draw fuel from that. It heats the room while it runs, and the smoke slowly pollutes the ground around it.</description>
+		<description>A firebox welded together from scrap plate, driving a salvaged Stirling engine on compressed trashbricks. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that. It heats the room while it runs, and the smoke slowly pollutes the ground around it.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_CobbledPelletStove</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(2,2)</drawSize>
-			<shadowData>
-				<volume>(1.93,1,1.69)</volume>
-				<offset>(-0.03,0,-0.1)</offset>
-			</shadowData>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<!-- Drawn a margin larger than its 2x2 footprint so raised parts aren't clipped. -->
+			<drawSize>(3,3)</drawSize>
 		</graphicData>
 		<altitudeLayer>Building</altitudeLayer>
 		<passability>PassThroughOnly</passability>
@@ -22,7 +19,7 @@
 		<blockWind>true</blockWind>
 		<fillPercent>1.0</fillPercent>
 		<castEdgeShadows>false</castEdgeShadows>
-		<rotatable>false</rotatable>
+		<rotatable>true</rotatable>
 		<size>(2,2)</size>
 		<tickerType>Normal</tickerType>
 		<statBases>
@@ -37,7 +34,7 @@
 		</costList>
 		<comps>
 			<li Class="CompProperties_Power">
-				<compClass>CompPowerPlant</compClass>
+				<compClass>TrashbrickBurning.CompPowerPlantStirling</compClass>
 				<basePowerConsumption>-1000</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 				<soundAmbientProducingPower>WoodFiredGenerator_Ambience</soundAmbientProducingPower>
@@ -71,6 +68,9 @@
 				<cellsPerDay>3</cellsPerDay>
 			</li>
 		</comps>
+		<placeWorkers>
+			<li>TrashbrickBurning.PlaceWorker_ShowIntake</li>
+		</placeWorkers>
 		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
 		<designationCategory>Power</designationCategory>
 		<constructEffect>ConstructMetal</constructEffect>
@@ -82,23 +82,20 @@
 	</ThingDef>
 
 	<!--
-		Tier 2: sealed gasifier. It gets more power per brick than the cobbled stove (1800W on 15 a
-		day, against 1000W on 20), doesn't pollute, and leaks only a little heat. It costs
-		microelectronics and some plasteel.
+		Tier 2: the same Stirling engine, done properly. The difference is mostly efficiency: twice
+		the power per brick (1200W on 12 a day, against 1000W on 20) and a little more output. It
+		also doesn't pollute and leaks only a little heat. Costs microelectronics and some plasteel.
 	-->
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_TrashbrickGasifier</defName>
 		<label>trashbrick gasifier</label>
-		<description>A sealed gasifier that bakes trashbricks into syngas and runs it through a catalytic filter before burning it in a small turbine. It gets far more power from each brick than a pellet stove, and the filters catch the fumes, so it doesn't pollute. The housing is insulated, so it leaks only a little heat. Refill it by hand, or build a hopper against any side and it will draw fuel from that.</description>
+		<description>A sealed gasifier that bakes trashbricks into syngas and burns it cleanly under a Stirling engine. It gets twice the power from each brick that a pellet stove does, and the catalytic filters catch the fumes, so it doesn't pollute. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_TrashbrickGasifier</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(2,2)</drawSize>
-			<shadowData>
-				<volume>(1.93,1,1.69)</volume>
-				<offset>(-0.03,0,-0.1)</offset>
-			</shadowData>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<!-- Drawn a margin larger than its 2x2 footprint so raised parts aren't clipped. -->
+			<drawSize>(3,3)</drawSize>
 		</graphicData>
 		<altitudeLayer>Building</altitudeLayer>
 		<passability>PassThroughOnly</passability>
@@ -106,7 +103,7 @@
 		<blockWind>true</blockWind>
 		<fillPercent>1.0</fillPercent>
 		<castEdgeShadows>false</castEdgeShadows>
-		<rotatable>false</rotatable>
+		<rotatable>true</rotatable>
 		<size>(2,2)</size>
 		<tickerType>Normal</tickerType>
 		<statBases>
@@ -122,15 +119,16 @@
 		</costList>
 		<comps>
 			<li Class="CompProperties_Power">
-				<compClass>CompPowerPlant</compClass>
-				<basePowerConsumption>-1800</basePowerConsumption>
+				<compClass>TrashbrickBurning.CompPowerPlantStirling</compClass>
+				<basePowerConsumption>-1200</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 				<soundAmbientProducingPower>ChemfuelFiredGenerator_Ambience</soundAmbientProducingPower>
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
-				<fuelConsumptionRate>15.0</fuelConsumptionRate>
-				<fuelCapacity>75.0</fuelCapacity>
+				<!-- 100W-days per brick against the cobbled stove's 50. -->
+				<fuelConsumptionRate>12.0</fuelConsumptionRate>
+				<fuelCapacity>60.0</fuelCapacity>
 				<fuelLabel>Trashbricks</fuelLabel>
 				<fuelFilter>
 					<thingDefs>
@@ -150,6 +148,9 @@
 			<li Class="CompProperties_Breakdownable"/>
 			<li Class="TrashbrickBurning.CompProperties_HopperFeed"/>
 		</comps>
+		<placeWorkers>
+			<li>TrashbrickBurning.PlaceWorker_ShowIntake</li>
+		</placeWorkers>
 		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
 		<designationCategory>Power</designationCategory>
 		<constructEffect>ConstructMetal</constructEffect>
@@ -168,11 +169,12 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_FuelHopper</defName>
 		<label>fuel hopper</label>
-		<description>A hopper for trashbrick fuel. Build it touching a pellet stove or gasifier and the machine pulls fuel from it as it burns. Haulers or a conveyor belt can fill it. It holds up to three stacks.</description>
+		<description>A hopper for trashbrick fuel. Build it on a pellet stove's or gasifier's intake - the green-marked port - with its spout toward the machine, and the machine pulls fuel from it as it burns. Haulers or a conveyor belt can fill it. It holds up to three stacks.</description>
 		<thingClass>Building_Storage</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_FuelHopper</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<drawSize>(1.5,1.5)</drawSize>
 			<damageData>
 				<rect>(0.05,0.1,0.9,0.9)</rect>
 				<cornerTL>Damage/Corner</cornerTL>
@@ -186,7 +188,7 @@
 		<pathCost>42</pathCost>
 		<canOverlapZones>false</canOverlapZones>
 		<drawerType>MapMeshAndRealTime</drawerType>
-		<rotatable>false</rotatable>
+		<rotatable>true</rotatable>
 		<castEdgeShadows>true</castEdgeShadows>
 		<surfaceType>Item</surfaceType>
 		<constructEffect>ConstructMetal</constructEffect>

@@ -31,4 +31,48 @@
 		</value>
 	</Operation>
 
+	<!--
+		Stirling plumbing. A plumbing connection, a boiler that only runs in heat recovery mode,
+		and the mode switch. The boiler goes in FIRST: DBH's CompBoiler only writes PowerOutput
+		when its ShouldUsePowerModes is set, and ours doesn't set it, but putting it ahead of the
+		power plant also means the plant has the last word on output each tick.
+	-->
+	<Operation Class="PatchOperationInsert">
+		<xpath>Defs/ThingDef[defName="STB_TrashbrickPelletStove" or defName="STB_TrashbrickGasifier"]/comps/li[@Class="CompProperties_Power"]</xpath>
+		<order>Prepend</order>
+		<value>
+			<li Class="DubsBadHygiene.CompProperties_Pipe">
+				<mode>Sewage</mode>
+			</li>
+			<li Class="DubsBadHygiene.CompProperties_CompBoiler">
+				<compClass>TrashbrickBurning.DBH.CompStirlingBoiler</compClass>
+				<BaseCapacity>1600</BaseCapacity>
+				<ThermostatControl>false</ThermostatControl>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[defName="STB_TrashbrickPelletStove"]/comps</xpath>
+		<value>
+			<li Class="TrashbrickBurning.DBH.CompProperties_StirlingPlumbing">
+				<cooledPowerFactor>1.2</cooledPowerFactor>
+				<heatRecoveryPowerFactor>0.5</heatRecoveryPowerFactor>
+				<waterPerDay>50</waterPerDay>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- The gasifier recovers its heat more cleanly, so keeps more power doing it. -->
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[defName="STB_TrashbrickGasifier"]/comps</xpath>
+		<value>
+			<li Class="TrashbrickBurning.DBH.CompProperties_StirlingPlumbing">
+				<cooledPowerFactor>1.2</cooledPowerFactor>
+				<heatRecoveryPowerFactor>0.6</heatRecoveryPowerFactor>
+				<waterPerDay>40</waterPerDay>
+			</li>
+		</value>
+	</Operation>
+
 </Patch>

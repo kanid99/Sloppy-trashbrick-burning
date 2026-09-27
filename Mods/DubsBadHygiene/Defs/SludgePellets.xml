@@ -31,7 +31,7 @@
 
 	<!--
 		Chemfuel route (DBH): 75 sludge -> 35 chemfuel, about 7.8 days of a chemfuel generator.
-		Pellet route: 75 sludge -> 100 pellets, 5 days of a cobbled stove or about 6.7 of a gasifier (at 1800W). You give up some energy for fuel that is safe to store.
+		Pellet route: 75 sludge -> 100 pellets, 5 days of a cobbled stove or about 8.3 of a gasifier. You give up some energy for fuel that is safe to store.
 	-->
 	<RecipeDef>
 		<defName>STB_Make_SludgePellets</defName>

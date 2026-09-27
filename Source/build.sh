@@ -24,3 +24,28 @@ build() {
 
 build 1.5 1.5.4409
 build 1.6 1.6.4871 "-r:$REF_DIR/1.6.4871/ref/net472/netstandard.dll"
+
+# The Dubs Bad Hygiene bridge. Compiled against DBH's own assembly from its public repo, and
+# shipped under Mods/DubsBadHygiene so it is only ever loaded alongside DBH.
+DBH_DIR="$REF_DIR/dbh"
+if [ ! -f "$DBH_DIR/1.6/Assemblies/BadHygiene.dll" ]; then
+  rm -rf "$DBH_DIR"
+  git clone -q --depth 1 --filter=blob:none --sparse https://github.com/Dubwise56/Dubs-Bad-Hygiene.git "$DBH_DIR"
+  git -C "$DBH_DIR" sparse-checkout set 1.5/Assemblies 1.6/Assemblies
+fi
+
+build_dbh() {
+  local game="$1" pkg="$2" extra="${3:-}"
+  local r="$REF_DIR/$pkg/ref/net472"
+  local out="Mods/DubsBadHygiene/$game/Assemblies"
+  mkdir -p "$out"
+  mcs -target:library -optimize+ -nostdlib -noconfig \
+    -r:"$r/mscorlib.dll" -r:"$r/System.dll" -r:"$r/System.Core.dll" $extra \
+    -r:"$r/Assembly-CSharp.dll" -r:"$r/UnityEngine.CoreModule.dll" \
+    -r:"$DBH_DIR/$game/Assemblies/BadHygiene.dll" -r:"$game/Assemblies/TrashbrickBurning.dll" \
+    -out:"$out/TrashbrickBurning.DBH.dll" Source/TrashbrickBurning.DBH/*.cs
+  echo "built $out"
+}
+
+build_dbh 1.5 1.5.4409
+build_dbh 1.6 1.6.4871 "-r:$REF_DIR/1.6.4871/ref/net472/netstandard.dll"

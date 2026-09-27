@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 	<STB_FeedFromHoppers>Draw from hoppers</STB_FeedFromHoppers>
-	<STB_FeedFromHoppersDesc>If on, this machine takes fuel from any hopper touching it whenever it drops below its target fuel level. Works with the fuel hopper, the vanilla hopper, and Vanilla Furniture Expanded - Factory hoppers. Turn off to keep a hopper's contents for something else.</STB_FeedFromHoppersDesc>
+	<STB_FeedFromHoppersDesc>If on, this machine takes fuel from a hopper on its intake (the green-marked port) whenever it drops below its target fuel level. Works with the fuel hopper, the vanilla hopper, and Vanilla Furniture Expanded - Factory hoppers. Turn off to keep a hopper's contents for something else.</STB_FeedFromHoppersDesc>
 	<STB_PollutesWhileBurning>Pollutes about {0} cells a day while burning</STB_PollutesWhileBurning>
+	<STB_Mode_Power>Engine: power</STB_Mode_Power>
+	<STB_Mode_WaterCooled>Engine: water-cooled</STB_Mode_WaterCooled>
+	<STB_Mode_HeatRecovery>Engine: heat recovery</STB_Mode_HeatRecovery>
+	<STB_ModeDesc>What the Stirling engine's cold side does. Click to cycle.\n\nPower: normal output, no plumbing needed.\nWater-cooled: draws water from the plumbing to run its cold side cooler, for {0} output while water is flowing.\nHeat recovery: sends waste heat into the plumbing as a boiler, for hot water and central heating, at {1} output.</STB_ModeDesc>
+	<STB_NoWater>no water</STB_NoWater>
 </LanguageData>
