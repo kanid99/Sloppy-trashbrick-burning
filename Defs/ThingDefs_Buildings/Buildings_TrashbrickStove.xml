@@ -50,6 +50,10 @@
 				<fuelFilter>
 					<thingDefs>
 						<li>VRecyclingE_TrashBrick</li>
+						<!-- Other fuels, at their own values (CompStirlingEngine.otherFuels). Removed at
+						     startup if the setting is off. -->
+						<li>WoodLog</li>
+						<li>Chemfuel</li>
 					</thingDefs>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
@@ -80,7 +84,23 @@
 					<li><watts>350</watts><fuelPerDay>12</fuelPerDay><roomHeatPerSecond>6</roomHeatPerSecond><builtInWatts>200</builtInWatts></li>
 					<li><watts>500</watts><fuelPerDay>20</fuelPerDay><roomHeatPerSecond>10</roomHeatPerSecond><builtInWatts>300</builtInWatts></li>
 				</heatLevels>
+				<!-- Jerry-rigged: no working safety valve. At full pressure it bursts. -->
+				<safetyValve>false</safetyValve>
+				<ashPerFuel>0.25</ashPerFuel>
+				<otherFuels>
+					<li><thing>WoodLog</thing><value>0.4</value></li>
+					<li><thing>Chemfuel</thing><value>2.5</value></li>
+				</otherFuels>
 			</li>
+			<!-- Smoke from the flue, a flickering fire window, and the rattle. Points are in the art's
+			     own machine coordinates (a across the front, f front to back, z up). -->
+			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
+				<smoke><a>0.62</a><f>1.62</f><z>0.69</z></smoke>
+				<glow><a>1.04</a><f>0.8</f><z>0.43</z></glow>
+				<glowSize>1.1</glowSize>
+				<sound>STB_RattleAmbience</sound>
+			</li>
+
 			<!-- The parts that rattle while it burns: two layers drawn over the sprite and shaken. -->
 			<li Class="TrashbrickBurning.CompProperties_LooseParts">
 				<layers>
@@ -162,6 +182,10 @@
 				<fuelFilter>
 					<thingDefs>
 						<li>VRecyclingE_TrashBrick</li>
+						<!-- Other fuels, at their own values (CompStirlingEngine.otherFuels). Removed at
+						     startup if the setting is off. -->
+						<li>WoodLog</li>
+						<li>Chemfuel</li>
 					</thingDefs>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
@@ -191,7 +215,19 @@
 					<li><watts>350</watts><fuelPerDay>6</fuelPerDay><roomHeatPerSecond>2.5</roomHeatPerSecond><builtInWatts>200</builtInWatts></li>
 					<li><watts>500</watts><fuelPerDay>9</fuelPerDay><roomHeatPerSecond>4</roomHeatPerSecond><builtInWatts>300</builtInWatts></li>
 				</heatLevels>
+				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
+				<safetyValve>true</safetyValve>
+				<ashPerFuel>0.1</ashPerFuel>
+				<otherFuels>
+					<li><thing>WoodLog</thing><value>0.4</value></li>
+					<li><thing>Chemfuel</thing><value>2.5</value></li>
+				</otherFuels>
 			</li>
+			<!-- Steam wisps from the exhaust stack, where the safety valve vents too. -->
+			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
+				<steam><a>0.36</a><f>1.7</f><z>0.57</z></steam>
+			</li>
+
 			<!-- Joins the pressurised hot water network when a pipe runs under it. -->
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
@@ -264,6 +300,8 @@
 				<filter>
 					<thingDefs>
 						<li>VRecyclingE_TrashBrick</li>
+						<li>WoodLog</li>
+						<li>Chemfuel</li>
 					</thingDefs>
 				</filter>
 			</fixedStorageSettings>
@@ -272,6 +310,8 @@
 				<filter>
 					<thingDefs>
 						<li>VRecyclingE_TrashBrick</li>
+						<li>WoodLog</li>
+						<li>Chemfuel</li>
 					</thingDefs>
 				</filter>
 			</defaultStorageSettings>

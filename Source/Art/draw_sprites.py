@@ -776,6 +776,120 @@ def hot_water_valve():
     c.save(f"{OUT}/Things/Building/Linked/STB_HotWaterValve.png")
 
 
+# ------------------------------------------------------------------ radiator and heat accumulator
+def hot_water_radiator():
+    """1x1 at drawSize 1.5. A cast-iron column radiator from above: a row of identical columns -
+    the repeated mark - on two feet, a hot-water inlet stub the only orange."""
+    v = View("south", 1, 1, MARGIN_1X1)
+    c = Canvas(v)
+    iron = (118, 116, 112)
+    c.pipe(0.08, 0.5, 0.22, 0.5, 0.0, 0.1, HOT)
+    for k in range(7):
+        a0 = 0.2 + k * 0.092
+        c.drum(a0, 0.3, a0 + 0.078, 0.7, 0.0, 0.34, iron, axis="f", radius=0.035, shadow=(k == 6))
+    # The top rail joining the columns, and a bleed valve.
+    c.slab(0.2, 0.62, 0.84, 0.7, 0.34, 0.02, shade(iron, 1.08), shadow=False, radius=0.01)
+    c.dots([(v.pt(0.86, 0.66)[0], v.pt(0.86, 0.66)[1] - 0.36 * LIFT)], 0.02, (170, 164, 150))
+    c.flush()
+    c.save(f"{OUT}/Things/Building/Power/STB_HotWaterRadiator.png")
+
+
+def heat_accumulator():
+    """2x2 at drawSize 3. A big lagged tank standing on a skid: the round form, lagging bands as
+    its repeated marks, a manway and a gauge on the cap, a hot-water inlet the only orange."""
+    v = View("south", 2, 2, MARGIN_2X2)
+    c = Canvas(v)
+    skid(c, shade(STEEL, 0.62), chamfer=0.22)
+    c.pipe(0.12, 0.3, 0.12, 1.0, 0.07, 0.1, HOT)
+    c.pipe(0.12, 1.0, 0.4, 1.0, 0.07, 0.1, HOT)
+
+    def cap(X, Y, R):
+        # Manway: a bolted round hatch, and a relief valve beside it.
+        r = int(R * 0.34)
+        oy = -R // 10
+        c.d.ellipse([X - r, Y - r + oy, X + r, Y + r + oy], fill=shade(STEEL, 0.92) + (255,))
+        for k in range(10):
+            ang = k * math.pi / 5
+            bx, by = X + math.cos(ang) * r * 0.82, Y + oy + math.sin(ang) * r * 0.82
+            rr = max(2, c.px(0.012))
+            c.d.ellipse([bx - rr, by - rr, bx + rr, by + rr], fill=shade(STEEL, 1.25) + (255,))
+        vx, vy = X + int(R * 0.55), Y - int(R * 0.45)
+        rv = max(3, c.px(0.05))
+        c.d.ellipse([vx - rv, vy - rv, vx + rv, vy + rv], fill=shade(STEEL, 0.8) + (255,))
+    c.cylinder(1.02, 0.98, 0.78, 0.07, 0.62, (150, 146, 138), rings=5, cap_fn=cap)
+    gauge(c, 1.72, 0.3, 0.07)
+    c.flush()
+    c.save(f"{OUT}/Things/Building/Power/STB_HeatAccumulator.png")
+
+
+def fire_glow():
+    """The firebox flicker's texture: a soft orange blob, no silhouette. CompMachineEffects draws it
+    with the MoteGlow shader at a flickering strength."""
+    import os
+    px = 128
+    img = Image.new("RGBA", (px, px), (0, 0, 0, 0))
+    for y in range(px):
+        for x in range(px):
+            d = math.hypot(x - px / 2, y - px / 2) / (px / 2)
+            a = max(0.0, 1 - d) ** 1.8
+            img.putpixel((x, y), (255, int(150 + 60 * a), int(60 + 40 * a), int(255 * a)))
+    path = f"{OUT}/Things/Building/Power/STB_FireGlow.png"
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    img.save(path)
+    print("wrote", path)
+
+
+# ------------------------------------------------------------------ ash and ashcrete
+def _item(draw_fn, name, variants):
+    """Graphic_StackCount items: small to large, 128px, tone inside and a silhouette ring outside."""
+    import os
+    from stb_draw import SILHOUETTE
+    from PIL import ImageFilter
+    px = 128
+    for suffix, n, seed in variants:
+        img = Image.new("RGBA", (px * SS, px * SS), (0, 0, 0, 0))
+        draw_fn(ImageDraw.Draw(img), px * SS / 32, n, random.Random(seed))
+        a = img.split()[3].point(lambda v: 255 if v > 150 else 0)
+        ring = a.filter(ImageFilter.MaxFilter(2 * 3 * SS // 2 + 1))
+        base = Image.new("RGBA", img.size, SILHOUETTE + (255,))
+        base.putalpha(ring)
+        base.alpha_composite(img)
+        path = f"{OUT}/Things/Item/Resource/{name}/{name}_{suffix}.png"
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        base.resize((px, px), Image.LANCZOS).save(path)
+        print("wrote", path)
+
+
+def ash_items():
+    """Soft grey mounds: stacked discs, each lighter and nudged up - the stove's own shading."""
+    def draw(d, u, n, rnd):
+        mounds = sorted(((16 + rnd.gauss(0, 3 + n), 18 + rnd.gauss(0, 1.5 + n / 2), 5 + n * 0.8 + rnd.random() * 2)
+                         for _ in range(n)), key=lambda m: m[1])
+        for x, y, r in mounds:
+            for k, f in enumerate((0.62, 0.8, 0.96, 1.1)):
+                rr = r * (1 - k * 0.2)
+                yy = y - k * r * 0.12
+                d.ellipse([(x - rr) * u, (yy - rr * 0.62) * u, (x + rr) * u, (yy + rr * 0.62) * u],
+                          fill=shade((150, 148, 144), f) + (255,))
+    _item(draw, "STB_Ash", (("a", 1, 3), ("b", 2, 5), ("c", 3, 8)))
+
+
+def ashcrete_items():
+    """Grey blocks stacked like vanilla's stone blocks: slab faces lit on top, a darker wall below."""
+    def draw(d, u, n, rnd):
+        base = (132, 130, 126)
+        spots = [(10, 20), (18, 20), (14, 14), (22, 14), (6, 14), (18, 8)][:n]
+        for x, y in sorted(spots, key=lambda p: p[1]):
+            w, h, wall = 7, 5, 2
+            d.rectangle([x * u, (y + h) * u, (x + w) * u, (y + h + wall) * u], fill=shade(base, 0.7) + (255,))
+            d.rectangle([x * u, y * u, (x + w) * u, (y + h) * u], fill=shade(base, 1.05 + rnd.random() * 0.08) + (255,))
+            for k in range(3):
+                px_, py_ = x + 1 + rnd.random() * (w - 2), y + 1 + rnd.random() * (h - 2)
+                d.ellipse([(px_ - 0.4) * u, (py_ - 0.4) * u, (px_ + 0.4) * u, (py_ + 0.4) * u],
+                          fill=shade(base, 0.82) + (255,))
+    _item(draw, "STB_AshcreteBlocks", (("a", 2, 1), ("b", 4, 2), ("c", 6, 3)))
+
+
 # ------------------------------------------------------------------ sludge pellets
 def pellets():
     """Graphic_StackCount: three piles, small to large. Items are 128px, one cell."""
@@ -824,4 +938,9 @@ if __name__ == "__main__":
         cobbled_turbine(r)
     hot_water_pipe()
     hot_water_valve()
+    hot_water_radiator()
+    heat_accumulator()
+    fire_glow()
+    ash_items()
+    ashcrete_items()
     pellets()

@@ -14,15 +14,44 @@
 	<STB_SettingsCategory>Trashbrick Burning</STB_SettingsCategory>
 	<STB_SettingAdvanced>Advanced play mode (burners and steam turbines)</STB_SettingAdvanced>
 	<STB_SettingAdvancedDesc>On: stoves are burners that feed steam turbines through pressurised hot water pipes. Off: stoves are simple self-contained generators.</STB_SettingAdvancedDesc>
-	<STB_SettingAdvancedExplain>Advanced: each stove is a burner making 250, 350 or 500W of heat. Hotter burns cost more fuel per watt and heat the room more. Pipe burners to a steam turbine, which turns up to 1500W of heat into 1500W of power. With no turbine connected, a burner's own engine makes only 100, 200 or 300W. With Dubs Bad Hygiene, heat the turbines don't use goes to the plumbing's hot water and heating, and whatever it draws comes off the built-in engine's power.</STB_SettingAdvancedExplain>
+	<STB_SettingAdvancedExplain>Advanced: each stove is a burner making 250, 350 or 500W of heat. Hotter burns cost more fuel per watt and heat the room more. Pipe burners to steam turbines, radiators and heat accumulators; heat nothing uses builds pressure, and a cobbled stove with nowhere to put it bursts. With nothing piped to it, a burner's own engine makes only 100, 200 or 300W. With Dubs Bad Hygiene, heat the network leaves over goes to the plumbing's hot water and heating.</STB_SettingAdvancedExplain>
 	<STB_SettingSimpleExplain>Simple: each stove is a self-contained generator - 1000W for the cobbled stove, 1200W for the gasifier - with no pipes or turbines. With Dubs Bad Hygiene, stoves can also be water-cooled or used as boilers.</STB_SettingSimpleExplain>
 	<STB_SettingRestart>Burn rates and power switch over straight away. Restart the game to add or remove the turbine and pipes in the build menu.</STB_SettingRestart>
 	<STB_BurnRate>Burn rate: {0}W</STB_BurnRate>
 	<STB_BurnRateDesc>How hard this burner runs. Click to cycle. Hotter burns cost more fuel per watt and heat the room more.\n{0}</STB_BurnRateDesc>
 	<STB_BurnRateLine>{0}W: {1} fuel a day ({2} per kW), room heat {3}, built-in engine {4}W</STB_BurnRateLine>
 	<STB_BurnerStatus>Burning at {0}W of heat, {1} fuel a day</STB_BurnerStatus>
-	<STB_ToTurbines>To turbines: {0}W</STB_ToTurbines>
-	<STB_NoTurbineBuiltIn>No turbine connected: built-in engine up to {0}W</STB_NoTurbineBuiltIn>
 	<STB_ToHotWater>Drawn by hot water: {0}W</STB_ToHotWater>
 	<STB_SimpleStatus>Burning {0} fuel a day</STB_SimpleStatus>
+	<STB_SettingHazards>Hazards: steam bursts and leaks</STB_SettingHazards>
+	<STB_SettingHazardsDesc>Off: burners without a safety valve vent instead of bursting, and pipes never leak.</STB_SettingHazardsDesc>
+	<STB_SettingOtherFuels>Burners also take wood and chemfuel</STB_SettingOtherFuels>
+	<STB_SettingOtherFuelsDesc>A wood log is worth 0.4 of a trashbrick, a unit of chemfuel 2.5. Takes effect after a restart.</STB_SettingOtherFuelsDesc>
+	<STB_SettingFuelUse>Fuel use: {0}</STB_SettingFuelUse>
+	<STB_SettingPower>Power output: {0}</STB_SettingPower>
+	<STB_SettingAsh>Ash: {0}</STB_SettingAsh>
+	<STB_SettingLeaks>Steam leak frequency: {0}</STB_SettingLeaks>
+	<STB_SettingReset>Reset multipliers</STB_SettingReset>
+	<STB_DumpAsh>Rake out ash</STB_DumpAsh>
+	<STB_DumpAshDesc>Put the ash in this burner's pan out now, behind it. Ash comes out on its own as it builds up.</STB_DumpAshDesc>
+	<STB_ToNetwork>To the hot water network: {0}W</STB_ToNetwork>
+	<STB_NoNetworkBuiltIn>Nothing piped to it: built-in engine up to {0}W</STB_NoNetworkBuiltIn>
+	<STB_Pressure>Pressure: {0}</STB_Pressure>
+	<STB_Venting>(safety valve venting)</STB_Venting>
+	<STB_NearVent>(near the safety valve)</STB_NearVent>
+	<STB_NearBurst>(no safety valve - will burst!)</STB_NearBurst>
+	<STB_AshPan>Ash pan: {0}</STB_AshPan>
+	<STB_TurbineFeeders>Fed by {0} burners</STB_TurbineFeeders>
+	<STB_RadiatorStatus>Heat taken: {0}W of {1}W</STB_RadiatorStatus>
+	<STB_AccumulatorStatus>Stored: {0} of {1} kWh ({2}W)</STB_AccumulatorStatus>
+	<STB_BurstLabel>Steam burst</STB_BurstLabel>
+	<STB_BurstText>The {0} built up more pressure than its jerry-rigged plumbing could hold and burst, filling everything within five tiles with scalding steam. Anyone caught in it is burned, and the room is dangerously hot until it cools.\n\nIt needs repairing before it will burn again. A burner builds pressure when the heat it makes has nowhere to go: turbines full or switched off, radiators satisfied, accumulators charged. Turn its burn rate down, add a turbine or an accumulator - or build a gasifier, which has a safety valve.</STB_BurstText>
+	<STB_LeakMessage>A {0} has sprung a steam leak. It will scald anyone nearby until it's repaired.</STB_LeakMessage>
+	<STB_Leaking>Leaking scalding steam - repair it</STB_Leaking>
+	<STB_AlertOverpressure>Burner overpressure</STB_AlertOverpressure>
+	<STB_AlertOverpressureDesc>These burners have no safety valve and are building pressure because their heat has nowhere to go. At full pressure they burst into a 1000°C steam cloud.\n\nTurn their burn rate down, switch them off, or give the heat somewhere to go: another turbine, a radiator, a heat accumulator.</STB_AlertOverpressureDesc>
+	<STB_AlertTurbineIdle>Steam turbine getting no heat</STB_AlertTurbineIdle>
+	<STB_AlertTurbineIdleDesc>These turbines are switched on but no burner on their network is sending them heat. Check the pipes and valves, and that the burners are lit and fuelled.</STB_AlertTurbineIdleDesc>
+	<STB_AlertOutOfFuel>Burner out of fuel</STB_AlertOutOfFuel>
+	<STB_AlertOutOfFuelDesc>These trashbrick burners have run dry. Refuel them, or put a hopper on their intake.</STB_AlertOutOfFuelDesc>
 </LanguageData>

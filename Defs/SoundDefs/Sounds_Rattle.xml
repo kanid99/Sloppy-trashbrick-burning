@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+	<!-- The jerry-rigged machines' running loop: loose panels, a slipping belt and a knocking
+	     bearing over a low hum. Synthesised by Source/Audio/make_rattle.py. -->
+	<SoundDef>
+		<defName>STB_RattleAmbience</defName>
+		<context>MapOnly</context>
+		<sustain>true</sustain>
+		<maxSimultaneous>3</maxSimultaneous>
+		<priorityMode>PrioritizeNearest</priorityMode>
+		<subSounds>
+			<li>
+				<grains>
+					<li Class="AudioGrain_Clip">
+						<clipPath>STB/CobbledRattle</clipPath>
+					</li>
+				</grains>
+				<volumeRange>14~16</volumeRange>
+				<distRange>6~28</distRange>
+				<sustainLoop>true</sustainLoop>
+			</li>
+		</subSounds>
+	</SoundDef>
+
+</Defs>

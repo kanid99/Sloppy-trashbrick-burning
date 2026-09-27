@@ -20,7 +20,7 @@ namespace TrashbrickBurning
 
     /// <summary>
     /// Advanced play mode: one burn rate. Hotter burns cost more fuel per watt and waste more heat
-    /// into the room, but give the built-in engine more to work with when no turbine is connected.
+    /// into the room, but give the built-in engine more to work with when nothing is piped to it.
     /// </summary>
     public class HeatLevel
     {
@@ -28,8 +28,15 @@ namespace TrashbrickBurning
         public float fuelPerDay;
         public float roomHeatPerSecond;
 
-        /// <summary>The built-in engine's output at this rate, with no turbine connected.</summary>
+        /// <summary>The built-in engine's output at this rate, with nothing on its network using heat.</summary>
         public float builtInWatts = 100f;
+    }
+
+    /// <summary>Fuel units one item of another fuel is worth. A trashbrick is 1.</summary>
+    public class FuelValue
+    {
+        public ThingDef thing;
+        public float value = 1f;
     }
 
     public class CompProperties_StirlingEngine : CompProperties
@@ -43,9 +50,36 @@ namespace TrashbrickBurning
         // Advanced play mode: a burner.
         public List<HeatLevel> heatLevels = new List<HeatLevel>();
 
+        /// <summary>
+        /// Advanced: true for a burner with a working safety valve, which vents steam harmlessly at
+        /// high pressure. The cobbled stove has none - it bursts.
+        /// </summary>
+        public bool safetyValve;
+
+        /// <summary>Ash made per unit of fuel burnt.</summary>
+        public float ashPerFuel = 0.2f;
+
+        /// <summary>Other fuels the burner takes, and what each is worth. Only while the setting allows them.</summary>
+        public List<FuelValue> otherFuels = new List<FuelValue>();
+
         public CompProperties_StirlingEngine()
         {
             compClass = typeof(CompStirlingEngine);
+        }
+
+        public float FuelValueOf(ThingDef def)
+        {
+            if (otherFuels != null)
+            {
+                for (int i = 0; i < otherFuels.Count; i++)
+                {
+                    if (otherFuels[i].thing == def)
+                    {
+                        return otherFuels[i].value;
+                    }
+                }
+            }
+            return 1f;
         }
 
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
@@ -68,16 +102,26 @@ namespace TrashbrickBurning
 
     /// <summary>
     /// The stove's firebox and engine. Burns the fuel (CompRefuelable is externally ticked, so the
-    /// burn rate can differ per stove), pushes the waste heat into the room, and sets the power
-    /// plant's output. In advanced play mode it's a burner whose heat goes, in order, to steam
-    /// turbines on its pressurised hot water network, then to Dubs Bad Hygiene hot water if the
-    /// bridge assembly is loaded, and only with no turbine connected to its own small engine
-    /// (100-300W, by burn rate).
+    /// burn rate can differ per stove), pushes the waste heat into the room, fills the ash pan, and
+    /// sets the power plant's output.
+    ///
+    /// In advanced play mode it's a burner. Its heat goes, in order, to steam turbines, radiators and
+    /// heat accumulators on its pressurised hot water network (HeatNetwork), then to Dubs Bad
+    /// Hygiene hot water if the bridge assembly is loaded. Whatever is still left builds pressure:
+    /// a burner with a safety valve vents it, one without eventually bursts. Only when nothing on its
+    /// network uses heat does its own small engine run instead (100-300W, by burn rate), and then
+    /// there's no pressure, because the engine takes it all.
     /// </summary>
     public class CompStirlingEngine : ThingComp
     {
         public const string DubsBadHygieneId = "Dubwise.DubsBadHygiene";
         private const int Interval = 60;
+
+        /// <summary>Pressure climbs from empty to bursting in half a day at 500W of unused heat.</summary>
+        private const float PressureWattsPerHalfDay = 500f;
+
+        private const float VentAt = 0.85f;
+        public const float WarnAt = 0.7f;
 
         public StirlingMode mode = StirlingMode.Power;
         public int heatLevel;
@@ -88,10 +132,16 @@ namespace TrashbrickBurning
         /// <summary>Advanced mode, set by the DBH bridge: heat the hot water system actually drew, in watts.</summary>
         public float hotWaterDrawWatts;
 
-        /// <summary>Advanced mode, from HotWaterAllocation: heat taken by turbines, and what's left.</summary>
-        public float toTurbinesWatts;
+        /// <summary>Advanced mode, from HeatNetwork: heat taken by the network, and what's left.</summary>
+        public float toNetworkWatts;
         public float surplusWatts;
-        public bool turbineConnected;
+        public bool networkConnected;
+
+        /// <summary>0 to 1; at 1 a burner without a safety valve bursts.</summary>
+        public float pressure;
+
+        private float ashBuffer;
+        private bool venting;
 
         public CompProperties_StirlingEngine Props => (CompProperties_StirlingEngine)props;
 
@@ -115,12 +165,20 @@ namespace TrashbrickBurning
         /// <summary>Advanced mode: the heat this burner is making right now.</summary>
         public float HeatWatts => Advanced && Burning ? Level.watts : 0f;
 
-        public float FuelPerDay => Advanced ? Level.fuelPerDay : Props.simpleFuelPerDay;
+        public float FuelPerDay =>
+            (Advanced ? Level.fuelPerDay : Props.simpleFuelPerDay) * TrashbrickBurningMod.S.fuelUseMultiplier;
 
         public float RoomHeatPerSecond => Advanced ? Level.roomHeatPerSecond : Props.simpleRoomHeatPerSecond;
 
+        /// <summary>Heat the network and hot water left unused, which builds pressure.</summary>
+        public float UnusedWatts => networkConnected ? Mathf.Max(0f, surplusWatts - hotWaterDrawWatts) : 0f;
+
         /// <summary>Simple mode, read by the DBH boiler.</summary>
         public bool HeatRecoveryActive => !Advanced && mode == StirlingMode.HeatRecovery && Burning;
+
+        public bool Venting => venting;
+
+        public float AshBuffer => ashBuffer;
 
         public IEnumerable<StirlingMode> AvailableModes()
         {
@@ -137,6 +195,8 @@ namespace TrashbrickBurning
             base.PostExposeData();
             Scribe_Values.Look(ref mode, "stirlingMode", StirlingMode.Power);
             Scribe_Values.Look(ref heatLevel, "heatLevel", 0);
+            Scribe_Values.Look(ref pressure, "pressure", 0f);
+            Scribe_Values.Look(ref ashBuffer, "ashBuffer", 0f);
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -169,18 +229,61 @@ namespace TrashbrickBurning
         {
             if (Burning)
             {
-                parent.GetComp<CompRefuelable>()?.ConsumeFuel(FuelPerDay * ticks / GenDate.TicksPerDay);
+                float burnt = FuelPerDay * ticks / GenDate.TicksPerDay;
+                parent.GetComp<CompRefuelable>()?.ConsumeFuel(burnt);
+                ashBuffer += burnt * Props.ashPerFuel * TrashbrickBurningMod.S.ashMultiplier;
                 if (parent.Spawned)
                 {
                     // CompHeatPusher's rate is per second, pushed once every 60 ticks.
                     GenTemperature.PushHeat(parent, RoomHeatPerSecond * ticks / 60f);
                 }
             }
+            if (parent.Spawned)
+            {
+                Ash.DropWholeUnits(this, ref ashBuffer);
+            }
             if (Advanced)
             {
-                HotWaterAllocation.UpdateBurner(this);
+                HeatNetwork.UpdateBurner(this);
+                UpdatePressure(ticks);
+            }
+            else
+            {
+                pressure = 0f;
+                venting = false;
             }
             Apply();
+        }
+
+        private void UpdatePressure(int ticks)
+        {
+            float days = (float)ticks / GenDate.TicksPerDay;
+            float unused = UnusedWatts;
+            if (unused > 1f)
+            {
+                pressure += unused / PressureWattsPerHalfDay * days * 2f;
+            }
+            else
+            {
+                pressure = Mathf.Max(0f, pressure - days * 2f);
+            }
+            venting = false;
+            if (pressure < VentAt || !parent.Spawned)
+            {
+                return;
+            }
+            // With hazards off, every burner behaves as if it had a safety valve.
+            if (Props.safetyValve || !TrashbrickBurningMod.Hazards)
+            {
+                pressure = VentAt;
+                venting = true;
+                return;
+            }
+            if (pressure >= 1f)
+            {
+                pressure = 0f;
+                SteamBurst.Burst(parent);
+            }
         }
 
         public void Apply()
@@ -190,10 +293,11 @@ namespace TrashbrickBurning
             {
                 return;
             }
+            float power = TrashbrickBurningMod.S.powerMultiplier;
             if (Advanced)
             {
                 plant.outputFactor = 1f;
-                if (turbineConnected || !Burning)
+                if (networkConnected || !Burning)
                 {
                     plant.fixedWatts = 0f;
                 }
@@ -202,7 +306,7 @@ namespace TrashbrickBurning
                     // Heat the hot water system draws doesn't turn the engine: its power drops
                     // in proportion, down to nothing.
                     float heat = Mathf.Max(1f, HeatWatts);
-                    plant.fixedWatts = Level.builtInWatts * Mathf.Clamp01(1f - hotWaterDrawWatts / heat);
+                    plant.fixedWatts = Level.builtInWatts * power * Mathf.Clamp01(1f - hotWaterDrawWatts / heat);
                 }
                 return;
             }
@@ -210,15 +314,20 @@ namespace TrashbrickBurning
             switch (mode)
             {
                 case StirlingMode.WaterCooled:
-                    plant.outputFactor = waterFlowing ? Props.cooledPowerFactor : 1f;
+                    plant.outputFactor = (waterFlowing ? Props.cooledPowerFactor : 1f) * power;
                     break;
                 case StirlingMode.HeatRecovery:
-                    plant.outputFactor = Props.heatRecoveryPowerFactor;
+                    plant.outputFactor = Props.heatRecoveryPowerFactor * power;
                     break;
                 default:
-                    plant.outputFactor = 1f;
+                    plant.outputFactor = power;
                     break;
             }
+        }
+
+        public void DumpAsh()
+        {
+            Ash.DropAll(this, ref ashBuffer);
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
@@ -230,6 +339,16 @@ namespace TrashbrickBurning
             if (parent.Faction != Faction.OfPlayer)
             {
                 yield break;
+            }
+            if (ashBuffer > 0.05f)
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "STB_DumpAsh".Translate(),
+                    defaultDesc = "STB_DumpAshDesc".Translate(),
+                    icon = TexCommand.Install,
+                    action = DumpAsh
+                };
             }
             if (Advanced)
             {
@@ -269,48 +388,71 @@ namespace TrashbrickBurning
         private string BurnRateTable()
         {
             string table = "";
+            float fuelMult = TrashbrickBurningMod.S.fuelUseMultiplier;
             foreach (HeatLevel level in Props.heatLevels)
             {
-                table += "\n" + "STB_BurnRateLine".Translate(level.watts.ToString("0"), level.fuelPerDay.ToString("0.#"),
-                    (level.fuelPerDay * 1000f / level.watts).ToString("0.0"), level.roomHeatPerSecond.ToString("0.#"),
-                    level.builtInWatts.ToString("0"));
+                float fuel = level.fuelPerDay * fuelMult;
+                table += "\n" + "STB_BurnRateLine".Translate(level.watts.ToString("0"), fuel.ToString("0.#"),
+                    (fuel * 1000f / level.watts).ToString("0.0"), level.roomHeatPerSecond.ToString("0.#"),
+                    (level.builtInWatts * TrashbrickBurningMod.S.powerMultiplier).ToString("0"));
             }
             return table;
         }
 
         public override string CompInspectStringExtra()
         {
+            List<string> lines = new List<string>();
             if (Advanced)
             {
-                string s = "STB_BurnerStatus".Translate(HeatWatts.ToString("0"), FuelPerDay.ToString("0.#"));
-                if (!Burning)
+                lines.Add("STB_BurnerStatus".Translate(HeatWatts.ToString("0"), FuelPerDay.ToString("0.#")));
+                if (Burning)
                 {
-                    return s;
+                    if (networkConnected)
+                    {
+                        lines.Add("STB_ToNetwork".Translate(toNetworkWatts.ToString("0")));
+                    }
+                    else
+                    {
+                        lines.Add("STB_NoNetworkBuiltIn".Translate(
+                            (Level.builtInWatts * TrashbrickBurningMod.S.powerMultiplier).ToString("0")));
+                    }
+                    if (hotWaterDrawWatts > 0.5f)
+                    {
+                        lines.Add("STB_ToHotWater".Translate(hotWaterDrawWatts.ToString("0")));
+                    }
                 }
-                if (turbineConnected)
+                if (pressure > 0.01f)
                 {
-                    s += "\n" + "STB_ToTurbines".Translate(toTurbinesWatts.ToString("0"));
+                    string p = "STB_Pressure".Translate(pressure.ToStringPercent());
+                    if (venting)
+                    {
+                        p += " " + "STB_Venting".Translate();
+                    }
+                    else if (pressure >= WarnAt)
+                    {
+                        p += " " + (Props.safetyValve ? "STB_NearVent" : "STB_NearBurst").Translate();
+                    }
+                    lines.Add(p);
                 }
-                else
-                {
-                    s += "\n" + "STB_NoTurbineBuiltIn".Translate(Level.builtInWatts.ToString("0"));
-                }
-                if (hotWaterDrawWatts > 0.5f)
-                {
-                    s += "\n" + "STB_ToHotWater".Translate(hotWaterDrawWatts.ToString("0"));
-                }
-                return s;
             }
-            string line = "STB_SimpleStatus".Translate(FuelPerDay.ToString("0.#"));
-            if (DbhActive)
+            else
             {
-                line += "\n" + ("STB_Mode_" + mode).Translate();
-                if (mode == StirlingMode.WaterCooled && !waterFlowing && Burning)
+                lines.Add("STB_SimpleStatus".Translate(FuelPerDay.ToString("0.#")));
+                if (DbhActive)
                 {
-                    line += " (" + "STB_NoWater".Translate() + ")";
+                    string line = ("STB_Mode_" + mode).Translate();
+                    if (mode == StirlingMode.WaterCooled && !waterFlowing && Burning)
+                    {
+                        line += " (" + "STB_NoWater".Translate() + ")";
+                    }
+                    lines.Add(line);
                 }
             }
-            return line;
+            if (ashBuffer > 0.05f)
+            {
+                lines.Add("STB_AshPan".Translate(ashBuffer.ToString("0.0")));
+            }
+            return string.Join("\n", lines);
         }
     }
 }

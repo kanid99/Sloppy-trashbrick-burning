@@ -20,6 +20,11 @@ With Vanilla Furniture Expanded - Factory: belt-fed through factory hoppers.
 Needs Vanilla Recycling Expanded, and is researched after complex recycling.</description>
 	<modDependencies>
 		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+			<steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077</steamWorkshopUrl>
+		</li>
+		<li>
 			<packageId>OskarPotocki.VanillaFactionsExpanded.Core</packageId>
 			<displayName>Vanilla Expanded Framework</displayName>
 			<steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=2023507013</steamWorkshopUrl>
@@ -31,6 +36,7 @@ Needs Vanilla Recycling Expanded, and is researched after complex recycling.</de
 		</li>
 	</modDependencies>
 	<loadAfter>
+		<li>brrainz.harmony</li>
 		<li>OskarPotocki.VanillaFactionsExpanded.Core</li>
 		<li>VanillaExpanded.Recycling</li>
 		<li>Dubwise.DubsBadHygiene</li>

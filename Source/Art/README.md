@@ -95,6 +95,13 @@ set. Nothing on them was made to go together:
 The only saturated colour is still the one that means something: the fire on the stove, and the
 hot-water inlet on the turbine.
 
+## Effects, placed in the art's coordinates
+
+`CompMachineEffects` puts smoke, steam and the firebox glow at points given in the same machine
+coordinates the art is drawn in (`a` across the front, `f` front to back, `z` up), and turns them
+into world offsets for whichever way the building faces, including `LIFT` for height. So the flue
+smoke comes out of the flue in all four views, with no per-rotation offsets to keep in step.
+
 ## Loose parts that rattle
 
 A building's texture is baked into the map mesh and can't move. So on the two jerry-rigged
@@ -140,6 +147,10 @@ VE's hidden pipes do.
 | `STB_FuelHopper_*` | 288x288 | 1x1 at `drawSize (1.5,1.5)` |
 | `STB_HotWaterPipe_Atlas`, `_Blueprint_Atlas` | 512x512 | 4x4 linked atlas, 128px tiles |
 | `STB_HotWaterValve` | 288x288 | 1x1 at `drawSize (1.5,1.5)` |
+| `STB_HotWaterRadiator` | 288x288 | 1x1 at `drawSize (1.5,1.5)`: a row of identical cast columns |
+| `STB_HeatAccumulator` | 576x576 | 2x2 at `drawSize (3,3)`: a lagged tank with a bolted manway |
+| `STB_FireGlow` | 128x128 | the firebox flicker's soft blob, drawn by CompMachineEffects with the MoteGlow shader |
+| `STB_Ash/*`, `STB_AshcreteBlocks/*` | 128x128 | `Graphic_StackCount`, small to large |
 | `STB_SludgePellets/*_a,_b,_c` | 128x128 | `Graphic_StackCount`, small to large |
 | `About/Preview.png` | 640x360 | composited from the shipped textures |
 | `About/ModIcon.png` | 256x256 | the cobbled stove alone, which still reads at 32px |

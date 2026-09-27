@@ -2,7 +2,7 @@
 A RimWorld mod (1.5 / 1.6) for burning trash bricks, and maybe more, for power.
 
 ## Requirements
-- **Required:** Vanilla Expanded Framework (VRE already needs it; its PipeSystem runs the hot water network)
+- **Required:** Vanilla Expanded Framework (VRE already needs it; its PipeSystem runs the hot water network) and Harmony (VEF needs it too)
 - **Required:** [Vanilla Recycling Expanded](https://steamcommunity.com/sharedfiles/filedetails/?id=3155781848) (and what it needs: Vanilla Expanded Framework, Biotech)
 - **Optional:** Dubs Bad Hygiene (in full or Lite mode). If it's loaded, sludge pellets and the plumbing modes switch on.
 - **Optional:** Vanilla Furniture Expanded - Factory. If it's loaded, conveyor compatibility switches on (see below).
@@ -50,6 +50,36 @@ Two tiers, both 2x3. Each turns the heat piped to it into power, from as many bu
 
 For scale: a full steam turbine takes 48–60 bricks a day from cobbled stoves, or 24–27 from gasifiers. One garbage compactor makes 25.
 
+### The heat network (advanced mode)
+A burner's heat goes, in order:
+1. **Steam turbines**, up to their capacity. An accumulator tops them up if the burners fall short.
+2. **Hot water radiators**: 1x1, up to 250W each, heat their room to the target temperature you set, through vanilla's own temperature system.
+3. **Heat accumulators**: 2x2, store 24 kWh, charging and discharging at up to 750W. A battery for steam that keeps turbines turning while burners are refuelled or switched off.
+4. **Dubs Bad Hygiene hot water and heating**, if installed.
+5. Whatever's left **builds pressure**.
+
+With nothing piped to it, a burner runs its own small engine instead (100/200/300W), and never builds pressure.
+
+### Hazards (can be switched off)
+- **Overpressure:** heat with nowhere to go builds pressure over about half a day at 500W. The **gasifier's safety valve** vents it harmlessly in puffs of steam. The **cobbled stove has no working safety valve**: at full pressure it **bursts**. A **1000°C steam cloud** fills everything within 5 tiles in line of sight: rooms are heated by the share of them the cloud fills, and anyone caught in it is scalded, worst at the centre. The stove then breaks down and needs repairing. A critical alert warns you from 70% pressure.
+- **Steam leaks:** pipes, turbines, radiators and accumulators spring a leak now and then while hot water flows. On average once every 20 days per network, whatever its size, and adjustable in settings. A leaking part is damaged and sprays scalding steam on the cells around it until a colonist repairs it. Parts badly damaged some other way (raids, fire) leak too.
+
+### Ash
+Burners fill an ash pan as they burn (cobbled 0.25 ash per brick, gasifier 0.1). Like the SloppyMods Riimba station's waste, whole ash items come out **automatically** behind the burner, the side opposite its intake. It never blocks: if the spot's taken, the ash goes on the nearest free cell, and a hopper or storage there catches it for haulers or a conveyor. A **Rake out ash** button empties the pan early.
+- **Ashcrete blocks:** 30 ash makes 20 blocks at a stonecutter's table. A cheap, fireproof, stony building material, weaker and plainer than cut stone.
+
+### Other fuels
+Burners also take **wood** (a log is worth 0.4 of a trashbrick) and **chemfuel** (a unit is worth 2.5). A Harmony patch makes refuelling count each fuel at its own value. Switch it off in settings.
+
+### Polish
+- **Effects:** smoke from the cobbled flue, a flickering firebox glow, steam wisps from turbines and the gasifier's stack, and the gasifier's safety valve visibly venting.
+- **Sound:** the jerry-rigged machines play a rattling running loop (`Sounds/STB/CobbledRattle.wav`, synthesised by `Source/Audio/make_rattle.py`).
+- **Alerts:** burner overpressure (critical), steam turbine getting no heat, burner out of fuel.
+- **Status:** turbines show how many burners feed them; accumulators show a charge bar and kWh stored.
+
+### Settings
+Play mode, hazards on/off, other fuels on/off, and sliders for fuel use, power output, ash and leak frequency.
+
 ### One intake, no output
 Each machine has a single intake, marked with a green in-arrow on the edge it faces. The stove only takes fuel from a hopper on the cells in front of that intake. Those cells are outlined in green while you place or select it.
 
@@ -89,9 +119,11 @@ Defs/ThingDefs_Buildings/                both machines, the fuel hopper, the hot
 Mods/DubsBadHygiene/Defs, Patches/       sludge pellets, plumbing and engine modes
 Mods/DubsBadHygiene/1.5, 1.6/Assemblies/ TrashbrickBurning.DBH.dll (references BadHygiene.dll)
 Mods/VFEFactory/Patches/                 factory-hopper tag, hides our hopper
-Source/TrashbrickBurning/                mod settings, CompStirlingEngine (burner), HotWaterAllocation + CompSteamTurbine, CompLooseParts, CompHopperFeed, PlaceWorker_ShowIntake, CompPowerPlantStirling, CompBurnPollution
+Source/TrashbrickBurning/                mod settings, CompStirlingEngine (burner, pressure, ash), HeatNetwork + turbine/radiator/accumulator, Hazards (burst, leaks), Ash, CompMachineEffects, CompLooseParts, Alerts, HarmonyPatches (fuel values), CompHopperFeed, PlaceWorker_ShowIntake, CompPowerPlantStirling, CompBurnPollution
 Source/TrashbrickBurning.DBH/            CompStirlingWater, CompStirlingBoiler
 Source/Art/                              draws, verifies and measures every texture
+Source/Audio/make_rattle.py              synthesises the rattle loop
+Sounds/STB/                              the rattle loop
 ```
 
 ## Building

@@ -89,6 +89,13 @@
 		<costList>
 			<Steel>3</Steel>
 		</costList>
+		<comps>
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+			<!-- Springs a steam leak now and then while hot water flows; leaks until repaired. -->
+			<li Class="TrashbrickBurning.CompProperties_SteamLeak"/>
+		</comps>
 	</ThingDef>
 
 	<ThingDef ParentName="STB_HotWaterPipeBase">
@@ -226,6 +233,12 @@
 					<li><texPath>Things/Building/Power/STB_CobbledTurbine_LooseB</texPath><amplitude>0.009</amplitude><frequency>3.1</frequency><phase>2.1</phase></li>
 				</layers>
 			</li>
+			<!-- Springs a steam leak now and then while hot water flows; leaks until repaired. -->
+			<li Class="TrashbrickBurning.CompProperties_SteamLeak"/>
+			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
+				<steam><a>1.0</a><f>1.75</f><z>0.45</z></steam>
+				<sound>STB_RattleAmbience</sound>
+			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Breakdownable"/>
 			<li Class="CompProperties_HeatPusher">
@@ -290,6 +303,11 @@
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
 			</li>
+			<!-- Springs a steam leak now and then while hot water flows; leaks until repaired. -->
+			<li Class="TrashbrickBurning.CompProperties_SteamLeak"/>
+			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
+				<steam><a>1.0</a><f>1.75</f><z>0.5</z></steam>
+			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Breakdownable"/>
 			<li Class="CompProperties_HeatPusher">
@@ -303,6 +321,114 @@
 		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
 		<researchPrerequisites>
 			<li>MicroelectronicsBasics</li>
+			<li>VRecyclingE_ComplexRecycling</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+	<!--
+		Radiator: heats its room from the network, up to its target temperature, through vanilla's
+		own temperature system. Comes after turbines in the network's order. With Dubs Bad Hygiene,
+		burners already heat DBH's own radiators through the plumbing; this one needs no DBH.
+	-->
+	<ThingDef ParentName="BuildingBase">
+		<defName>STB_HotWaterRadiator</defName>
+		<label>hot water radiator</label>
+		<description>A cast radiator that heats its room with pressurised hot water from trashbrick burners, up to the temperature you set. Radiators only get heat the steam turbines on their network leave over. Connect it by running a pressurised hot water pipe under it.</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Power/STB_HotWaterRadiator</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(1.5,1.5)</drawSize>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<pathCost>42</pathCost>
+		<fillPercent>0.4</fillPercent>
+		<rotatable>false</rotatable>
+		<size>(1,1)</size>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<MaxHitPoints>100</MaxHitPoints>
+			<WorkToBuild>600</WorkToBuild>
+			<Flammability>0</Flammability>
+			<Beauty>-4</Beauty>
+		</statBases>
+		<costList>
+			<Steel>45</Steel>
+		</costList>
+		<comps>
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+			<li Class="TrashbrickBurning.CompProperties_HotWaterRadiator">
+				<maxWatts>250</maxWatts>
+			</li>
+			<li Class="CompProperties_TempControl">
+				<energyPerSecond>0</energyPerSecond>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<!-- Springs a steam leak now and then while hot water flows; leaks until repaired. -->
+			<li Class="TrashbrickBurning.CompProperties_SteamLeak"/>
+		</comps>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<designationCategory>Temperature</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<researchPrerequisites>
+			<li>Electricity</li>
+			<li>VRecyclingE_ComplexRecycling</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+	<!--
+		Heat accumulator: a battery for steam. Charges from heat nothing else on the network is
+		using, discharges into turbines when the burners fall short. 1000 watt-days (24 kWh) at up
+		to 750W either way.
+	-->
+	<ThingDef ParentName="BuildingBase">
+		<defName>STB_HeatAccumulator</defName>
+		<label>heat accumulator</label>
+		<description>A lagged tank of superheated water. It stores heat nothing else on its pressurised hot water network is using, and gives it back to the steam turbines when the burners fall short - so the turbines keep turning while burners are refuelled or switched off. Holds 24 kWh, charging and discharging at up to 750W. Connect it by running a pressurised hot water pipe under it.</description>
+		<thingClass>Building</thingClass>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<graphicData>
+			<texPath>Things/Building/Power/STB_HeatAccumulator</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(3,3)</drawSize>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<fillPercent>0.9</fillPercent>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>false</castEdgeShadows>
+		<rotatable>false</rotatable>
+		<size>(2,2)</size>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<MaxHitPoints>350</MaxHitPoints>
+			<WorkToBuild>3000</WorkToBuild>
+			<Flammability>0</Flammability>
+			<Beauty>-10</Beauty>
+		</statBases>
+		<costList>
+			<Steel>180</Steel>
+			<ComponentIndustrial>2</ComponentIndustrial>
+		</costList>
+		<comps>
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+			<li Class="TrashbrickBurning.CompProperties_HeatAccumulator">
+				<capacityWattDays>1000</capacityWattDays>
+				<rateWatts>750</rateWatts>
+			</li>
+			<!-- Springs a steam leak now and then while hot water flows; leaks until repaired. -->
+			<li Class="TrashbrickBurning.CompProperties_SteamLeak"/>
+		</comps>
+		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+		<designationCategory>Power</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<researchPrerequisites>
+			<li>Electricity</li>
 			<li>VRecyclingE_ComplexRecycling</li>
 		</researchPrerequisites>
 	</ThingDef>

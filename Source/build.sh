@@ -18,7 +18,7 @@ build() {
   mcs -target:library -optimize+ -nostdlib -noconfig \
     -r:"$r/mscorlib.dll" -r:"$r/System.dll" -r:"$r/System.Core.dll" $extra \
     -r:"$r/Assembly-CSharp.dll" -r:"$r/UnityEngine.CoreModule.dll" \
-    -r:"$VEF_DIR/$game/Assemblies/PipeSystem.dll" \
+    -r:"$VEF_DIR/$game/Assemblies/PipeSystem.dll" -r:"$HARMONY" \
     -out:"$game/Assemblies/TrashbrickBurning.dll" Source/TrashbrickBurning/*.cs
   echo "built $game"
 }
@@ -30,6 +30,14 @@ if [ ! -f "$VEF_DIR/1.6/Assemblies/PipeSystem.dll" ]; then
   rm -rf "$VEF_DIR"
   git clone -q --depth 1 --filter=blob:none --sparse https://github.com/Vanilla-Expanded/VanillaExpandedFramework.git "$VEF_DIR"
   git -C "$VEF_DIR" sparse-checkout set 1.5/Assemblies 1.6/Assemblies
+fi
+
+# Harmony, for the other-fuels patch. At runtime it comes from the Harmony mod, which VEF needs too.
+HARMONY="$REF_DIR/harmony/lib/net472/0Harmony.dll"
+if [ ! -f "$HARMONY" ]; then
+  mkdir -p "$REF_DIR/harmony"
+  curl -sSL "https://api.nuget.org/v3-flatcontainer/lib.harmony/2.3.3/lib.harmony.2.3.3.nupkg" -o "$REF_DIR/harmony.nupkg"
+  (cd "$REF_DIR/harmony" && unzip -qo ../harmony.nupkg)
 fi
 
 build 1.5 1.5.4409

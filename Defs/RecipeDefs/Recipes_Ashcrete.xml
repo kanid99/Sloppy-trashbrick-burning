@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+	<RecipeDef>
+		<defName>STB_Make_AshcreteBlocks</defName>
+		<label>make ashcrete blocks</label>
+		<description>Bind burner ash into ashcrete blocks.</description>
+		<jobString>Making ashcrete blocks.</jobString>
+		<workAmount>1200</workAmount>
+		<workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+		<effectWorking>CutStone</effectWorking>
+		<soundWorking>Recipe_MakeStoneBlocks</soundWorking>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>STB_Ash</li>
+					</thingDefs>
+				</filter>
+				<count>30</count>
+			</li>
+		</ingredients>
+		<fixedIngredientFilter>
+			<thingDefs>
+				<li>STB_Ash</li>
+			</thingDefs>
+		</fixedIngredientFilter>
+		<products>
+			<STB_AshcreteBlocks>20</STB_AshcreteBlocks>
+		</products>
+		<recipeUsers>
+			<li>TableStonecutter</li>
+		</recipeUsers>
+	</RecipeDef>
+
+</Defs>
