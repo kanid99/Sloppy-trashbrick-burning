@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+	<STB_FeedFromHoppers>Draw from hoppers</STB_FeedFromHoppers>
+	<STB_FeedFromHoppersDesc>If on, this stove takes fuel from any hopper touching it whenever it drops below its target fuel level. Works with the fuel hopper, the vanilla hopper, and Vanilla Furniture Expanded - Factory hoppers. Turn off to keep a hopper's contents for something else.</STB_FeedFromHoppersDesc>
+</LanguageData>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+	<!--
+		Only loaded when Vanilla Furniture Expanded - Factory is active (see LoadFolders.xml), so naming
+		PipeSystem.FactoryHopperExtension here can't break loading for anyone without it.
+
+		Belts already work with no help from us: a conveyor pushes into any storage building in front
+		of it (so belt -> fuel hopper -> stove buffers fuel), and a conveyor pointed straight at the
+		stove becomes a refueling port through its CompRefuelable.
+	-->
+
+	<!-- Mark ours as a factory hopper too, so belts can also pull fuel back out of it. -->
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[defName="STB_FuelHopper"]</xpath>
+		<value>
+			<modExtensions>
+				<li Class="PipeSystem.FactoryHopperExtension">
+					<isfactoryHopper>true</isfactoryHopper>
+				</li>
+			</modExtensions>
+		</value>
+	</Operation>
+
+	<!--
+		VFE's factory hopper is what players already build for belts, and the stove feeds from it, so
+		drop ours from the architect menu. The def stays, so hoppers already built keep working.
+	-->
+	<Operation Class="PatchOperationRemove">
+		<xpath>Defs/ThingDef[defName="STB_FuelHopper"]/designationCategory</xpath>
+	</Operation>
+
+</Patch>

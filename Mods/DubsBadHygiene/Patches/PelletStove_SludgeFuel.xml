@@ -16,4 +16,19 @@
 		</value>
 	</Operation>
 
+	<!-- Let the fuel hopper hold sludge pellets too. -->
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[defName="STB_FuelHopper"]/building/fixedStorageSettings/filter/thingDefs</xpath>
+		<value>
+			<li>STB_SludgePellets</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[defName="STB_FuelHopper"]/building/defaultStorageSettings/filter/thingDefs</xpath>
+		<value>
+			<li>STB_SludgePellets</li>
+		</value>
+	</Operation>
+
 </Patch>
