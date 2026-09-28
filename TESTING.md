@@ -92,8 +92,9 @@ Leave a **cobbled stove at 500W** connected to a turbine, then switch the **turb
   turbines can take, it fills (orange bar, *Stored: x of 24 kWh (+W)*).
 - [ ] Switch it to **reserve**: it charges straight away, taking heat before the turbine. Switch the
   stoves off: it discharges into the turbine, which keeps running until the tank is empty.
-- [ ] Selecting a stove, turbine, accumulator or radiator shows **build buttons** for the hot water
-  pipe, hidden pipe and valve.
+- [ ] Selecting any of the mod's buildings shows **build buttons for all the others** (not itself),
+  in chain order: hopper, stoves, pipes, valve, turbines, accumulator, radiators. Unresearched ones
+  don't appear.
 - [ ] With a radiator or accumulator soaking up the spare heat, pressure no longer climbs.
 
 ## 6. Steam leaks

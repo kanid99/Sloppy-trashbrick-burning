@@ -45,7 +45,7 @@ Two tiers, both 2x3. Each turns the heat piped to it into power, from as many bu
 | Conversion | 75%, **750W max** | 100%, **1500W max** |
 | Burners to fill it | 2 at 500W, or 4 at 250W | 3 at 500W, or 6 at 250W |
 
-- **Pipes:** our own network on Vanilla Expanded Framework's PipeSystem, the same system VE's chemfuel pipes use. That gives the usual overlay, plus a visible pipe, a **hidden pipe** and a **valve**, all at the Electricity tier. The visible and hidden pipe share **one architect button** (a dropdown). They sit in the Power tab, or in VE's **pipe networks** tab when a mod adds it (Vanilla Chemfuel Expanded). A building joins the network where a pipe runs under it. Selecting a burner, turbine, accumulator or radiator shows **build buttons for the pipe, hidden pipe and valve**, so there's no trip to the architect menu.
+- **Pipes:** our own network on Vanilla Expanded Framework's PipeSystem, the same system VE's chemfuel pipes use. That gives the usual overlay, plus a visible pipe, a **hidden pipe** and a **valve**, all at the Electricity tier. The visible and hidden pipe share **one architect button** (a dropdown). They sit in the Power tab, or in VE's **pipe networks** tab when a mod adds it (Vanilla Chemfuel Expanded). A building joins the network where a pipe runs under it.
 - **Status:** each burner shows its heat, fuel use and where its heat is going; each turbine shows the heat it's getting, its capacity and its conversion rate.
 
 For scale: a full steam turbine takes 48–60 bricks a day from cobbled stoves, or 24–27 from gasifiers. One garbage compactor makes 25.
@@ -76,6 +76,9 @@ Burners also take **wood** (a log is worth 0.4 of a trashbrick) and **chemfuel**
 - **Sound:** the jerry-rigged machines play a rattling running loop (`Sounds/STB/CobbledRattle.wav`, synthesised by `Source/Audio/make_rattle.py`).
 - **Alerts:** burner overpressure (critical), steam turbine getting no heat, burner out of fuel.
 - **Status:** turbines show how many burners feed them; accumulators show a charge bar and kWh stored.
+
+### Build shortcuts
+Selecting any building from this mod shows build buttons for **every other one**: hopper, stoves, pipes, valve, turbines, accumulator and radiators, in that order, from fuel to power. You can lay out a whole chain without going back to the architect menu. They're the architect's own buttons, so each appears only once researched, and the heat network's stay hidden in simple mode.
 
 ### Settings
 Play mode, hazards on/off, other fuels on/off, and sliders for fuel use, power output, ash and leak frequency.
@@ -119,7 +122,7 @@ Defs/ThingDefs_Buildings/                both machines, the fuel hopper, the hot
 Mods/DubsBadHygiene/Defs, Patches/       sludge pellets, plumbing and engine modes
 Mods/DubsBadHygiene/1.5, 1.6/Assemblies/ TrashbrickBurning.DBH.dll (references BadHygiene.dll)
 Mods/VFEFactory/Patches/                 factory-hopper tag, hides our hopper
-Source/TrashbrickBurning/                mod settings, CompStirlingEngine (burner, pressure, ash), HeatNetwork + turbine/radiator/accumulator, Hazards (burst, leaks), Ash, CompMachineEffects, CompLooseParts, Alerts, HarmonyPatches (fuel values), CompHopperFeed, PlaceWorker_ShowIntake, CompPowerPlantStirling, CompBurnPollution
+Source/TrashbrickBurning/                mod settings, CompBuildShortcuts, CompStirlingEngine (burner, pressure, ash), HeatNetwork + turbine/radiator/accumulator, Hazards (burst, leaks), Ash, CompMachineEffects, CompLooseParts, Alerts, HarmonyPatches (fuel values), CompHopperFeed, PlaceWorker_ShowIntake, CompPowerPlantStirling, CompBurnPollution
 Source/TrashbrickBurning.DBH/            CompStirlingWater, CompStirlingBoiler
 Source/Art/                              draws, verifies and measures every texture
 Source/Audio/make_rattle.py              synthesises the rattle loop

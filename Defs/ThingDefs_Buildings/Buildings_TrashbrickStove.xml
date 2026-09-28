@@ -112,14 +112,8 @@
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
 			</li>
-			<!-- Build buttons for the pipes and valve when this is selected. -->
-			<li Class="TrashbrickBurning.CompProperties_PipeShortcuts">
-				<defs>
-					<li>STB_HotWaterPipe</li>
-					<li>STB_HotWaterPipeHidden</li>
-					<li>STB_HotWaterValve</li>
-				</defs>
-			</li>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
 			<!-- Only while burning. Needs Biotech, which VRE already requires. -->
 			<li Class="TrashbrickBurning.CompProperties_BurnPollution">
 				<cellsPerDay>3</cellsPerDay>
@@ -240,14 +234,8 @@
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
 			</li>
-			<!-- Build buttons for the pipes and valve when this is selected. -->
-			<li Class="TrashbrickBurning.CompProperties_PipeShortcuts">
-				<defs>
-					<li>STB_HotWaterPipe</li>
-					<li>STB_HotWaterPipeHidden</li>
-					<li>STB_HotWaterValve</li>
-				</defs>
-			</li>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
 		</comps>
 		<placeWorkers>
 			<li>TrashbrickBurning.PlaceWorker_ShowIntake</li>
@@ -332,6 +320,10 @@
 				</filter>
 			</defaultStorageSettings>
 		</building>
+		<comps>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
+		</comps>
 		<inspectorTabs>
 			<li>ITab_Storage</li>
 		</inspectorTabs>

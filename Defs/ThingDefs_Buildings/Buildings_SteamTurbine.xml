@@ -46,6 +46,8 @@
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
 			</li>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
 		</comps>
 		<placeWorkers>
 			<li>PipeSystem.PlaceWorker_Pipe</li>
@@ -91,10 +93,9 @@
 		<costList>
 			<Steel>3</Steel>
 		</costList>
+		<!-- The base already gives it the network connection; comp lists merge with the parent's,
+		     so repeating it here would give the pipe two. -->
 		<comps>
-			<li Class="PipeSystem.CompProperties_Resource">
-				<pipeNet>STB_HotWaterNet</pipeNet>
-			</li>
 			<!-- Springs a steam leak now and then while hot water flows; leaks until repaired. -->
 			<li Class="TrashbrickBurning.CompProperties_SteamLeak"/>
 		</comps>
@@ -169,6 +170,8 @@
 				<commandLabelKey>STB_ValveLabel</commandLabelKey>
 				<commandDescKey>STB_ValveDesc</commandDescKey>
 			</li>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
 		</comps>
 		<rotatable>false</rotatable>
 		<selectable>true</selectable>
@@ -228,14 +231,8 @@
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
 			</li>
-			<!-- Build buttons for the pipes and valve when this is selected. -->
-			<li Class="TrashbrickBurning.CompProperties_PipeShortcuts">
-				<defs>
-					<li>STB_HotWaterPipe</li>
-					<li>STB_HotWaterPipeHidden</li>
-					<li>STB_HotWaterValve</li>
-				</defs>
-			</li>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
 			<!-- The parts that rattle while it turns: two layers drawn over the sprite and shaken. -->
 			<li Class="TrashbrickBurning.CompProperties_LooseParts">
 				<layers>
@@ -313,14 +310,8 @@
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
 			</li>
-			<!-- Build buttons for the pipes and valve when this is selected. -->
-			<li Class="TrashbrickBurning.CompProperties_PipeShortcuts">
-				<defs>
-					<li>STB_HotWaterPipe</li>
-					<li>STB_HotWaterPipeHidden</li>
-					<li>STB_HotWaterValve</li>
-				</defs>
-			</li>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
 			<!-- Springs a steam leak now and then while hot water flows; leaks until repaired. -->
 			<li Class="TrashbrickBurning.CompProperties_SteamLeak"/>
 			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
@@ -378,14 +369,8 @@
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
 			</li>
-			<!-- Build buttons for the pipes and valve when this is selected. -->
-			<li Class="TrashbrickBurning.CompProperties_PipeShortcuts">
-				<defs>
-					<li>STB_HotWaterPipe</li>
-					<li>STB_HotWaterPipeHidden</li>
-					<li>STB_HotWaterValve</li>
-				</defs>
-			</li>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
 			<li Class="TrashbrickBurning.CompProperties_HotWaterRadiator">
 				<maxWatts>250</maxWatts>
 			</li>
@@ -440,14 +425,8 @@
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
 			</li>
-			<!-- Build buttons for the pipes and valve when this is selected. -->
-			<li Class="TrashbrickBurning.CompProperties_PipeShortcuts">
-				<defs>
-					<li>STB_HotWaterPipe</li>
-					<li>STB_HotWaterPipeHidden</li>
-					<li>STB_HotWaterValve</li>
-				</defs>
-			</li>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
 			<li Class="TrashbrickBurning.CompProperties_HotWaterRadiator">
 				<maxWatts>150</maxWatts>
 			</li>
@@ -507,14 +486,8 @@
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
 			</li>
-			<!-- Build buttons for the pipes and valve when this is selected. -->
-			<li Class="TrashbrickBurning.CompProperties_PipeShortcuts">
-				<defs>
-					<li>STB_HotWaterPipe</li>
-					<li>STB_HotWaterPipeHidden</li>
-					<li>STB_HotWaterValve</li>
-				</defs>
-			</li>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
 			<li Class="TrashbrickBurning.CompProperties_HeatAccumulator">
 				<capacityWattDays>1000</capacityWattDays>
 				<rateWatts>750</rateWatts>
