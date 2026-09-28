@@ -55,7 +55,9 @@
 	<STB_AlertOutOfFuelDesc>These trashbrick burners have run dry. Refuel them, or put a hopper on their intake.</STB_AlertOutOfFuelDesc>
 	<STB_BoilerOffering>Hot water: offering {0} heating units to the plumbing</STB_BoilerOffering>
 	<STB_BoilerIdle>Hot water: nothing to offer the plumbing</STB_BoilerIdle>
-	<STB_BoilerNetwork>Plumbing heating demand: {0} U of {1} U from all boilers</STB_BoilerNetwork>
+	<STB_BoilerNetwork>DBH sees on this plumbing: {0} U of tanks and radiators, {1} U from all boilers</STB_BoilerNetwork>
+	<STB_BoilerNoPlumbing>Not on DBH plumbing: lay a plumbing pipe under it.</STB_BoilerNoPlumbing>
+	<STB_BoilerNoStores>No working hot water tanks or radiators on this plumbing (a closed radiator valve counts as none).</STB_BoilerNoStores>
 	<STB_HotWaterShare>Hot water: {0}</STB_HotWaterShare>
 	<STB_HotWaterShareDesc>The share of this burner's heat offered to Dubs Bad Hygiene's hot water tanks and radiators FIRST, before the steam turbines. Left-click to step it up, right-click to pick.\n\nWhatever the plumbing doesn't actually draw of it goes on to the turbines, so a high share only costs power when the tanks and radiators really want the heat. At 0% the plumbing only gets what the network leaves over.</STB_HotWaterShareDesc>
 	<STB_HotWaterShareStatus>Hot water share: {0} ({1}W offered first), drawn: {2}W</STB_HotWaterShareStatus>

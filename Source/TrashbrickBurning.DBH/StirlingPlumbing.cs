@@ -141,10 +141,20 @@ namespace TrashbrickBurning.DBH
             string line = WorkingNow
                 ? "STB_BoilerOffering".Translate(Capacity.ToString("0")).ToString()
                 : "STB_BoilerIdle".Translate().ToString();
-            if (net != null && net.BoilerCapacitySum > 0f)
+            // Always say what DBH itself sees, so a burner that isn't really on the plumbing - or a
+            // plumbing net with no tanks or radiators on it - is obvious from here.
+            if (net == null)
+            {
+                line += "\n" + "STB_BoilerNoPlumbing".Translate();
+            }
+            else
             {
                 line += "\n" + "STB_BoilerNetwork".Translate(net.HeatStoreCapacitySum.ToString("0"),
                     net.BoilerCapacitySum.ToString("0"));
+                if (net.HeatStoreCapacitySum <= 0f)
+                {
+                    line += "\n" + "STB_BoilerNoStores".Translate();
+                }
             }
             return line;
         }
