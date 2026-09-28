@@ -54,4 +54,7 @@
 	<STB_AlertTurbineIdleDesc>These turbines are switched on but no burner on their network is sending them heat. Check the pipes and valves, and that the burners are lit and fuelled.</STB_AlertTurbineIdleDesc>
 	<STB_AlertOutOfFuel>Burner out of fuel</STB_AlertOutOfFuel>
 	<STB_AlertOutOfFuelDesc>These trashbrick burners have run dry. Refuel them, or put a hopper on their intake.</STB_AlertOutOfFuelDesc>
+	<STB_BoilerOffering>Hot water: offering {0} heating units to the plumbing</STB_BoilerOffering>
+	<STB_BoilerIdle>Hot water: nothing to offer the plumbing</STB_BoilerIdle>
+	<STB_BoilerNetwork>Plumbing heating demand: {0} U of {1} U from all boilers</STB_BoilerNetwork>
 </LanguageData>

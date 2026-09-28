@@ -115,5 +115,30 @@ namespace TrashbrickBurning.DBH
                 return base.Capacity;
             }
         }
+
+        // CompBoiler's own gizmos are the electric boiler's power-level stepper ("Power Mode 1/8",
+        // reduce/increase power) and its thermostat override. On a burner they do nothing - its
+        // heat is set by the burn rate - so they're not shown. ThingComp's base gizmos are empty.
+        public override System.Collections.Generic.IEnumerable<Gizmo> CompGetGizmosExtra()
+        {
+            yield break;
+        }
+
+        // CompBoiler's readout prints its def capacity against the power comp's rating, which on a
+        // generator reads as "1600 U / -1000 W" whatever the burner is doing. This says what is
+        // actually going to the plumbing, and how loaded the plumbing's heating is.
+        public override string CompInspectStringExtra()
+        {
+            PlumbingNet net = parent.GetComp<CompPipe>()?.pipeNet;
+            string line = WorkingNow
+                ? "STB_BoilerOffering".Translate(Capacity.ToString("0")).ToString()
+                : "STB_BoilerIdle".Translate().ToString();
+            if (net != null && net.BoilerCapacitySum > 0f)
+            {
+                line += "\n" + "STB_BoilerNetwork".Translate(net.HeatStoreCapacitySum.ToString("0"),
+                    net.BoilerCapacitySum.ToString("0"));
+            }
+            return line;
+        }
     }
 }
