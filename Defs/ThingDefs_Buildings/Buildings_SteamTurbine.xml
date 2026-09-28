@@ -375,6 +375,8 @@
 				<maxWatts>250</maxWatts>
 			</li>
 			<li Class="CompProperties_TempControl">
+				<!-- Vanilla's, minus the trailing line break it leaves when there's no power comp. -->
+				<compClass>TrashbrickBurning.CompRadiatorTempControl</compClass>
 				<energyPerSecond>0</energyPerSecond>
 			</li>
 			<li Class="CompProperties_Flickable"/>
@@ -431,6 +433,8 @@
 				<maxWatts>150</maxWatts>
 			</li>
 			<li Class="CompProperties_TempControl">
+				<!-- Vanilla's, minus the trailing line break it leaves when there's no power comp. -->
+				<compClass>TrashbrickBurning.CompRadiatorTempControl</compClass>
 				<energyPerSecond>0</energyPerSecond>
 			</li>
 			<li Class="CompProperties_Flickable"/>

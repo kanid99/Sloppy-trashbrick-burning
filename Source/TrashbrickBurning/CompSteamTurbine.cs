@@ -319,6 +319,18 @@ namespace TrashbrickBurning
         }
     }
 
+    /// <summary>
+    /// The radiators' thermostat. Vanilla's readout ends in a line break meant for the power line
+    /// that follows on a heater; a radiator has no power comp, so RimWorld logs it as an error.
+    /// </summary>
+    public class CompRadiatorTempControl : CompTempControl
+    {
+        public override string CompInspectStringExtra()
+        {
+            return base.CompInspectStringExtra()?.TrimEnd();
+        }
+    }
+
     public class CompProperties_HeatAccumulator : CompProperties
     {
         /// <summary>Stored heat, in watt-days.</summary>
