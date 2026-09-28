@@ -1,9 +1,17 @@
+using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
 using Verse;
 
 namespace TrashbrickBurning
 {
+    /// <summary>Shown at the top of the mod settings so a test build can be told apart at a glance.
+    /// Keep in step with modVersion in About/About.xml.</summary>
+    public static class BuildInfo
+    {
+        public const string Version = "0.4.0";
+    }
+
     public class TrashbrickSettings : ModSettings
     {
         /// <summary>
@@ -59,6 +67,8 @@ namespace TrashbrickBurning
             TrashbrickSettings s = S;
             Listing_Standard list = new Listing_Standard();
             list.Begin(inRect);
+            list.Label("STB_SettingVersion".Translate(BuildInfo.Version));
+            list.GapLine();
             list.CheckboxLabeled("STB_SettingAdvanced".Translate(), ref s.advanced, "STB_SettingAdvancedDesc".Translate());
             list.Label(s.advanced ? "STB_SettingAdvancedExplain".Translate() : "STB_SettingSimpleExplain".Translate());
             list.Gap();
@@ -113,19 +123,23 @@ namespace TrashbrickBurning
             {
                 return;
             }
-            DesignationCategoryDef category = null;
+            // They may sit in more than one architect tab (the pipes move to VE's pipe networks tab
+            // when it exists), so every tab they came from has its designator list rebuilt.
+            HashSet<DesignationCategoryDef> categories = new HashSet<DesignationCategoryDef>();
             foreach (string name in AdvancedOnly)
             {
                 ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail(name);
-                if (def == null)
+                if (def?.designationCategory == null)
                 {
                     continue;
                 }
-                category = category ?? def.designationCategory;
+                categories.Add(def.designationCategory);
                 def.designationCategory = null;
             }
-            // Rebuild the category's designator list without them.
-            category?.ResolveReferences();
+            foreach (DesignationCategoryDef category in categories)
+            {
+                category.ResolveReferences();
+            }
         }
 
         private static void RemoveOtherFuels()

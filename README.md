@@ -45,7 +45,7 @@ Two tiers, both 2x3. Each turns the heat piped to it into power, from as many bu
 | Conversion | 75%, **750W max** | 100%, **1500W max** |
 | Burners to fill it | 2 at 500W, or 4 at 250W | 3 at 500W, or 6 at 250W |
 
-- **Pipes:** our own network on Vanilla Expanded Framework's PipeSystem, the same system VE's chemfuel pipes use. That gives the usual overlay, plus a visible pipe, a **hidden pipe** and a **valve**, all at the Electricity tier. A building joins the network where a pipe runs under it.
+- **Pipes:** our own network on Vanilla Expanded Framework's PipeSystem, the same system VE's chemfuel pipes use. That gives the usual overlay, plus a visible pipe, a **hidden pipe** and a **valve**, all at the Electricity tier. The visible and hidden pipe share **one architect button** (a dropdown). They sit in the Power tab, or in VE's **pipe networks** tab when a mod adds it (Vanilla Chemfuel Expanded). A building joins the network where a pipe runs under it.
 - **Status:** each burner shows its heat, fuel use and where its heat is going; each turbine shows the heat it's getting, its capacity and its conversion rate.
 
 For scale: a full steam turbine takes 48–60 bricks a day from cobbled stoves, or 24–27 from gasifiers. One garbage compactor makes 25.

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+	<!-- The visible and hidden pressurised hot water pipes share one architect button. -->
+	<DesignatorDropdownGroupDef>
+		<defName>STB_HotWaterPipes</defName>
+	</DesignatorDropdownGroupDef>
+
+</Defs>
