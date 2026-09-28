@@ -46,6 +46,7 @@ God mode on, then build a **cobbled pellet stove**. Give it trashbricks (debug s
 - [ ] The room warms up (more at 500W than at 250W).
 - [ ] Refuel from a **fuel hopper** built on the intake cells: it pulls fuel as it burns. A hopper on
   any other side does nothing.
+- [ ] With several burners, **Sync burners** copies the selected one's burn rate and hot water share to the rest on its network (or the map); a message says how many.
 - [ ] Wood is worth less than trashbricks: 10 logs fill it less than 10 bricks do.
 - [ ] After a while **ash** appears on the cell **behind** the stove. **Rake out ash** drops the rest
   now.
@@ -92,6 +93,10 @@ Leave a **cobbled stove at 500W** connected to a turbine, then switch the **turb
   turbines can take, it fills (orange bar, *Stored: x of 24 kWh (+W)*).
 - [ ] Switch it to **reserve**: it charges straight away, taking heat before the turbine. Switch the
   stoves off: it discharges into the turbine, which keeps running until the tank is empty.
+- [ ] In reserve mode a **Reserve: 100%** button steps 25/50/75/100%. At 50% the tank charges first up to half, then only from spare heat above that; with the stoves off it hands over everything above 50% first, then the reserve.
+- [ ] Hazards on: the accumulator's readout shows **Explosion risk** (none below 20% full), days since it was last bled, and *Cobbled burner on the network: risk x4* with a cobbled stove piped in. The charge bar reddens as the risk climbs, and above 2% a day the **Heat accumulator at risk** alert fires.
+- [ ] **Bleed to 25%**: a colonist walks over, works for a few seconds with steam puffs, the stored heat drops to 25%, the room warms, and the wear resets to x1. Right-click picks 0/25/50/75%.
+- [ ] To see an explosion: dev-mode fill a tank next to a cobbled stove and wait, or set its explosion MTB low in the def. There's a blast, a steam cloud sized by how full it was, a letter, the tank left wrecked and empty.
 - [ ] Selecting any of the mod's buildings shows **build buttons for all the others** (not itself),
   in chain order: hopper, stoves, pipes, valve, turbines, accumulator, radiators. Unresearched ones
   don't appear.

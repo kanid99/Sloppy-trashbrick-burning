@@ -28,7 +28,21 @@ namespace TrashbrickBurning
                 return;
             }
             IntVec3 center = source.OccupiedRect().CenterCell;
-            List<IntVec3> cells = GenRadial.RadialCellsAround(center, Radius, true)
+            Cloud(center, map, Radius, source);
+
+            source.TakeDamage(new DamageInfo(DamageDefOf.Blunt, source.MaxHitPoints * 0.25f, 0f, -1f, source));
+            if (!source.Destroyed)
+            {
+                source.GetComp<CompBreakdownable>()?.DoBreakdown();
+            }
+            Find.LetterStack.ReceiveLetter("STB_BurstLabel".Translate(), "STB_BurstText".Translate(source.LabelShort),
+                LetterDefOf.NegativeEvent, new TargetInfo(center, map));
+        }
+
+        /// <summary>The 1000C cloud itself: rooms it reaches heat by the share it fills, pawns in it are scalded.</summary>
+        public static void Cloud(IntVec3 center, Map map, float radius, Thing source)
+        {
+            List<IntVec3> cells = GenRadial.RadialCellsAround(center, radius, true)
                 .Where(c => c.InBounds(map) && GenSight.LineOfSight(center, c, map, true))
                 .ToList();
 
@@ -56,7 +70,7 @@ namespace TrashbrickBurning
                 {
                     if (thing is Pawn pawn && scalded.Add(pawn))
                     {
-                        float t = cell.DistanceTo(center) / Radius;
+                        float t = cell.DistanceTo(center) / radius;
                         for (int i = 0; i < 2; i++)
                         {
                             pawn.TakeDamage(new DamageInfo(DamageDefOf.Burn, Mathf.Lerp(26f, 7f, t), 0f, -1f, source));
@@ -71,14 +85,6 @@ namespace TrashbrickBurning
             FleckMaker.ThrowHeatGlow(center, map, 4f);
             (DefDatabase<SoundDef>.GetNamedSilentFail("Explosion_Smoke")
              ?? DefDatabase<SoundDef>.GetNamedSilentFail("Explosion_Flame"))?.PlayOneShot(new TargetInfo(center, map));
-
-            source.TakeDamage(new DamageInfo(DamageDefOf.Blunt, source.MaxHitPoints * 0.25f, 0f, -1f, source));
-            if (!source.Destroyed)
-            {
-                source.GetComp<CompBreakdownable>()?.DoBreakdown();
-            }
-            Find.LetterStack.ReceiveLetter("STB_BurstLabel".Translate(), "STB_BurstText".Translate(source.LabelShort),
-                LetterDefOf.NegativeEvent, new TargetInfo(center, map));
         }
 
         /// <summary>A safety valve lifting: puffs of steam and a little heat, no harm done.</summary>

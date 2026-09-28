@@ -375,6 +375,10 @@ namespace TrashbrickBurning
             }
             if (Advanced)
             {
+                yield return new Command_SyncBurners(this);
+            }
+            if (Advanced)
+            {
                 yield return new Command_Action
                 {
                     defaultLabel = "STB_BurnRate".Translate(Level.watts.ToString("0")),
@@ -512,6 +516,99 @@ namespace TrashbrickBurning
                     float share = i / 10f;
                     yield return new FloatMenuOption(share.ToStringPercent(), () => Set(share));
                 }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Copies this burner's burn rate and hot water share to other burners, so a row of them doesn't
+    /// need setting one by one. Left-click: every burner on this burner's pressurised hot water
+    /// network, or every burner on the map if it isn't piped to anything. Right-click: pick which.
+    /// Cobbled stoves and gasifiers share the same three burn rates, so both are synced.
+    /// </summary>
+    public class Command_SyncBurners : Command_Action
+    {
+        private readonly CompStirlingEngine source;
+
+        public Command_SyncBurners(CompStirlingEngine source)
+        {
+            this.source = source;
+            defaultLabel = "STB_SyncBurners".Translate();
+            defaultDesc = "STB_SyncBurnersDesc".Translate();
+            icon = ContentFinder<Texture2D>.Get("UI/Commands/CopySettings", false) ?? TexCommand.ForbidOff;
+            action = () =>
+            {
+                PipeSystem.PipeNet net = HeatNetwork.NetOf(source.parent);
+                Sync(net != null ? Network(net) : OnMap());
+            };
+        }
+
+        private IEnumerable<CompStirlingEngine> OnMap()
+        {
+            Map map = source.parent.Map;
+            if (map == null)
+            {
+                yield break;
+            }
+            foreach (Building b in map.listerBuildings.allBuildingsColonist)
+            {
+                CompStirlingEngine e = b.GetComp<CompStirlingEngine>();
+                if (e != null)
+                {
+                    yield return e;
+                }
+            }
+        }
+
+        private static IEnumerable<CompStirlingEngine> Network(PipeSystem.PipeNet net)
+        {
+            foreach (ThingWithComps thing in HeatNetwork.Members(net))
+            {
+                CompStirlingEngine e = thing.GetComp<CompStirlingEngine>();
+                if (e != null)
+                {
+                    yield return e;
+                }
+            }
+        }
+
+        private void Sync(IEnumerable<CompStirlingEngine> targets)
+        {
+            int count = 0;
+            float watts = source.Level.watts;
+            foreach (CompStirlingEngine e in targets)
+            {
+                if (e == source)
+                {
+                    continue;
+                }
+                // Match by watts, not index, in case a burner type ever has different levels.
+                int best = 0;
+                for (int i = 0; i < e.Props.heatLevels.Count; i++)
+                {
+                    if (Mathf.Abs(e.Props.heatLevels[i].watts - watts) < Mathf.Abs(e.Props.heatLevels[best].watts - watts))
+                    {
+                        best = i;
+                    }
+                }
+                e.heatLevel = best;
+                e.hotWaterShare = source.hotWaterShare;
+                e.Apply();
+                count++;
+            }
+            Messages.Message("STB_SyncedBurners".Translate(count), source.parent, MessageTypeDefOf.NeutralEvent, false);
+        }
+
+        public override IEnumerable<FloatMenuOption> RightClickFloatMenuOptions
+        {
+            get
+            {
+                PipeSystem.PipeNet net = HeatNetwork.NetOf(source.parent);
+                if (net != null)
+                {
+                    yield return new FloatMenuOption("STB_SyncNetwork".Translate(), () => Sync(Network(net)));
+                }
+                yield return new FloatMenuOption("STB_SyncMap".Translate(), () => Sync(OnMap()));
             }
         }
     }

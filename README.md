@@ -54,7 +54,7 @@ For scale: a full steam turbine takes 48–60 bricks a day from cobbled stoves, 
 A burner's heat goes, in order:
 1. **Steam turbines**, up to their capacity. An accumulator tops them up if the burners fall short.
 2. **Radiators**: 1x1, heating their room to the target temperature you set through vanilla's own temperature system. The **cobbled radiator** (Electricity: 20 steel, 10 wood) takes up to 150W and leaks about three times as often; the **cast-iron radiator** (Microelectronics: 45 steel) takes up to 250W.
-3. **Heat accumulators**: 2x2, store 24 kWh, charging and discharging at up to 750W. Two modes: **buffer** (default) stores heat nothing else is using and tops the turbines up when the burners fall short, so on a network whose turbines take every watt it has nothing to store; **reserve** charges *first*, before the turbines, and gives the heat back only once the burners stop, to keep the turbines turning through a refuel or a breakdown. Its readout says why it's idle.
+3. **Heat accumulators**: 2x2, store 24 kWh, charging and discharging at up to 750W. Two modes: **buffer** (default) stores heat nothing else is using and tops the turbines up when the burners fall short, so on a network whose turbines take every watt it has nothing to store; **reserve** charges *first*, before the turbines, and gives the heat back only once the burners stop, to keep the turbines turning through a refuel or a breakdown. Its readout says why it's idle. In reserve mode you choose how much to hold back (25/50/75/100%); anything above that level acts as a buffer.
 4. **Dubs Bad Hygiene hot water and heating**, if installed. With Dubs, each burner's hot water share is offered to the plumbing *before* step 1 (see below).
 5. Whatever's left **builds pressure**.
 
@@ -62,6 +62,7 @@ With nothing piped to it, a burner runs its own small engine instead (100/200/30
 
 ### Hazards (can be switched off)
 - **Overpressure:** heat with nowhere to go builds pressure over about half a day at 500W. The **gasifier's safety valve** vents it harmlessly in puffs of steam. The **cobbled stove has no working safety valve**: at full pressure it **bursts**. A **1000°C steam cloud** fills everything within 5 tiles in line of sight: rooms are heated by the share of them the cloud fills, and anyone caught in it is scalded, worst at the centre. The stove then breaks down and needs repairing. A critical alert warns you from 70% pressure.
+- **Accumulator explosions:** a heat accumulator more than 20% full can let go, with a blast and a 1000°C steam cloud out to 3-7 tiles depending on how full it is. The risk rises with the square of the fill, with the days since it was last bled (up to x3), and four times over while a cobbled stove (no safety valve) is piped to its network. When full and freshly bled on a gasifier-only network it averages one explosion in 60 days. Its readout shows the risk a day, and a **Heat accumulator at risk** alert fires above 2% a day. **Bleed** (right-click to choose 0/25/50/75%) has a colonist (basic work) open the blow-off valve: the heat goes into the room and the wear resets.
 - **Steam leaks:** pipes, turbines, radiators and accumulators spring a leak now and then while hot water flows. On average once every 20 days per network, whatever its size, and adjustable in settings. A leaking part is damaged and sprays scalding steam on the cells around it until a colonist repairs it. Parts badly damaged some other way (raids, fire) leak too.
 
 ### Ash
@@ -76,6 +77,7 @@ Burners also take **wood** (a log is worth 0.4 of a trashbrick) and **chemfuel**
 - **Sound:** the jerry-rigged machines play a rattling running loop (`Sounds/STB/CobbledRattle.wav`, synthesised by `Source/Audio/make_rattle.py`).
 - **Alerts:** burner overpressure (critical), steam turbine getting no heat, burner out of fuel.
 - **Status:** turbines show how many burners feed them; accumulators show a charge bar and kWh stored.
+- **Sync burners:** a burner's **Sync burners** button copies its burn rate and hot water share to every other burner on its hot water network (or on the map if it isn't piped to one). Right-click to choose which.
 
 ### Build shortcuts
 Selecting any building from this mod shows build buttons for **every other one**: hopper, stoves, pipes, valve, turbines, accumulator and radiators, in that order, from fuel to power. You can lay out a whole chain without going back to the architect menu. They're the architect's own buttons, so each appears only once researched, and the heat network's stay hidden in simple mode.
@@ -122,7 +124,7 @@ Defs/ThingDefs_Buildings/                both machines, the fuel hopper, the hot
 Mods/DubsBadHygiene/Defs, Patches/       sludge pellets, plumbing and engine modes
 Mods/DubsBadHygiene/1.5, 1.6/Assemblies/ TrashbrickBurning.DBH.dll (references BadHygiene.dll)
 Mods/VFEFactory/Patches/                 factory-hopper tag, hides our hopper
-Source/TrashbrickBurning/                mod settings, CompBuildShortcuts, CompStirlingEngine (burner, pressure, ash), HeatNetwork + turbine/radiator/accumulator, Hazards (burst, leaks), Ash, CompMachineEffects, CompLooseParts, Alerts, HarmonyPatches (fuel values), CompHopperFeed, PlaceWorker_ShowIntake, CompPowerPlantStirling, CompBurnPollution
+Source/TrashbrickBurning/                mod settings, CompBuildShortcuts, CompStirlingEngine (burner, pressure, ash), HeatNetwork + turbine/radiator/accumulator, AccumulatorRisk (explosion, bleed job), Hazards (burst, leaks), Ash, CompMachineEffects, CompLooseParts, Alerts, HarmonyPatches (fuel values), CompHopperFeed, PlaceWorker_ShowIntake, CompPowerPlantStirling, CompBurnPollution
 Source/TrashbrickBurning.DBH/            CompStirlingWater, CompStirlingBoiler
 Source/Art/                              draws, verifies and measures every texture
 Source/Audio/make_rattle.py              synthesises the rattle loop

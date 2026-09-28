@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<!-- Opening a heat accumulator's blow-off valve: less stored heat, less risk, a hot room. -->
+	<JobDef>
+		<defName>STB_BleedAccumulator</defName>
+		<driverClass>TrashbrickBurning.JobDriver_BleedAccumulator</driverClass>
+		<reportString>bleeding pressure from TargetA.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+
+	<WorkGiverDef>
+		<defName>STB_BleedAccumulator</defName>
+		<label>bleed heat accumulators</label>
+		<giverClass>TrashbrickBurning.WorkGiver_BleedAccumulator</giverClass>
+		<workType>BasicWorker</workType>
+		<verb>bleed</verb>
+		<gerund>bleeding pressure from</gerund>
+		<priorityInType>90</priorityInType>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+	</WorkGiverDef>
+</Defs>

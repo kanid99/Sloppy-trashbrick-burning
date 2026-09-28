@@ -68,4 +68,26 @@
 	<STB_AccIdleFull>Full.</STB_AccIdleFull>
 	<STB_AccIdleTurbinesTakeAll>Idle: the turbines are using all the heat. Switch to reserve mode to charge first.</STB_AccIdleTurbinesTakeAll>
 	<STB_AccIdleNoTurbine>Holding its charge: no running turbine to give it to.</STB_AccIdleNoTurbine>
+	<STB_SyncBurners>Sync burners</STB_SyncBurners>
+	<STB_SyncBurnersDesc>Copy this burner's burn rate and hot water share to other burners.\n\nLeft-click: every burner on this burner's hot water network (or the whole map, if it isn't piped to anything). Right-click to choose.</STB_SyncBurnersDesc>
+	<STB_SyncNetwork>Burners on this hot water network</STB_SyncNetwork>
+	<STB_SyncMap>All burners on the map</STB_SyncMap>
+	<STB_SyncedBurners>Synced {0} other burners.</STB_SyncedBurners>
+	<STB_AccModeReserveLevel>Mode: reserve, holding {0}</STB_AccModeReserveLevel>
+	<STB_AccReserveLevel>Reserve: {0}</STB_AccReserveLevel>
+	<STB_AccReserveLevelDesc>How much of the tank to hold back for when the burners stop. It charges up to this level first, before the turbines; anything above it behaves like buffer mode - filled from spare heat and used whenever the burners fall short.\n\nLeft-click steps 25/50/75/100%. Right-click to pick.</STB_AccReserveLevelDesc>
+	<STB_AccRisk>Explosion risk: {0} a day (blast out to {1} tiles)</STB_AccRisk>
+	<STB_AccRiskNone>Explosion risk: none below {0} full</STB_AccRiskNone>
+	<STB_AccWear>Last bled {0} days ago: risk x{1}</STB_AccWear>
+	<STB_AccCobbled>Cobbled burner on the network: risk x{0}</STB_AccCobbled>
+	<STB_AccBleedPending>Waiting for a colonist to bleed it down to {0}.</STB_AccBleedPending>
+	<STB_AccBleed>Bleed to {0}</STB_AccBleed>
+	<STB_AccBleedCancel>Cancel bleed</STB_AccBleedCancel>
+	<STB_AccBleedTo>Bleed down to {0}</STB_AccBleedTo>
+	<STB_AccBleedNothing>Already at or below {0}.</STB_AccBleedNothing>
+	<STB_AccBleedDesc>Have a colonist (basic work) open the blow-off valve. The stored heat drops to the chosen level and goes into the room the tank is in, and the valve wear resets.\n\nA tank's explosion risk rises with how full it is, with the days since it was last bled, and four times over while a cobbled stove - which has no safety valve - is piped to its network.\n\nLeft-click: request or cancel. Right-click: choose how far down.</STB_AccBleedDesc>
+	<STB_AccExplodedLabel>Heat accumulator exploded</STB_AccExplodedLabel>
+	<STB_AccExplodedText>A heat accumulator at {0} let go, throwing a blast and a cloud of scalding steam out to {1} tiles.\n\nFull tanks, cobbled stoves and worn valves make this likelier. Bleed accumulators now and then to keep the risk down.</STB_AccExplodedText>
+	<STB_AlertAccRisk>Heat accumulator at risk</STB_AlertAccRisk>
+	<STB_AlertAccRiskDesc>A heat accumulator is full enough, worn enough or near a cobbled stove to have a real chance of exploding.\n\nSelect it and use Bleed to have a colonist let pressure off.</STB_AlertAccRiskDesc>
 </LanguageData>

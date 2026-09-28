@@ -43,6 +43,8 @@ namespace TrashbrickBurning
             public float priorityCharge;
             public float reserveDischargeCapacity;
             public float reserveDischarge;
+            /// <summary>Burners without a safety valve piped to this network, lit or not.</summary>
+            public int cobbledBurners;
             public float leftover;
             public bool anyConsumer;
 
@@ -94,6 +96,10 @@ namespace TrashbrickBurning
             foreach (ThingWithComps thing in Members(net))
             {
                 CompStirlingEngine engine = thing.GetComp<CompStirlingEngine>();
+                if (engine != null && !engine.Props.safetyValve)
+                {
+                    f.cobbledBurners++;
+                }
                 if (engine != null && engine.NetworkHeatWatts > 0f)
                 {
                     f.heat += engine.NetworkHeatWatts;
@@ -118,16 +124,12 @@ namespace TrashbrickBurning
                 if (acc != null)
                 {
                     f.anyConsumer = true;
-                    if (acc.reserve)
-                    {
-                        f.priorityChargeCapacity += acc.ChargeRoomWatts;
-                        f.reserveDischargeCapacity += acc.DischargeAvailableWatts;
-                    }
-                    else
-                    {
-                        f.chargeCapacity += acc.ChargeRoomWatts;
-                        f.dischargeCapacity += acc.DischargeAvailableWatts;
-                    }
+                    // Each tank sits in at most one charge pool and one discharge pool: a reserve tank
+                    // below its reserve level charges first; above it, it behaves like a buffer.
+                    f.priorityChargeCapacity += acc.ReserveChargeRoomWatts;
+                    f.chargeCapacity += acc.BufferChargeRoomWatts;
+                    f.dischargeCapacity += acc.BufferDischargeWatts;
+                    f.reserveDischargeCapacity += acc.ReserveDischargeWatts;
                 }
             }
             // Reserve accumulators charge before anything else...
@@ -325,6 +327,24 @@ namespace TrashbrickBurning
         /// <summary>How fast it charges and discharges.</summary>
         public float rateWatts = 750f;
 
+        /// <summary>Mean days between explosions when full, freshly bled, on a network of gasifiers only.</summary>
+        public float explosionMtbDaysWhenFull = 60f;
+
+        /// <summary>Risk multiplier while any burner without a safety valve is piped to the network.</summary>
+        public float cobbledRiskFactor = 4f;
+
+        /// <summary>Wear adds this much risk (x1) every this many days since the tank was last bled, up to x3.</summary>
+        public float wearDays = 20f;
+
+        /// <summary>Below this fill the tank can't explode.</summary>
+        public float safeFill = 0.2f;
+
+        /// <summary>Blast radius from empty to full.</summary>
+        public FloatRange explosionRadius = new FloatRange(2.9f, 6.9f);
+
+        /// <summary>Room heat pushed per watt-day bled off.</summary>
+        public float bleedHeatPerWattDay = 0.5f;
+
         public CompProperties_HeatAccumulator()
         {
             compClass = typeof(CompHeatAccumulator);
@@ -338,6 +358,7 @@ namespace TrashbrickBurning
     ///           to turbines whenever the burners fall short of what they could take;
     ///   reserve charges FIRST, before the turbines, and gives it back only once the burners have
     ///           stopped - out of fuel, switched off, broken - to keep the turbines turning.
+    ///           The reserve can be 25/50/75/100% of the tank; above that level it acts as a buffer.
     ///
     /// A battery for steam. Its readout says why it's idle, because an accumulator on a network
     /// whose turbines take every watt never charges in buffer mode, and otherwise that looks broken.
@@ -345,6 +366,14 @@ namespace TrashbrickBurning
     public class CompHeatAccumulator : ThingComp
     {
         public bool reserve;
+        public float reserveLevel = 1f;
+        public bool bleedRequested;
+        public float bleedTo = 0.25f;
+
+        private int lastBledTick = -1;
+        private int cobbledOnNet;
+
+        public static readonly float[] ReserveLevels = { 0.25f, 0.5f, 0.75f, 1f };
 
         private float stored;
         private float lastFlow;
@@ -354,15 +383,31 @@ namespace TrashbrickBurning
 
         public float Fraction => Props.capacityWattDays > 0f ? stored / Props.capacityWattDays : 0f;
 
+        private float ReserveWattDays => reserve ? Props.capacityWattDays * reserveLevel : 0f;
+
         public float ChargeRoomWatts => stored < Props.capacityWattDays - 0.01f ? Props.rateWatts : 0f;
 
-        public float DischargeAvailableWatts => stored > 0.01f ? Props.rateWatts : 0f;
+        /// <summary>Charges before the turbines: a reserve tank below its reserve level.</summary>
+        public float ReserveChargeRoomWatts => reserve && stored < ReserveWattDays - 0.01f ? Props.rateWatts : 0f;
+
+        /// <summary>Charges from spare heat: a buffer tank, or a reserve tank already at its reserve level.</summary>
+        public float BufferChargeRoomWatts => ReserveChargeRoomWatts > 0f ? 0f : ChargeRoomWatts;
+
+        /// <summary>Tops the turbines up whenever the burners fall short: whatever sits above the reserve.</summary>
+        public float BufferDischargeWatts => stored > ReserveWattDays + 0.01f ? Props.rateWatts : 0f;
+
+        /// <summary>Only once the burners stop: the reserve itself.</summary>
+        public float ReserveDischargeWatts => reserve && BufferDischargeWatts <= 0f && stored > 0.01f ? Props.rateWatts : 0f;
 
         public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_Values.Look(ref stored, "storedHeat", 0f);
             Scribe_Values.Look(ref reserve, "reserve", false);
+            Scribe_Values.Look(ref reserveLevel, "reserveLevel", 1f);
+            Scribe_Values.Look(ref bleedRequested, "bleedRequested", false);
+            Scribe_Values.Look(ref bleedTo, "bleedTo", 0.25f);
+            Scribe_Values.Look(ref lastBledTick, "lastBledTick", -1);
         }
 
         public override void CompTick()
@@ -374,26 +419,28 @@ namespace TrashbrickBurning
             }
             lastFlow = 0f;
             idleReason = null;
+            if (lastBledTick < 0)
+            {
+                lastBledTick = Find.TickManager.TicksGame;
+            }
             PipeNet net = HeatNetwork.NetOf(parent);
+            cobbledOnNet = 0;
             if (!TrashbrickBurningMod.Advanced || net == null)
             {
                 idleReason = "STB_AccIdleNoPipe";
                 return;
             }
             HeatNetwork.Flow f = HeatNetwork.Compute(net);
-            float charge, discharge;
-            if (reserve)
+            cobbledOnNet = f.cobbledBurners;
+            if (Rand.Chance(ExplosionChancePerDay * 60f / GenDate.TicksPerDay))
             {
-                charge = f.priorityChargeCapacity > 0f ? f.priorityCharge * ChargeRoomWatts / f.priorityChargeCapacity : 0f;
-                discharge = f.reserveDischargeCapacity > 0f
-                    ? f.reserveDischarge * DischargeAvailableWatts / f.reserveDischargeCapacity
-                    : 0f;
+                AccumulatorExplosion.Explode(this);
+                return;
             }
-            else
-            {
-                charge = f.chargeCapacity > 0f ? f.charge * ChargeRoomWatts / f.chargeCapacity : 0f;
-                discharge = f.dischargeCapacity > 0f ? f.discharge * DischargeAvailableWatts / f.dischargeCapacity : 0f;
-            }
+            float charge = Share(f.priorityCharge, ReserveChargeRoomWatts, f.priorityChargeCapacity)
+                + Share(f.charge, BufferChargeRoomWatts, f.chargeCapacity);
+            float discharge = Share(f.discharge, BufferDischargeWatts, f.dischargeCapacity)
+                + Share(f.reserveDischarge, ReserveDischargeWatts, f.reserveDischargeCapacity);
             lastFlow = charge - discharge;
             stored = Mathf.Clamp(stored + lastFlow * 60f / GenDate.TicksPerDay, 0f, Props.capacityWattDays);
             if (Mathf.Abs(lastFlow) < 0.5f)
@@ -406,7 +453,7 @@ namespace TrashbrickBurning
                 {
                     idleReason = "STB_AccIdleFull";
                 }
-                else if (f.heat > 0f && !reserve)
+                else if (f.heat > 0f)
                 {
                     idleReason = "STB_AccIdleTurbinesTakeAll";
                 }
@@ -416,6 +463,66 @@ namespace TrashbrickBurning
                 }
             }
         }
+
+        public float DaysSinceBled => lastBledTick < 0 ? 0f : (Find.TickManager.TicksGame - lastBledTick) / (float)GenDate.TicksPerDay;
+
+        /// <summary>1 when freshly bled, rising to 3 as the seals and valves wear.</summary>
+        public float WearFactor => Mathf.Min(3f, 1f + DaysSinceBled / Props.wearDays);
+
+        /// <summary>
+        /// Chance a day of the tank letting go. Zero below the safe fill, then rising with the square of
+        /// how full it is, times wear, times four with a cobbled burner (no safety valve) on the network.
+        /// </summary>
+        public float ExplosionChancePerDay
+        {
+            get
+            {
+                if (!TrashbrickBurningMod.Advanced || !TrashbrickBurningMod.Hazards || Fraction <= Props.safeFill)
+                {
+                    return 0f;
+                }
+                float p = Mathf.InverseLerp(Props.safeFill, 1f, Fraction);
+                float risk = p * p * WearFactor / Props.explosionMtbDaysWhenFull;
+                if (cobbledOnNet > 0)
+                {
+                    risk *= Props.cobbledRiskFactor;
+                }
+                return Mathf.Min(risk, 1f);
+            }
+        }
+
+        public float BlastRadius => Props.explosionRadius.LerpThroughRange(Fraction);
+
+        public float StoredWattDays => stored;
+
+        public bool NeedsBleed => bleedRequested && Fraction > bleedTo + 0.01f;
+
+        /// <summary>A pawn opens the blow-off valve: the heat goes into the room, the wear resets.</summary>
+        public void Bleed()
+        {
+            float target = Props.capacityWattDays * bleedTo;
+            float bled = Mathf.Max(0f, stored - target);
+            stored -= bled;
+            lastBledTick = Find.TickManager.TicksGame;
+            bleedRequested = false;
+            if (parent.Spawned)
+            {
+                GenTemperature.PushHeat(parent.Position, parent.Map, bled * Props.bleedHeatPerWattDay);
+                for (int i = 0; i < 6; i++)
+                {
+                    FleckMaker.ThrowSmoke(parent.TrueCenter(), parent.Map, Rand.Range(1f, 1.8f));
+                }
+            }
+        }
+
+        public void Emptied()
+        {
+            stored = 0f;
+            bleedRequested = false;
+            lastBledTick = Find.TickManager.TicksGame;
+        }
+
+        private static float Share(float flow, float mine, float pool) => pool > 0f ? flow * mine / pool : 0f;
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
@@ -435,6 +542,14 @@ namespace TrashbrickBurning
                 isActive = () => reserve,
                 toggleAction = () => reserve = !reserve
             };
+            if (reserve)
+            {
+                yield return new Command_ReserveLevel(this);
+            }
+            if (TrashbrickBurningMod.Hazards)
+            {
+                yield return new Command_BleedAccumulator(this);
+            }
         }
 
         public override void PostDraw()
@@ -444,7 +559,8 @@ namespace TrashbrickBurning
             bar.center = parent.DrawPos + Vector3.up * 0.1f + new Vector3(0f, 0f, -0.6f);
             bar.size = new Vector2(1.4f, 0.16f);
             bar.fillPercent = Fraction;
-            bar.filledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.8f, 0.4f, 0.26f));
+            bar.filledMat = SolidColorMaterials.SimpleSolidColorMaterial(
+                Color.Lerp(new Color(0.8f, 0.4f, 0.26f), new Color(0.95f, 0.1f, 0.1f), Mathf.Clamp01(ExplosionChancePerDay * 5f)));
             bar.unfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.15f, 0.15f, 0.15f));
             bar.margin = 0.12f;
             GenDraw.DrawFillableBar(bar);
@@ -455,12 +571,61 @@ namespace TrashbrickBurning
             // Watt-days to kilowatt-hours, which players read more easily.
             string s = "STB_AccumulatorStatus".Translate((stored * 24f / 1000f).ToString("0.0"),
                 (Props.capacityWattDays * 24f / 1000f).ToString("0.0"), lastFlow.ToString("+0;-0;0"));
-            s += "\n" + (reserve ? "STB_AccModeReserve" : "STB_AccModeBuffer").Translate();
+            s += "\n" + (reserve
+                ? "STB_AccModeReserveLevel".Translate(reserveLevel.ToStringPercent()).Resolve()
+                : "STB_AccModeBuffer".Translate().Resolve());
             if (idleReason != null)
             {
                 s += "\n" + idleReason.Translate();
             }
+            if (TrashbrickBurningMod.Advanced && TrashbrickBurningMod.Hazards)
+            {
+                float risk = ExplosionChancePerDay;
+                s += "\n" + (risk > 0f
+                    ? "STB_AccRisk".Translate(risk.ToStringPercent("0.#"), BlastRadius.ToString("0"))
+                    : "STB_AccRiskNone".Translate(Props.safeFill.ToStringPercent())).Resolve();
+                s += "\n" + "STB_AccWear".Translate(DaysSinceBled.ToString("0.0"), WearFactor.ToString("0.0")).Resolve();
+                if (cobbledOnNet > 0)
+                {
+                    s += " " + "STB_AccCobbled".Translate(Props.cobbledRiskFactor.ToString("0")).Resolve();
+                }
+                if (bleedRequested)
+                {
+                    s += "\n" + "STB_AccBleedPending".Translate(bleedTo.ToStringPercent()).Resolve();
+                }
+            }
             return s;
+        }
+    }
+
+    /// <summary>Left-click steps the reserve 25 → 50 → 75 → 100%; right-click picks one.</summary>
+    public class Command_ReserveLevel : Command_Action
+    {
+        private readonly CompHeatAccumulator acc;
+
+        public Command_ReserveLevel(CompHeatAccumulator acc)
+        {
+            this.acc = acc;
+            defaultLabel = "STB_AccReserveLevel".Translate(acc.reserveLevel.ToStringPercent());
+            defaultDesc = "STB_AccReserveLevelDesc".Translate();
+            icon = TexCommand.ForbidOff;
+            action = () =>
+            {
+                int i = System.Array.IndexOf(CompHeatAccumulator.ReserveLevels, acc.reserveLevel);
+                acc.reserveLevel = CompHeatAccumulator.ReserveLevels[(i + 1) % CompHeatAccumulator.ReserveLevels.Length];
+            };
+        }
+
+        public override IEnumerable<FloatMenuOption> RightClickFloatMenuOptions
+        {
+            get
+            {
+                foreach (float level in CompHeatAccumulator.ReserveLevels)
+                {
+                    float l = level;
+                    yield return new FloatMenuOption(l.ToStringPercent(), () => acc.reserveLevel = l);
+                }
+            }
         }
     }
 }
