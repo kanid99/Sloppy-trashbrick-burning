@@ -112,6 +112,14 @@
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
 			</li>
+			<!-- Build buttons for the pipes and valve when this is selected. -->
+			<li Class="TrashbrickBurning.CompProperties_PipeShortcuts">
+				<defs>
+					<li>STB_HotWaterPipe</li>
+					<li>STB_HotWaterPipeHidden</li>
+					<li>STB_HotWaterValve</li>
+				</defs>
+			</li>
 			<!-- Only while burning. Needs Biotech, which VRE already requires. -->
 			<li Class="TrashbrickBurning.CompProperties_BurnPollution">
 				<cellsPerDay>3</cellsPerDay>
@@ -231,6 +239,14 @@
 			<!-- Joins the pressurised hot water network when a pipe runs under it. -->
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+			<!-- Build buttons for the pipes and valve when this is selected. -->
+			<li Class="TrashbrickBurning.CompProperties_PipeShortcuts">
+				<defs>
+					<li>STB_HotWaterPipe</li>
+					<li>STB_HotWaterPipeHidden</li>
+					<li>STB_HotWaterValve</li>
+				</defs>
 			</li>
 		</comps>
 		<placeWorkers>

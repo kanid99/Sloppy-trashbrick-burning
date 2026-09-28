@@ -228,6 +228,14 @@
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
 			</li>
+			<!-- Build buttons for the pipes and valve when this is selected. -->
+			<li Class="TrashbrickBurning.CompProperties_PipeShortcuts">
+				<defs>
+					<li>STB_HotWaterPipe</li>
+					<li>STB_HotWaterPipeHidden</li>
+					<li>STB_HotWaterValve</li>
+				</defs>
+			</li>
 			<!-- The parts that rattle while it turns: two layers drawn over the sprite and shaken. -->
 			<li Class="TrashbrickBurning.CompProperties_LooseParts">
 				<layers>
@@ -305,6 +313,14 @@
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
 			</li>
+			<!-- Build buttons for the pipes and valve when this is selected. -->
+			<li Class="TrashbrickBurning.CompProperties_PipeShortcuts">
+				<defs>
+					<li>STB_HotWaterPipe</li>
+					<li>STB_HotWaterPipeHidden</li>
+					<li>STB_HotWaterValve</li>
+				</defs>
+			</li>
 			<!-- Springs a steam leak now and then while hot water flows; leaks until repaired. -->
 			<li Class="TrashbrickBurning.CompProperties_SteamLeak"/>
 			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
@@ -362,6 +378,14 @@
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
 			</li>
+			<!-- Build buttons for the pipes and valve when this is selected. -->
+			<li Class="TrashbrickBurning.CompProperties_PipeShortcuts">
+				<defs>
+					<li>STB_HotWaterPipe</li>
+					<li>STB_HotWaterPipeHidden</li>
+					<li>STB_HotWaterValve</li>
+				</defs>
+			</li>
 			<li Class="TrashbrickBurning.CompProperties_HotWaterRadiator">
 				<maxWatts>250</maxWatts>
 			</li>
@@ -415,6 +439,14 @@
 		<comps>
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+			<!-- Build buttons for the pipes and valve when this is selected. -->
+			<li Class="TrashbrickBurning.CompProperties_PipeShortcuts">
+				<defs>
+					<li>STB_HotWaterPipe</li>
+					<li>STB_HotWaterPipeHidden</li>
+					<li>STB_HotWaterValve</li>
+				</defs>
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_HotWaterRadiator">
 				<maxWatts>150</maxWatts>
@@ -474,6 +506,14 @@
 		<comps>
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+			<!-- Build buttons for the pipes and valve when this is selected. -->
+			<li Class="TrashbrickBurning.CompProperties_PipeShortcuts">
+				<defs>
+					<li>STB_HotWaterPipe</li>
+					<li>STB_HotWaterPipeHidden</li>
+					<li>STB_HotWaterValve</li>
+				</defs>
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_HeatAccumulator">
 				<capacityWattDays>1000</capacityWattDays>

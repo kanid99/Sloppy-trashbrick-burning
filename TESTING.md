@@ -87,8 +87,13 @@ Leave a **cobbled stove at 500W** connected to a turbine, then switch the **turb
 - [ ] A **radiator** on the network in an enclosed, cold room takes heat (*Heat taken: 150W of
   150W* for the cobbled one) and warms the room to its **target temperature**, then stops taking
   heat. It only gets what the turbines leave over.
-- [ ] A **heat accumulator** fills (orange bar, *Stored: x of 24 kWh (+W)*) from spare heat. Switch
-  the stoves off: it discharges into the turbine, which keeps running until the tank is empty.
+- [ ] A **heat accumulator** in **buffer** mode (default) on a network whose turbine can take all the
+  heat stays empty and says *Idle: the turbines are using all the heat*. With more heat than the
+  turbines can take, it fills (orange bar, *Stored: x of 24 kWh (+W)*).
+- [ ] Switch it to **reserve**: it charges straight away, taking heat before the turbine. Switch the
+  stoves off: it discharges into the turbine, which keeps running until the tank is empty.
+- [ ] Selecting a stove, turbine, accumulator or radiator shows **build buttons** for the hot water
+  pipe, hidden pipe and valve.
 - [ ] With a radiator or accumulator soaking up the spare heat, pressure no longer climbs.
 
 ## 6. Steam leaks

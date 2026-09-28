@@ -10,6 +10,7 @@ namespace TrashbrickBurning
     /// Shares the heat on one pressurised hot water network, once per network per tick, read by
     /// every burner, turbine, radiator and accumulator on it. The order:
     ///
+    ///   0. accumulators set to reserve charge first, and discharge only when the burners stop;
     ///   1. turbines take what they can, up to their combined capacity;
     ///   2. accumulators discharge into whatever turbine capacity the burners left unfilled;
     ///   3. radiators take what their rooms need;
@@ -38,8 +39,15 @@ namespace TrashbrickBurning
             public float toRadiators;
             public float chargeCapacity;
             public float charge;
+            public float priorityChargeCapacity;
+            public float priorityCharge;
+            public float reserveDischargeCapacity;
+            public float reserveDischarge;
             public float leftover;
             public bool anyConsumer;
+
+            /// <summary>Everything the turbines turn: burner heat, buffer discharge and reserve discharge.</summary>
+            public float TurbineHeat => toTurbines + discharge + reserveDischarge;
         }
 
         private static readonly Dictionary<PipeNet, Flow> Cache = new Dictionary<PipeNet, Flow>();
@@ -110,13 +118,30 @@ namespace TrashbrickBurning
                 if (acc != null)
                 {
                     f.anyConsumer = true;
-                    f.chargeCapacity += acc.ChargeRoomWatts;
-                    f.dischargeCapacity += acc.DischargeAvailableWatts;
+                    if (acc.reserve)
+                    {
+                        f.priorityChargeCapacity += acc.ChargeRoomWatts;
+                        f.reserveDischargeCapacity += acc.DischargeAvailableWatts;
+                    }
+                    else
+                    {
+                        f.chargeCapacity += acc.ChargeRoomWatts;
+                        f.dischargeCapacity += acc.DischargeAvailableWatts;
+                    }
                 }
             }
-            f.toTurbines = Mathf.Min(f.heat, f.turbineCapacity);
+            // Reserve accumulators charge before anything else...
+            f.priorityCharge = Mathf.Min(f.heat, f.priorityChargeCapacity);
+            float rest = f.heat - f.priorityCharge;
+            f.toTurbines = Mathf.Min(rest, f.turbineCapacity);
             f.discharge = Mathf.Min(f.turbineCapacity - f.toTurbines, f.dischargeCapacity);
-            float rest = f.heat - f.toTurbines;
+            // ...and give it back only once the burners have stopped, so they never charge and
+            // discharge in the same breath.
+            if (f.heat <= 0f)
+            {
+                f.reserveDischarge = Mathf.Min(f.turbineCapacity - f.toTurbines - f.discharge, f.reserveDischargeCapacity);
+            }
+            rest -= f.toTurbines;
             f.toRadiators = Mathf.Min(rest, f.radiatorDemand);
             rest -= f.toRadiators;
             f.charge = Mathf.Min(rest, f.chargeCapacity);
@@ -207,7 +232,7 @@ namespace TrashbrickBurning
             {
                 return;
             }
-            heatWatts = (f.toTurbines + f.discharge) * Props.capacityWatts / f.turbineCapacity;
+            heatWatts = f.TurbineHeat * Props.capacityWatts / f.turbineCapacity;
             watts = heatWatts * Props.efficiency * TrashbrickBurningMod.S.powerMultiplier;
         }
 
@@ -307,14 +332,23 @@ namespace TrashbrickBurning
     }
 
     /// <summary>
-    /// An insulated tank of pressurised hot water: charges from heat nothing else on the network is
-    /// using, and gives it back to turbines when the burners fall short - so a turbine keeps turning
-    /// while its burners are refuelled or switched off. A battery for steam.
+    /// An insulated tank of pressurised hot water. Two modes:
+    ///
+    ///   buffer  (default) charges from heat nothing else on the network is using, and gives it back
+    ///           to turbines whenever the burners fall short of what they could take;
+    ///   reserve charges FIRST, before the turbines, and gives it back only once the burners have
+    ///           stopped - out of fuel, switched off, broken - to keep the turbines turning.
+    ///
+    /// A battery for steam. Its readout says why it's idle, because an accumulator on a network
+    /// whose turbines take every watt never charges in buffer mode, and otherwise that looks broken.
     /// </summary>
     public class CompHeatAccumulator : ThingComp
     {
+        public bool reserve;
+
         private float stored;
         private float lastFlow;
+        private string idleReason;
 
         public CompProperties_HeatAccumulator Props => (CompProperties_HeatAccumulator)props;
 
@@ -328,6 +362,7 @@ namespace TrashbrickBurning
         {
             base.PostExposeData();
             Scribe_Values.Look(ref stored, "storedHeat", 0f);
+            Scribe_Values.Look(ref reserve, "reserve", false);
         }
 
         public override void CompTick()
@@ -338,16 +373,68 @@ namespace TrashbrickBurning
                 return;
             }
             lastFlow = 0f;
+            idleReason = null;
             PipeNet net = HeatNetwork.NetOf(parent);
             if (!TrashbrickBurningMod.Advanced || net == null)
             {
+                idleReason = "STB_AccIdleNoPipe";
                 return;
             }
             HeatNetwork.Flow f = HeatNetwork.Compute(net);
-            float charge = f.chargeCapacity > 0f ? f.charge * ChargeRoomWatts / f.chargeCapacity : 0f;
-            float discharge = f.dischargeCapacity > 0f ? f.discharge * DischargeAvailableWatts / f.dischargeCapacity : 0f;
+            float charge, discharge;
+            if (reserve)
+            {
+                charge = f.priorityChargeCapacity > 0f ? f.priorityCharge * ChargeRoomWatts / f.priorityChargeCapacity : 0f;
+                discharge = f.reserveDischargeCapacity > 0f
+                    ? f.reserveDischarge * DischargeAvailableWatts / f.reserveDischargeCapacity
+                    : 0f;
+            }
+            else
+            {
+                charge = f.chargeCapacity > 0f ? f.charge * ChargeRoomWatts / f.chargeCapacity : 0f;
+                discharge = f.dischargeCapacity > 0f ? f.discharge * DischargeAvailableWatts / f.dischargeCapacity : 0f;
+            }
             lastFlow = charge - discharge;
             stored = Mathf.Clamp(stored + lastFlow * 60f / GenDate.TicksPerDay, 0f, Props.capacityWattDays);
+            if (Mathf.Abs(lastFlow) < 0.5f)
+            {
+                if (f.heat <= 0f && stored <= 0.01f)
+                {
+                    idleReason = "STB_AccIdleNoHeat";
+                }
+                else if (ChargeRoomWatts <= 0f && f.heat > 0f)
+                {
+                    idleReason = "STB_AccIdleFull";
+                }
+                else if (f.heat > 0f && !reserve)
+                {
+                    idleReason = "STB_AccIdleTurbinesTakeAll";
+                }
+                else if (f.heat <= 0f && f.turbineCapacity <= 0f)
+                {
+                    idleReason = "STB_AccIdleNoTurbine";
+                }
+            }
+        }
+
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
+        {
+            foreach (Gizmo gizmo in base.CompGetGizmosExtra())
+            {
+                yield return gizmo;
+            }
+            if (parent.Faction != Faction.OfPlayer)
+            {
+                yield break;
+            }
+            yield return new Command_Toggle
+            {
+                defaultLabel = (reserve ? "STB_AccModeReserve" : "STB_AccModeBuffer").Translate(),
+                defaultDesc = "STB_AccModeDesc".Translate(),
+                icon = TexCommand.ForbidOff,
+                isActive = () => reserve,
+                toggleAction = () => reserve = !reserve
+            };
         }
 
         public override void PostDraw()
@@ -366,8 +453,14 @@ namespace TrashbrickBurning
         public override string CompInspectStringExtra()
         {
             // Watt-days to kilowatt-hours, which players read more easily.
-            return "STB_AccumulatorStatus".Translate((stored * 24f / 1000f).ToString("0.0"),
+            string s = "STB_AccumulatorStatus".Translate((stored * 24f / 1000f).ToString("0.0"),
                 (Props.capacityWattDays * 24f / 1000f).ToString("0.0"), lastFlow.ToString("+0;-0;0"));
+            s += "\n" + (reserve ? "STB_AccModeReserve" : "STB_AccModeBuffer").Translate();
+            if (idleReason != null)
+            {
+                s += "\n" + idleReason.Translate();
+            }
+            return s;
         }
     }
 }

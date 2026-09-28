@@ -45,7 +45,7 @@ Two tiers, both 2x3. Each turns the heat piped to it into power, from as many bu
 | Conversion | 75%, **750W max** | 100%, **1500W max** |
 | Burners to fill it | 2 at 500W, or 4 at 250W | 3 at 500W, or 6 at 250W |
 
-- **Pipes:** our own network on Vanilla Expanded Framework's PipeSystem, the same system VE's chemfuel pipes use. That gives the usual overlay, plus a visible pipe, a **hidden pipe** and a **valve**, all at the Electricity tier. The visible and hidden pipe share **one architect button** (a dropdown). They sit in the Power tab, or in VE's **pipe networks** tab when a mod adds it (Vanilla Chemfuel Expanded). A building joins the network where a pipe runs under it.
+- **Pipes:** our own network on Vanilla Expanded Framework's PipeSystem, the same system VE's chemfuel pipes use. That gives the usual overlay, plus a visible pipe, a **hidden pipe** and a **valve**, all at the Electricity tier. The visible and hidden pipe share **one architect button** (a dropdown). They sit in the Power tab, or in VE's **pipe networks** tab when a mod adds it (Vanilla Chemfuel Expanded). A building joins the network where a pipe runs under it. Selecting a burner, turbine, accumulator or radiator shows **build buttons for the pipe, hidden pipe and valve**, so there's no trip to the architect menu.
 - **Status:** each burner shows its heat, fuel use and where its heat is going; each turbine shows the heat it's getting, its capacity and its conversion rate.
 
 For scale: a full steam turbine takes 48–60 bricks a day from cobbled stoves, or 24–27 from gasifiers. One garbage compactor makes 25.
@@ -54,7 +54,7 @@ For scale: a full steam turbine takes 48–60 bricks a day from cobbled stoves, 
 A burner's heat goes, in order:
 1. **Steam turbines**, up to their capacity. An accumulator tops them up if the burners fall short.
 2. **Radiators**: 1x1, heating their room to the target temperature you set through vanilla's own temperature system. The **cobbled radiator** (Electricity: 20 steel, 10 wood) takes up to 150W and leaks about three times as often; the **cast-iron radiator** (Microelectronics: 45 steel) takes up to 250W.
-3. **Heat accumulators**: 2x2, store 24 kWh, charging and discharging at up to 750W. A battery for steam that keeps turbines turning while burners are refuelled or switched off.
+3. **Heat accumulators**: 2x2, store 24 kWh, charging and discharging at up to 750W. Two modes: **buffer** (default) stores heat nothing else is using and tops the turbines up when the burners fall short, so on a network whose turbines take every watt it has nothing to store; **reserve** charges *first*, before the turbines, and gives the heat back only once the burners stop, to keep the turbines turning through a refuel or a breakdown. Its readout says why it's idle.
 4. **Dubs Bad Hygiene hot water and heating**, if installed. With Dubs, each burner's hot water share is offered to the plumbing *before* step 1 (see below).
 5. Whatever's left **builds pressure**.
 
