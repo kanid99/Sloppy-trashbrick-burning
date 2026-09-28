@@ -6,13 +6,13 @@ leans on the one before it.
 
 ## Install
 
-1. Put the repo in `RimWorld/Mods/SloppyTrashbrickBurning/` (clone it there, or download the branch
+1. Put the repo in `RimWorld/Mods/SloppyModTrashPower/` (clone it there, or download the branch
    `claude/trash-brick-fuel-power-f6lia3` as a zip). The repo root *is* the mod folder: `About/`,
    `Defs/`, `1.5/`, `1.6/` and the rest sit directly in it. The compiled DLLs are committed, so
    there's nothing to build.
 2. Mod list, in this order: **Harmony**, Core, Biotech, **Vanilla Expanded Framework**,
    **Vanilla Recycling Expanded**, then optionally **Dubs Bad Hygiene** and **VFE - Factory**, then
-   **Sloppy Trashbrick Burning**.
+   **SloppyMod Trash POWER!**.
 3. Turn on **Development mode** (Options > General). You'll want the debug log and debug actions.
 
 **First check:** on the main menu, open the debug log (the icon top right). Any red lines
@@ -21,7 +21,7 @@ Yellow warnings are worth sending too.
 
 ## 1. Loading and settings
 
-- [ ] Options > Mod settings > **Trashbrick Burning** opens: the play mode checkbox, hazards, other
+- [ ] Options > Mod settings > **SloppyMod Trash POWER!** opens: the play mode checkbox, hazards, other
   fuels, four sliders and a reset button.
 - [ ] Start a new colony (or dev quickstart). No red errors in the log.
 - [ ] Debug actions > **Research all** (or research Electricity, Microelectronics and VRE complex

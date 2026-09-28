@@ -11,7 +11,7 @@
 	<STB_ValveLabel>Toggle valve</STB_ValveLabel>
 	<STB_ValveDesc>Open or close this pressurised hot water line.</STB_ValveDesc>
 	<STB_NoWater>no water</STB_NoWater>
-	<STB_SettingsCategory>Trashbrick Burning</STB_SettingsCategory>
+	<STB_SettingsCategory>SloppyMod Trash POWER!</STB_SettingsCategory>
 	<STB_SettingAdvanced>Advanced play mode (burners and steam turbines)</STB_SettingAdvanced>
 	<STB_SettingAdvancedDesc>On: stoves are burners that feed steam turbines through pressurised hot water pipes. Off: stoves are simple self-contained generators.</STB_SettingAdvancedDesc>
 	<STB_SettingAdvancedExplain>Advanced: each stove is a burner making 250, 350 or 500W of heat. Hotter burns cost more fuel per watt and heat the room more. Pipe burners to steam turbines, radiators and heat accumulators; heat nothing uses builds pressure, and a cobbled stove with nowhere to put it bursts. With nothing piped to it, a burner's own engine makes only 100, 200 or 300W. With Dubs Bad Hygiene, heat the network leaves over goes to the plumbing's hot water and heating.</STB_SettingAdvancedExplain>

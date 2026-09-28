@@ -49,10 +49,10 @@ for img, pos in placements:
 
 d = ImageDraw.Draw(card)
 d.text((30, 36), "SLOPPYMODS", font=ImageFont.truetype(BOLD, 18), fill=(146, 142, 136, 255))
-d.text((30, 60), "TRASHBRICK", font=ImageFont.truetype(BOLD, 40), fill=(238, 234, 228, 255))
-d.text((30, 104), "BURNING", font=ImageFont.truetype(BOLD, 40), fill=FIRE)
+d.text((30, 60), "TRASH", font=ImageFont.truetype(BOLD, 46), fill=(238, 234, 228, 255))
+d.text((30, 104), "POWER!", font=ImageFont.truetype(BOLD, 46), fill=FIRE)
 d.line([(32, 156), (200, 156)], fill=FIRE, width=3)
-for i, line in enumerate(("Stirling generators", "fuelled by trashbricks")):
+for i, line in enumerate(("Trash-fired burners,", "turbines and steam")):
     d.text((30, 166 + i * 20), line, font=ImageFont.truetype(BOLD, 15), fill=(168, 164, 158, 255))
 card.convert("RGB").save("About/Preview.png")
 

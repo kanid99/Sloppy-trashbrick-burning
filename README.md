@@ -1,4 +1,4 @@
-# Sloppy-trashbrick-burning
+# SloppyMod Trash POWER!
 A RimWorld mod (1.5 / 1.6) for burning trash bricks, and maybe more, for power.
 
 ## Requirements
