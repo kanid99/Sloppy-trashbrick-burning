@@ -92,4 +92,6 @@
 	<STB_AlertAccRiskDesc>A heat accumulator is full enough, worn enough or near a cobbled stove to have a real chance of exploding.\n\nSelect it and use Bleed to have a colonist let pressure off.</STB_AlertAccRiskDesc>
 	<STB_BurnRateLineNoEngine>{0}W: {1} fuel a day ({2} per kW), room heat {3}</STB_BurnRateLineNoEngine>
 	<STB_NoNetworkNoEngine>Nothing piped to it: no engine on board, pipe it to a steam turbine. Pressure is building.</STB_NoNetworkNoEngine>
+	<STB_RadiatorValveLabel>Radiator valve</STB_RadiatorValveLabel>
+	<STB_RadiatorValveDesc>Open or close the valve feeding this radiator. Closed, it takes no heat from the hot water network - for rooms you don't want heated. No electricity is involved.</STB_RadiatorValveDesc>
 </LanguageData>

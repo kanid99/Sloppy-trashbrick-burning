@@ -379,7 +379,12 @@
 				<compClass>TrashbrickBurning.CompRadiatorTempControl</compClass>
 				<energyPerSecond>0</energyPerSecond>
 			</li>
-			<li Class="CompProperties_Flickable"/>
+			<!-- A valve, not a power switch: closed, it takes no heat from the network. -->
+			<li Class="CompProperties_Flickable">
+				<commandTexture>Things/Building/Linked/STB_HotWaterValve</commandTexture>
+				<commandLabelKey>STB_RadiatorValveLabel</commandLabelKey>
+				<commandDescKey>STB_RadiatorValveDesc</commandDescKey>
+			</li>
 			<!-- Springs a steam leak now and then while hot water flows; leaks until repaired. -->
 			<li Class="TrashbrickBurning.CompProperties_SteamLeak"/>
 		</comps>
@@ -437,7 +442,12 @@
 				<compClass>TrashbrickBurning.CompRadiatorTempControl</compClass>
 				<energyPerSecond>0</energyPerSecond>
 			</li>
-			<li Class="CompProperties_Flickable"/>
+			<!-- A valve, not a power switch: closed, it takes no heat from the network. -->
+			<li Class="CompProperties_Flickable">
+				<commandTexture>Things/Building/Linked/STB_HotWaterValve</commandTexture>
+				<commandLabelKey>STB_RadiatorValveLabel</commandLabelKey>
+				<commandDescKey>STB_RadiatorValveDesc</commandDescKey>
+			</li>
 			<!-- Weeps steam about three times as often as a cast radiator. -->
 			<li Class="TrashbrickBurning.CompProperties_SteamLeak">
 				<mtbDaysPerNetwork>7</mtbDaysPerNetwork>
