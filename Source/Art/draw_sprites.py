@@ -401,6 +401,284 @@ def gasifier(rot):
     c.save(f"{OUT}/Things/Building/Power/STB_TrashbrickGasifier_{rot}.png")
 
 
+# ------------------------------------------------------------------ large cobbled stove (3x4)
+def large_cobbled_stove(rot):
+    """3x4, the cobbled stove grown by accretion rather than design: four mismatched plates welded
+    into one long firebox under a single wide fire window, a scrapped boiler drum lying behind it on
+    timber chocks, two flues that don't match, a salvaged generator housing (no engine in it any
+    more - the heat goes out on the pipe), a radiator bolted on the flank, battery, tape and a drip
+    bucket. The fire is still the one accent. Loose parts in two layers, as on the small one."""
+    v = View(rot, 3, 4, MARGIN_2X2)
+    c = Canvas(v)
+    la, lb = Canvas(v), Canvas(v)
+    rnd = random.Random(31)
+    patchwork_skid(c, rnd, [(0.1, 0.1, 0.9, 0.5), (2.1, 0.12, 2.9, 0.62), (0.12, 1.9, 0.9, 3.0),
+                            (2.2, 2.0, 2.9, 3.1), (1.0, 3.2, 2.0, 3.9), (0.2, 3.3, 0.8, 3.9)])
+    intake(c, 0.9, 0.34, INTAKE_Z, STEEL)
+
+    plates = [(0.3, 0.9, RUST), (0.9, 1.45, STEEL), (1.45, 2.1, OLIVE), (2.1, 2.7, shade(RUST, 1.12))]
+    FB0, FB1 = 0.5, 1.75
+    for i, (a0, a1, col) in enumerate(plates):
+        def top(box, lift, col=col, i=i, a0=a0, a1=a1):
+            x0, y0, x1, y1 = box
+            if i < len(plates) - 1:
+                sx, sy0 = v.pt(a1, FB0)
+                ex, ey = v.pt(a1, FB1)
+                n = 12
+                pts = [(sx + (ex - sx) * k / n, sy0 + (ey - sy0) * k / n - lift) for k in range(n + 1)]
+                c.dots(pts, 0.012, shade(col, 1.25))
+            scrapes(c, rnd, a0 + 0.05, FB0 + 0.05, a1 - 0.05, FB1 - 0.2, lift, col, n=3)
+            for _ in range(4):
+                px = rnd.uniform(x0 + (x1 - x0) * 0.15, x1 - (x1 - x0) * 0.15)
+                py = rnd.uniform(y0 + (y1 - y0) * 0.15, y1 - (y1 - y0) * 0.3)
+                c.d.line([(px, py), (px, py + c.px(0.06))], fill=shade(col, 0.86) + (255,),
+                         width=c.px(0.012))
+        # One plate stands a little proud of the others: they were never cut to match.
+        c.slab(a0, FB0, a1, FB1, 0.07, 0.38 if i != 2 else 0.42, col, top_fn=top, radius=0.02)
+
+    def fire_top(box, lift):
+        x0, y0, x1, y1 = box
+        c.glow([x0 - c.px(0.08), y0 - c.px(0.08), x1 + c.px(0.08), y1 + c.px(0.08)], FIRE_DEEP, c.px(0.06), 90)
+        c.ramp([x0 + c.px(0.02), y0 + c.px(0.02), x1 - c.px(0.02), y1 - c.px(0.02)], FIRE_HOT, FIRE_DEEP)
+        bars = 9
+        for k in range(1, bars):
+            if v.along_a():
+                x = x0 + (x1 - x0) * k / bars
+                c.seam((x, y0), (x, y1), width=4 / 192, tone=(62, 50, 44))
+            else:
+                y = y0 + (y1 - y0) * k / bars
+                c.seam((x0, y), (x1, y), width=4 / 192, tone=(62, 50, 44))
+    c.slab(0.75, 0.8, 2.25, 1.2, 0.45, 0.015, (70, 64, 60), top_fn=fire_top, shadow=False, radius=0.02)
+
+    # Scrapped boiler drum lying along f behind the firebox, rivet rows round it, on chocks.
+    def rivets(box, lift):
+        for f in (2.1, 2.6, 3.1):
+            c.dots([(v.pt(a, f)[0], v.pt(a, f)[1] - lift) for a in (0.5, 0.7, 0.9, 1.1)], 0.012,
+                   shade(RUST, 1.3))
+    chock(c, 0.35, 2.05, 1.25, 2.18)
+    chock(c, 0.35, 3.1, 1.25, 3.23)
+    c.drum(0.3, 1.9, 1.3, 3.4, 0.14, 0.4, shade(RUST, 1.08), axis="f", radius=0.14, top_fn=rivets)
+    c.pipe(0.8, 1.75, 0.8, 1.9, 0.3, 0.1, shade(STEEL, 0.95))          # firebox to boiler
+
+    # Two flues that don't match: a tall banded one, a short fat one with a rain cap.
+    def soot(X, Y, R):
+        r = int(R * 0.62)
+        c.d.ellipse([X - r, Y - r - R // 10, X + r, Y + r - R // 10], fill=(34, 32, 30, 255))
+        r2 = int(R * 0.45)
+        c.d.ellipse([X - r2, Y - r2 - R // 14, X + r2, Y + r2 - R // 14], fill=(24, 22, 20, 255))
+    c.cylinder(1.6, 2.4, 0.22, 0.07, 0.87, shade(STEEL, 1.02), rings=4, cap_fn=soot)
+    c.cylinder(2.45, 2.2, 0.3, 0.07, 0.5, shade(OLIVE, 1.0), rings=2, cap_fn=soot)
+    c.slab(2.2, 2.1, 2.7, 2.3, 0.6, 0.02, shade(RUST, 0.95), radius=0.02)   # rain cap on stilts
+
+    # Salvaged generator housing at the back right, fins across it, on chocks. Gutted: it's a
+    # manifold box now, and the hot water pipe leaves from it.
+    def fins(box, lift):
+        x0, y0, x1, y1 = box
+        n = 8
+        for k in range(1, n):
+            if v.along_a():
+                x = x0 + (x1 - x0) * k / n
+                c.seam((x, y0 + c.px(0.02)), (x, y1 - c.px(0.02)), width=3 / 192, tone=shade(OLIVE, 0.72))
+            else:
+                y = y0 + (y1 - y0) * k / n
+                c.seam((x0 + c.px(0.02), y), (x1 - c.px(0.02), y), width=3 / 192, tone=shade(OLIVE, 0.72))
+    chock(c, 1.55, 3.0, 1.7, 3.7)
+    chock(c, 2.55, 3.0, 2.7, 3.7)
+    c.slab(1.5, 3.05, 2.8, 3.66, 0.11, 0.3, shade(OLIVE, 1.05), top_fn=fins, radius=0.1)
+    c.pipe(1.3, 3.3, 1.5, 3.3, 0.25, 0.09, HOT)                        # boiler to manifold
+    c.pipe(2.15, 3.66, 2.15, 3.92, 0.07, 0.1, HOT)                     # out to the network
+
+    # Radiator bolted on the right flank, junction box, pipes up the left: straight runs only.
+    radiator(c, 2.72, 0.62, 2.94, 1.62, shade(STEEL, 0.95))
+    def jbox_top(box, lift):
+        x0, y0, x1, y1 = box
+        for k in range(3):
+            t = 0.3 + 0.2 * k
+            if v.along_a():
+                c.seam((x0 + c.px(0.03), y0 + (y1 - y0) * t), (x1 - c.px(0.03), y0 + (y1 - y0) * t),
+                       tone=shade(STEEL, 0.78))
+            else:
+                c.seam((x0 + (x1 - x0) * t, y0 + c.px(0.03)), (x0 + (x1 - x0) * t, y1 - c.px(0.03)),
+                       tone=shade(STEEL, 0.78))
+    c.slab(1.95, 1.85, 2.3, 2.3, 0.07, 0.22, shade(STEEL, 0.92), top_fn=jbox_top, radius=0.02)
+    c.pipe(0.14, 0.44, 0.14, 3.2, 0.07, 0.085, (104, 116, 120))
+    c.pipe(0.26, 0.5, 0.26, 1.8, 0.07, 0.065, shade(RUST, 1.05))
+    tape(c, 0.1, 1.2, 0.18, 1.28, 0.12)
+    tape(c, 0.1, 2.5, 0.18, 2.58, 0.12)
+    tape(c, 0.22, 0.9, 0.3, 0.96, 0.11)
+    battery(c, 2.3, 0.16, 2.8, 0.44)
+    c.cable(2.45, 0.44, 0.2, 2.1, 1.85, 0.29, 0.06, 0.035, (70, 70, 72))
+    bucket(c, 0.55, 3.6)
+    bucket(c, 2.9, 3.85)
+
+    # Loose layer A: cables off the junction box, a pipe end hanging off one clamp, a patch.
+    la.cable(2.25, 2.3, 0.29, 2.0, 3.05, 0.41, 0.16, 0.04, (66, 64, 62))
+    la.cable(2.05, 2.3, 0.29, 1.62, 2.62, 0.5, 0.12, 0.03, shade(RUST, 0.9))
+    la.pipe(0.26, 1.84, 0.26, 2.2, 0.09, 0.065, shade(RUST, 1.0))
+    def patch_top(box, lift):
+        x0, y0, x1, y1 = box
+        m = c.px(0.02)
+        pts = [(x0 + m, y0 + m), (x1 - m, y0 + m), (x0 + m, y1 - m), (x1 - m, y1 - m)]
+        la.dots([(x / (CELL * SS), y / (CELL * SS)) for x, y in pts], 0.012, shade(STEEL, 1.2))
+    la.slab(0.4, 1.3, 0.72, 1.62, 0.45, 0.02, shade(STEEL, 1.1), top_fn=patch_top, shadow=False, radius=0.01)
+    # Loose layer B: gauges on stalks, a cable from the battery, nuts on the deck.
+    gauge(lb, 0.55, 0.62, 0.45)
+    gauge(lb, 2.45, 0.62, 0.45)
+    gauge(lb, 0.8, 2.0, 0.54)
+    lb.cable(2.62, 0.44, 0.2, 2.62, 0.7, 0.45, 0.08, 0.03, (80, 76, 72))
+    loose_nuts(lb, [(1.2, 3.9), (1.35, 3.84), (0.4, 1.86), (2.6, 1.8), (1.9, 0.44)])
+    c.flush()
+    c.save(f"{OUT}/Things/Building/Power/STB_LargeCobbledStove_{rot}.png")
+    save_loose(la, "STB_LargeCobbledStove_LooseA", rot)
+    save_loose(lb, "STB_LargeCobbledStove_LooseB", rot)
+
+
+# ------------------------------------------------------------------ large gasifier (3x4)
+def _chamber_cap(c, body):
+    def cap(X, Y, R):
+        d = c.d
+        w = max(2, c.px(5 / 192))
+        r = int(R * 0.8)
+        d.ellipse([X - r, Y - r - R // 12, X + r, Y + r - R // 12], outline=TEAL + (255,), width=w)
+        for k in range(12):
+            ang = k * math.pi / 6
+            bx, by = X + math.cos(ang) * R * 0.9, Y - R // 20 + math.sin(ang) * R * 0.9
+            rr = c.px(0.014)
+            d.ellipse([bx - rr, by - rr, bx + rr, by + rr], fill=shade(body, 1.22) + (255,))
+        r2 = int(R * 0.25)
+        d.ellipse([X - r2, Y - r2 - R // 10, X + r2, Y + r2 - R // 10], fill=shade(body, 0.82) + (255,))
+    return cap
+
+
+def _status_panel(c, v, a0, f0, a1, f1, z):
+    def panel_top(box, lift):
+        x0, y0, x1, y1 = box
+        c.glow(box, TEAL, c.px(0.02), 70)
+        m = c.px(0.025)
+        c.ramp([x0 + m, y0 + m, x1 - m, y1 - m], (34, 44, 46), (28, 36, 38), c.px(0.01))
+        if v.along_a():
+            pts = [(x0 + (x1 - x0) * t, y0 + (y1 - y0) * (0.5 + 0.25 * math.sin(t * 9))) for t in
+                   [0.15 + 0.07 * k for k in range(11)]]
+        else:
+            pts = [(x0 + (x1 - x0) * (0.5 + 0.25 * math.sin(t * 9)), y0 + (y1 - y0) * t) for t in
+                   [0.15 + 0.07 * k for k in range(11)]]
+        c.d.line(pts, fill=TEAL + (255,), width=c.px(0.012))
+    c.slab(a0, f0, a1, f1, z, 0.03, (70, 74, 78), top_fn=panel_top, shadow=False, radius=0.02)
+
+
+def _vents(c, v, body, rects):
+    def fn(box, lift):
+        for (fa0, ff0, fa1, ff1) in rects:
+            vx0, vy0, vx1, vy1 = v.rect(fa0, ff0, fa1, ff1)
+            n = 6
+            for k in range(n):
+                if v.along_a():
+                    x = vx0 + (vx1 - vx0) * (k + 0.5) / n
+                    c.seam((c.px(x), c.px(vy0 - lift)), (c.px(x), c.px(vy1 - lift)), width=5 / 192,
+                           tone=shade(body, 0.78))
+                else:
+                    y = vy0 + (vy1 - vy0) * (k + 0.5) / n
+                    c.seam((c.px(vx0), c.px(y - lift)), (c.px(vx1), c.px(y - lift)), width=5 / 192,
+                           tone=shade(body, 0.78))
+    return fn
+
+
+def _stack(c, a, f, r, h, body):
+    c.cylinder(a, f, r, 0.07, h, shade(body, 1.0), rings=2,
+               cap_fn=lambda X, Y, R: c.d.ellipse([X - int(R * .55), Y - int(R * .55) - R // 10,
+                                                   X + int(R * .55), Y + int(R * .55) - R // 10],
+                                                  fill=(40, 42, 44, 255)))
+
+
+def large_gasifier(rot):
+    """3x4. The gasifier scaled up and laid out along its length: one big sealed chamber in the
+    housing, a status panel, a row of five filter canisters, then a heat exchanger drum where the
+    small one had its engine - the hot water leaves from here - and the exhaust stack. Teal still
+    marks what is powered; the hot-water orange appears only at the outlet."""
+    v = View(rot, 3, 4, MARGIN_2X2)
+    c = Canvas(v)
+    body = (138, 140, 142)
+    skid(c, shade(body, 0.62), chamfer=0.3)
+    intake(c, 0.9, 0.34, INTAKE_Z, body)
+    c.slab(0.2, 0.44, 2.8, 2.5, 0.07, 0.34, body, top_fn=_vents(c, v, body, [(1.9, 0.55, 2.6, 0.8)]),
+           radius=0.08, chamfer=0.12)
+    _status_panel(c, v, 1.95, 0.95, 2.6, 1.3, 0.41)
+    lx, ly = v.pt(2.28, 1.5)
+    c.add(ly, lambda: c.dots([(lx, ly - 0.44 * LIFT)], 0.03, (120, 214, 170)), 0.44)
+    c.cylinder(1.0, 1.4, 0.56, 0.41, 0.16, shade(body, 1.05), rings=1, cap_fn=_chamber_cap(c, body))
+    for a in (0.5, 0.95, 1.4, 1.85, 2.3):
+        c.cylinder(a, 2.22, 0.13, 0.41, 0.22, (176, 180, 184), rings=1)
+    # Heat exchanger: a drum lying across the back, ribbed, fed from the housing.
+    c.drum(0.9, 2.72, 2.7, 3.5, 0.07, 0.4, (120, 126, 132), axis="a", radius=0.12, ribs=7)
+    c.pipe(1.8, 2.5, 1.8, 2.72, 0.2, 0.1, (150, 156, 164))
+    _stack(c, 0.45, 3.0, 0.2, 0.62, body)
+    c.pipe(0.9, 3.72, 2.86, 3.72, 0.07, 0.09, (150, 156, 164))
+    c.pipe(0.9, 3.87, 2.86, 3.87, 0.07, 0.07, shade(TEAL, 0.9))
+    c.pipe(2.2, 3.5, 2.2, 3.66, 0.07, 0.1, HOT)
+    c.flush()
+    c.save(f"{OUT}/Things/Building/Power/STB_LargeGasifier_{rot}.png")
+
+
+# ------------------------------------------------------------------ industrial gasifier (3x6)
+def industrial_gasifier(rot):
+    """3x6. Plant scale on one long skid: a walkway grating at the intake, two sealed chambers in
+    series inside a long housing, a control column, a double row of filter canisters, then the
+    big heat exchanger with its end cap, twin exhaust stacks and a straight manifold back along
+    each side. Rows of identical marks carry the detail; teal for what's powered, orange only at
+    the hot-water outlet."""
+    v = View(rot, 3, 6, MARGIN_2X2)
+    c = Canvas(v)
+    body = (136, 139, 142)
+    skid(c, shade(body, 0.6), chamfer=0.3)
+
+    def grating(box, lift):
+        for k in range(16):
+            a = 0.3 + k * 0.15
+            p0, p1 = v.pt(a, 0.44), v.pt(a, 0.58)
+            c.seam((c.px(p0[0]), c.px(p0[1] - lift)), (c.px(p1[0]), c.px(p1[1] - lift)), width=3 / 192,
+                   tone=shade(body, 0.5))
+    c.slab(0.24, 0.42, 2.76, 0.6, 0.07, 0.015, shade(body, 0.72), top_fn=grating, shadow=False, radius=0.01)
+    intake(c, 1.0, 0.36, INTAKE_Z, body)
+
+    c.slab(0.2, 0.7, 2.8, 3.5, 0.07, 0.36, body,
+           top_fn=_vents(c, v, body, [(1.95, 3.0, 2.65, 3.3), (0.35, 3.0, 1.05, 3.3)]), radius=0.08, chamfer=0.12)
+    for f in (1.35, 2.45):
+        c.cylinder(1.0, f, 0.5, 0.43, 0.16, shade(body, 1.05), rings=1, cap_fn=_chamber_cap(c, body))
+    c.pipe(1.0, 1.85, 1.0, 1.95, 0.59, 0.12, shade(body, 1.1))           # chamber to chamber
+    _status_panel(c, v, 1.95, 0.85, 2.62, 1.2, 0.43)
+    _status_panel(c, v, 1.95, 1.3, 2.62, 1.55, 0.43)
+    for f in (0.95, 1.12):
+        x, y = v.pt(2.7, f)
+        c.add(y, lambda x=x, y=y: c.dots([(x, y - 0.46 * LIFT)], 0.026, (120, 214, 170)), 0.46)
+    for a in (2.0, 2.4):
+        for f in (1.9, 2.25, 2.6, 2.95):
+            c.cylinder(a, f, 0.12, 0.43, 0.2, (176, 180, 184), rings=1)
+
+    # Heat exchanger: a long ribbed drum down the middle, an end cap, the outlet at the back.
+    c.drum(0.55, 3.75, 2.05, 5.35, 0.07, 0.46, (120, 126, 132), axis="f", radius=0.14, ribs=9)
+    c.drum(0.8, 5.35, 1.8, 5.7, 0.07, 0.32, shade((120, 126, 132), 0.95), axis="f", radius=0.08)
+    c.pipe(1.3, 3.5, 1.3, 3.75, 0.24, 0.12, (150, 156, 164))
+    c.pipe(1.3, 5.7, 1.3, 5.92, 0.07, 0.11, HOT)
+    # Twin stacks on the right, a straight manifold down each side.
+    _stack(c, 2.5, 3.9, 0.2, 0.8, body)
+    _stack(c, 2.5, 4.6, 0.2, 0.8, body)
+    c.pipe(0.18, 0.72, 0.18, 5.8, 0.07, 0.08, (150, 156, 164))
+    c.pipe(2.84, 5.0, 2.84, 5.8, 0.07, 0.07, shade(TEAL, 0.9))
+    def tbox(box, lift):
+        x0, y0, x1, y1 = box
+        for k in range(4):
+            t = 0.25 + 0.17 * k
+            if v.along_a():
+                y = y0 + (y1 - y0) * t
+                c.seam((x0 + c.px(0.03), y), (x1 - c.px(0.03), y), tone=shade(body, 0.66))
+            else:
+                x = x0 + (x1 - x0) * t
+                c.seam((x, y0 + c.px(0.03)), (x, y1 - c.px(0.03)), tone=shade(body, 0.66))
+    c.slab(2.2, 5.1, 2.72, 5.7, 0.07, 0.24, shade(body, 0.92), top_fn=tbox, radius=0.02)
+    c.flush()
+    c.save(f"{OUT}/Things/Building/Power/STB_IndustrialGasifier_{rot}.png")
+
+
 # ------------------------------------------------------------------ fuel hopper
 def fuel_hopper(rot):
     """1x1. A steel box round a funnel, with its spout on the edge it faces: point it at a
@@ -962,6 +1240,9 @@ if __name__ == "__main__":
     for r in ROTS:
         cobbled_stove(r)
         gasifier(r)
+        large_cobbled_stove(r)
+        large_gasifier(r)
+        industrial_gasifier(r)
         fuel_hopper(r)
         steam_turbine(r)
         cobbled_turbine(r)

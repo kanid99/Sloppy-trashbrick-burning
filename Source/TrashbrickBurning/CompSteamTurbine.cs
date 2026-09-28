@@ -515,6 +515,12 @@ namespace TrashbrickBurning
             }
         }
 
+        /// <summary>Heat in or out from outside the steam network: Dubs Bad Hygiene hot water, when it's a tank.</summary>
+        public void AddHeat(float wattDays)
+        {
+            stored = Mathf.Clamp(stored + wattDays, 0f, Props.capacityWattDays);
+        }
+
         public void Emptied()
         {
             stored = 0f;

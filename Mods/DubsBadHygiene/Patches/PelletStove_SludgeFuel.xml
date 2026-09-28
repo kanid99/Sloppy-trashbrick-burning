@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Patch>
 
-	<!-- Let both stoves burn sludge pellets as well as trashbricks. -->
+	<!-- Let every burner burn sludge pellets as well as trashbricks. -->
 	<Operation Class="PatchOperationAdd">
-		<xpath>Defs/ThingDef[defName="STB_TrashbrickPelletStove" or defName="STB_TrashbrickGasifier"]/comps/li[@Class="CompProperties_Refuelable"]/fuelFilter/thingDefs</xpath>
+		<xpath>Defs/ThingDef[defName="STB_TrashbrickPelletStove" or defName="STB_TrashbrickGasifier" or defName="STB_LargeCobbledStove" or defName="STB_LargeGasifier" or defName="STB_IndustrialGasifier"]/comps/li[@Class="CompProperties_Refuelable"]/fuelFilter/thingDefs</xpath>
 		<value>
 			<li>STB_SludgePellets</li>
 		</value>
 	</Operation>
 
 	<Operation Class="PatchOperationReplace">
-		<xpath>Defs/ThingDef[defName="STB_TrashbrickPelletStove" or defName="STB_TrashbrickGasifier"]/comps/li[@Class="CompProperties_Refuelable"]/fuelLabel</xpath>
+		<xpath>Defs/ThingDef[defName="STB_TrashbrickPelletStove" or defName="STB_TrashbrickGasifier" or defName="STB_LargeCobbledStove" or defName="STB_LargeGasifier" or defName="STB_IndustrialGasifier"]/comps/li[@Class="CompProperties_Refuelable"]/fuelLabel</xpath>
 		<value>
 			<fuelLabel>Pellet fuel</fuelLabel>
 		</value>
@@ -46,6 +46,24 @@
 			</li>
 			<li Class="DubsBadHygiene.CompProperties_CompBoiler">
 				<compClass>TrashbrickBurning.DBH.CompStirlingBoiler</compClass>
+				<!-- Scaled up for the bigger burners below. -->
+				<BaseCapacity>1600</BaseCapacity>
+				<ThermostatControl>false</ThermostatControl>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- The big burners have no power plant: the plumbing goes ahead of the engine instead. -->
+	<Operation Class="PatchOperationInsert">
+		<xpath>Defs/ThingDef[defName="STB_LargeCobbledStove" or defName="STB_LargeGasifier" or defName="STB_IndustrialGasifier"]/comps/li[@Class="TrashbrickBurning.CompProperties_StirlingEngine"]</xpath>
+		<order>Prepend</order>
+		<value>
+			<li Class="DubsBadHygiene.CompProperties_Pipe">
+				<mode>Sewage</mode>
+			</li>
+			<li Class="DubsBadHygiene.CompProperties_CompBoiler">
+				<compClass>TrashbrickBurning.DBH.CompStirlingBoiler</compClass>
+				<!-- Scaled up for the bigger burners below. -->
 				<BaseCapacity>1600</BaseCapacity>
 				<ThermostatControl>false</ThermostatControl>
 			</li>
@@ -67,6 +85,54 @@
 		<value>
 			<li Class="TrashbrickBurning.DBH.CompProperties_StirlingWater">
 				<waterPerDay>40</waterPerDay>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[defName="STB_LargeCobbledStove"]/comps/li[@Class="DubsBadHygiene.CompProperties_CompBoiler"]/BaseCapacity</xpath>
+		<value>
+			<BaseCapacity>4800</BaseCapacity>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[defName="STB_LargeCobbledStove"]/comps</xpath>
+		<value>
+			<li Class="TrashbrickBurning.DBH.CompProperties_StirlingWater">
+				<waterPerDay>150</waterPerDay>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[defName="STB_LargeGasifier"]/comps/li[@Class="DubsBadHygiene.CompProperties_CompBoiler"]/BaseCapacity</xpath>
+		<value>
+			<BaseCapacity>4800</BaseCapacity>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[defName="STB_LargeGasifier"]/comps</xpath>
+		<value>
+			<li Class="TrashbrickBurning.DBH.CompProperties_StirlingWater">
+				<waterPerDay>120</waterPerDay>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[defName="STB_IndustrialGasifier"]/comps/li[@Class="DubsBadHygiene.CompProperties_CompBoiler"]/BaseCapacity</xpath>
+		<value>
+			<BaseCapacity>9600</BaseCapacity>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[defName="STB_IndustrialGasifier"]/comps</xpath>
+		<value>
+			<li Class="TrashbrickBurning.DBH.CompProperties_StirlingWater">
+				<waterPerDay>240</waterPerDay>
 			</li>
 		</value>
 	</Operation>

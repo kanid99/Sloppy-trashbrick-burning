@@ -9,7 +9,7 @@ namespace TrashbrickBurning
     /// Keep in step with modVersion in About/About.xml.</summary>
     public static class BuildInfo
     {
-        public const string Version = "0.5.0";
+        public const string Version = "0.6.0";
     }
 
     public class TrashbrickSettings : ModSettings
@@ -110,7 +110,9 @@ namespace TrashbrickBurning
         private static readonly string[] AdvancedOnly =
         {
             "STB_SteamTurbine", "STB_CobbledTurbine", "STB_HotWaterPipe", "STB_HotWaterPipeHidden",
-            "STB_HotWaterValve", "STB_HotWaterRadiator", "STB_CobbledRadiator", "STB_HeatAccumulator"
+            "STB_HotWaterValve", "STB_HotWaterRadiator", "STB_CobbledRadiator", "STB_HeatAccumulator",
+            // All heat and no engine: useless without turbines.
+            "STB_LargeCobbledStove", "STB_LargeGasifier", "STB_IndustrialGasifier"
         };
 
         static ApplyPlayMode()

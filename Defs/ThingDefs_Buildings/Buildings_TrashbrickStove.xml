@@ -251,6 +251,353 @@
 	</ThingDef>
 
 	<!--
+		Large tier (3x4): three times the heat of the small burners, a little less fuel per watt.
+		At full burn one feeds a steam turbine flat out. Unlike the small burners there's no engine
+		on board: all heat, no power, so they need turbines and exist only in advanced play mode.
+	-->
+	<ThingDef ParentName="BuildingBase">
+		<defName>STB_LargeCobbledStove</defName>
+		<label>large cobbled stove</label>
+		<description>A long firebox welded together from whatever plate was lying around, a scrapped boiler drum, two mismatched flues and a salvaged generator, all on compressed trashbricks. Three times the heat of a cobbled pellet stove from a little less fuel per watt, and just as short of a safety valve. It has no engine of its own: pipe it to a steam turbine. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that. It heats the room while it runs, and the smoke slowly pollutes the ground around it.</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Power/STB_LargeCobbledStove</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<!-- Drawn a margin larger than its 3x4 footprint so raised parts aren't clipped. -->
+			<drawSize>(4,5)</drawSize>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<!-- RealTime as well, so CompLooseParts can draw and shake the loose parts every frame. -->
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<passability>PassThroughOnly</passability>
+		<pathCost>150</pathCost>
+		<blockWind>true</blockWind>
+		<fillPercent>1.0</fillPercent>
+		<castEdgeShadows>false</castEdgeShadows>
+		<rotatable>true</rotatable>
+		<size>(3,4)</size>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<MaxHitPoints>700</MaxHitPoints>
+			<WorkToBuild>7000</WorkToBuild>
+			<Flammability>1.0</Flammability>
+			<Beauty>-60</Beauty>
+		</statBases>
+		<costList>
+			<Steel>300</Steel>
+			<ComponentIndustrial>5</ComponentIndustrial>
+		</costList>
+		<comps>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Refuelable">
+				<fuelConsumptionRate>54.0</fuelConsumptionRate>
+				<fuelCapacity>150.0</fuelCapacity>
+				<fuelLabel>Trashbricks</fuelLabel>
+				<fuelFilter>
+					<thingDefs>
+						<li>VRecyclingE_TrashBrick</li>
+						<!-- Other fuels, at their own values (CompStirlingEngine.otherFuels). Removed at
+						     startup if the setting is off. -->
+						<li>WoodLog</li>
+						<li>Chemfuel</li>
+					</thingDefs>
+				</fuelFilter>
+				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+				<!-- CompStirlingEngine burns the fuel, at a rate that depends on the play mode and burn rate. -->
+				<externalTicking>true</externalTicking>
+			</li>
+			<li Class="CompProperties_Glower">
+				<glowRadius>8</glowRadius>
+				<glowColor>(217,112,33,0)</glowColor>
+			</li>
+			<li Class="CompProperties_Breakdownable"/>
+			<!-- Pulls fuel from any adjacent hopper (ours, vanilla, or VFE Factory's). -->
+			<li Class="TrashbrickBurning.CompProperties_HopperFeed"/>
+			<!--
+				The firebox and engine: burns the fuel (so the refuelable is externally ticked), heats
+				the room, and sets the power output. Simple play mode uses the simple* values and the
+				power comp's output. Advanced play mode makes it a burner at one of these heat levels:
+				hotter burns cost more fuel per watt and waste more heat into the room. Its heat goes to
+				steam turbines first; with none connected, the built-in engine makes builtInWatts.
+			-->
+			<li Class="TrashbrickBurning.CompProperties_StirlingEngine">
+				<!-- No engine of its own: it only makes heat, for steam turbines, so it's advanced mode only. -->
+				<simpleFuelPerDay>54</simpleFuelPerDay>
+				<simpleRoomHeatPerSecond>22</simpleRoomHeatPerSecond>
+				<cooledPowerFactor>1.2</cooledPowerFactor>
+				<heatRecoveryPowerFactor>0.5</heatRecoveryPowerFactor>
+				<heatLevels>
+					<li><watts>750</watts><fuelPerDay>22</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
+					<li><watts>1000</watts><fuelPerDay>31</fuelPerDay><roomHeatPerSecond>17</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
+					<li><watts>1500</watts><fuelPerDay>54</fuelPerDay><roomHeatPerSecond>30</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
+				</heatLevels>
+				<!-- Jerry-rigged: no working safety valve. At full pressure it bursts. -->
+				<safetyValve>false</safetyValve>
+				<ashPerFuel>0.25</ashPerFuel>
+				<otherFuels>
+					<li><thing>WoodLog</thing><value>0.4</value></li>
+					<li><thing>Chemfuel</thing><value>2.5</value></li>
+				</otherFuels>
+			</li>
+			<!-- Smoke from the flue, a flickering fire window, and the rattle. Points are in the art's
+			     own machine coordinates (a across the front, f front to back, z up). -->
+			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
+				<smoke><a>1.6</a><f>2.4</f><z>0.94</z></smoke>
+				<glow><a>1.5</a><f>1.0</f><z>0.49</z></glow>
+				<glowSize>2.0</glowSize>
+				<sound>STB_RattleAmbience</sound>
+			</li>
+
+			<!-- The parts that rattle while it burns: two layers drawn over the sprite and shaken. -->
+			<li Class="TrashbrickBurning.CompProperties_LooseParts">
+				<layers>
+					<li><texPath>Things/Building/Power/STB_LargeCobbledStove_LooseA</texPath><amplitude>0.012</amplitude><frequency>1.9</frequency><phase>0</phase></li>
+					<li><texPath>Things/Building/Power/STB_LargeCobbledStove_LooseB</texPath><amplitude>0.009</amplitude><frequency>2.7</frequency><phase>1.3</phase></li>
+				</layers>
+			</li>
+			<!-- Joins the pressurised hot water network when a pipe runs under it. -->
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
+			<!-- Only while burning. Needs Biotech, which VRE already requires. -->
+			<li Class="TrashbrickBurning.CompProperties_BurnPollution">
+				<cellsPerDay>8</cellsPerDay>
+			</li>
+		</comps>
+		<placeWorkers>
+			<li>TrashbrickBurning.PlaceWorker_ShowIntake</li>
+		</placeWorkers>
+		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+		<designationCategory>Power</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
+		<researchPrerequisites>
+			<li>Electricity</li>
+			<li>VRecyclingE_ComplexRecycling</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+	<ThingDef ParentName="BuildingBase">
+		<defName>STB_LargeGasifier</defName>
+		<label>large trashbrick gasifier</label>
+		<description>A bigger sealed gasifier: one large chamber, a longer filter bank and its own generator. Three times the heat of a trashbrick gasifier from a little less fuel per watt - at full burn, enough to run one steam turbine flat out. Like the small one it bakes trashbricks into syngas and burns it cleanly, but it has no engine of its own: pipe it to a steam turbine. It gets twice the power from each brick that a pellet stove does, and the catalytic filters catch the fumes, so it doesn't pollute. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Power/STB_LargeGasifier</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<!-- Drawn a margin larger than its 3x4 footprint so raised parts aren't clipped. -->
+			<drawSize>(4,5)</drawSize>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<pathCost>150</pathCost>
+		<blockWind>true</blockWind>
+		<fillPercent>1.0</fillPercent>
+		<castEdgeShadows>false</castEdgeShadows>
+		<rotatable>true</rotatable>
+		<size>(3,4)</size>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<MaxHitPoints>900</MaxHitPoints>
+			<WorkToBuild>12000</WorkToBuild>
+			<Flammability>0.5</Flammability>
+			<Beauty>-20</Beauty>
+		</statBases>
+		<costList>
+			<Steel>380</Steel>
+			<Plasteel>60</Plasteel>
+			<ComponentIndustrial>9</ComponentIndustrial>
+		</costList>
+		<comps>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Refuelable">
+				<fuelConsumptionRate>32.0</fuelConsumptionRate>
+				<fuelCapacity>180.0</fuelCapacity>
+				<fuelLabel>Trashbricks</fuelLabel>
+				<fuelFilter>
+					<thingDefs>
+						<li>VRecyclingE_TrashBrick</li>
+						<!-- Other fuels, at their own values (CompStirlingEngine.otherFuels). Removed at
+						     startup if the setting is off. -->
+						<li>WoodLog</li>
+						<li>Chemfuel</li>
+					</thingDefs>
+				</fuelFilter>
+				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+				<!-- CompStirlingEngine burns the fuel, at a rate that depends on the play mode and burn rate. -->
+				<externalTicking>true</externalTicking>
+			</li>
+			<li Class="CompProperties_Glower">
+				<glowRadius>4</glowRadius>
+				<glowColor>(70,200,190,0)</glowColor>
+			</li>
+			<li Class="CompProperties_Breakdownable"/>
+			<li Class="TrashbrickBurning.CompProperties_HopperFeed"/>
+			<!--
+				The firebox and engine: burns the fuel (so the refuelable is externally ticked), heats
+				the room, and sets the power output. Simple play mode uses the simple* values and the
+				power comp's output. Advanced play mode makes it a burner at one of these heat levels:
+				hotter burns cost more fuel per watt and waste more heat into the room. Its heat goes to
+				steam turbines first; with none connected, the built-in engine makes builtInWatts.
+			-->
+			<li Class="TrashbrickBurning.CompProperties_StirlingEngine">
+				<!-- No engine of its own: it only makes heat, for steam turbines, so it's advanced mode only. -->
+				<simpleFuelPerDay>32</simpleFuelPerDay>
+				<simpleRoomHeatPerSecond>8</simpleRoomHeatPerSecond>
+				<cooledPowerFactor>1.2</cooledPowerFactor>
+				<heatRecoveryPowerFactor>0.6</heatRecoveryPowerFactor>
+				<heatLevels>
+					<li><watts>750</watts><fuelPerDay>11</fuelPerDay><roomHeatPerSecond>4.5</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
+					<li><watts>1000</watts><fuelPerDay>15</fuelPerDay><roomHeatPerSecond>7</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
+					<li><watts>1500</watts><fuelPerDay>24</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
+				</heatLevels>
+				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
+				<safetyValve>true</safetyValve>
+				<ashPerFuel>0.1</ashPerFuel>
+				<otherFuels>
+					<li><thing>WoodLog</thing><value>0.4</value></li>
+					<li><thing>Chemfuel</thing><value>2.5</value></li>
+				</otherFuels>
+			</li>
+			<!-- Steam wisps from the exhaust stack, where the safety valve vents too. -->
+			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
+				<steam><a>0.42</a><f>3.2</f><z>0.72</z></steam>
+			</li>
+
+			<!-- Joins the pressurised hot water network when a pipe runs under it. -->
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
+		</comps>
+		<placeWorkers>
+			<li>TrashbrickBurning.PlaceWorker_ShowIntake</li>
+		</placeWorkers>
+		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+		<designationCategory>Power</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
+		<researchPrerequisites>
+			<li>MicroelectronicsBasics</li>
+			<li>VRecyclingE_ComplexRecycling</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+	<!--
+		Industrial tier (3x6), gasifier only: six times the heat of the small gasifier, the best
+		fuel per watt, and at full burn enough for two steam turbines.
+	-->
+	<ThingDef ParentName="BuildingBase">
+		<defName>STB_IndustrialGasifier</defName>
+		<label>industrial trashbrick gasifier</label>
+		<description>A plant-scale gasifier: two chambers in series, a double filter bank, twin exhaust stacks and a full-size generator on one long skid. Six times the heat of a trashbrick gasifier and the most out of every brick - at full burn, enough to run two steam turbines flat out. Like the small one it burns clean. It has no engine of its own: pipe it to steam turbines. It gets twice the power from each brick that a pellet stove does, and the catalytic filters catch the fumes, so it doesn't pollute. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Power/STB_IndustrialGasifier</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<!-- Drawn a margin larger than its 3x6 footprint so raised parts aren't clipped. -->
+			<drawSize>(4,7)</drawSize>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<pathCost>150</pathCost>
+		<blockWind>true</blockWind>
+		<fillPercent>1.0</fillPercent>
+		<castEdgeShadows>false</castEdgeShadows>
+		<rotatable>true</rotatable>
+		<size>(3,6)</size>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<MaxHitPoints>1600</MaxHitPoints>
+			<WorkToBuild>22000</WorkToBuild>
+			<Flammability>0.5</Flammability>
+			<Beauty>-30</Beauty>
+		</statBases>
+		<costList>
+			<Steel>700</Steel>
+			<Plasteel>120</Plasteel>
+			<ComponentIndustrial>16</ComponentIndustrial>
+		</costList>
+		<comps>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Refuelable">
+				<fuelConsumptionRate>60.0</fuelConsumptionRate>
+				<fuelCapacity>360.0</fuelCapacity>
+				<fuelLabel>Trashbricks</fuelLabel>
+				<fuelFilter>
+					<thingDefs>
+						<li>VRecyclingE_TrashBrick</li>
+						<!-- Other fuels, at their own values (CompStirlingEngine.otherFuels). Removed at
+						     startup if the setting is off. -->
+						<li>WoodLog</li>
+						<li>Chemfuel</li>
+					</thingDefs>
+				</fuelFilter>
+				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+				<!-- CompStirlingEngine burns the fuel, at a rate that depends on the play mode and burn rate. -->
+				<externalTicking>true</externalTicking>
+			</li>
+			<li Class="CompProperties_Glower">
+				<glowRadius>5</glowRadius>
+				<glowColor>(70,200,190,0)</glowColor>
+			</li>
+			<li Class="CompProperties_Breakdownable"/>
+			<li Class="TrashbrickBurning.CompProperties_HopperFeed"/>
+			<!--
+				The firebox and engine: burns the fuel (so the refuelable is externally ticked), heats
+				the room, and sets the power output. Simple play mode uses the simple* values and the
+				power comp's output. Advanced play mode makes it a burner at one of these heat levels:
+				hotter burns cost more fuel per watt and waste more heat into the room. Its heat goes to
+				steam turbines first; with none connected, the built-in engine makes builtInWatts.
+			-->
+			<li Class="TrashbrickBurning.CompProperties_StirlingEngine">
+				<!-- No engine of its own: it only makes heat, for steam turbines, so it's advanced mode only. -->
+				<simpleFuelPerDay>60</simpleFuelPerDay>
+				<simpleRoomHeatPerSecond>14</simpleRoomHeatPerSecond>
+				<cooledPowerFactor>1.2</cooledPowerFactor>
+				<heatRecoveryPowerFactor>0.6</heatRecoveryPowerFactor>
+				<heatLevels>
+					<li><watts>1500</watts><fuelPerDay>20</fuelPerDay><roomHeatPerSecond>8</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
+					<li><watts>2250</watts><fuelPerDay>33</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
+					<li><watts>3000</watts><fuelPerDay>46</fuelPerDay><roomHeatPerSecond>20</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
+				</heatLevels>
+				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
+				<safetyValve>true</safetyValve>
+				<ashPerFuel>0.1</ashPerFuel>
+				<otherFuels>
+					<li><thing>WoodLog</thing><value>0.4</value></li>
+					<li><thing>Chemfuel</thing><value>2.5</value></li>
+				</otherFuels>
+			</li>
+			<!-- Steam wisps from the exhaust stack, where the safety valve vents too. -->
+			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
+				<steam><a>2.55</a><f>3.9</f><z>0.87</z></steam>
+			</li>
+
+			<!-- Joins the pressurised hot water network when a pipe runs under it. -->
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
+		</comps>
+		<placeWorkers>
+			<li>TrashbrickBurning.PlaceWorker_ShowIntake</li>
+		</placeWorkers>
+		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+		<designationCategory>Power</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
+		<researchPrerequisites>
+			<li>MicroelectronicsBasics</li>
+			<li>VRecyclingE_ComplexRecycling</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+	<!--
 		A buffer for the stove: haulers or a conveyor fill it, and the stove next to it pulls fuel as
 		it burns. Any building with isHopper works as a feed; this one exists so you don't need
 		nutrient paste research or VFE Factory. Mods/VFEFactory hides it when VFE Factory is loaded.

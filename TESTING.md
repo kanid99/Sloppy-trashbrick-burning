@@ -69,6 +69,14 @@ the turbine.
 - [ ] Rotate the turbines through all four facings; the art should look like the same machine
   each way.
 
+## 3b. Large and industrial burners
+
+- [ ] The Power tab has **large cobbled stove** and **large trashbrick gasifier** (3x4) and **industrial trashbrick gasifier** (3x6). Place each in all four facings: the green outline covers the whole 3-cell front, and the art faces the same way.
+- [ ] None of them has a power readout or joins the power grid. Unpiped, the inspect says *no engine on board, pipe it to a steam turbine* and pressure climbs.
+- [ ] A large burner at 1500W on a steam turbine gives it its full 1500W. An industrial at 3000W fills two turbines.
+- [ ] The large cobbled stove smokes, flickers and rattles like the small one; the gasifiers vent steam from their stacks.
+- [ ] In simple mode none of the three is in the build menu.
+
 ## 4. Pressure and the steam burst (hazards on)
 
 Leave a **cobbled stove at 500W** connected to a turbine, then switch the **turbine off**.
@@ -131,6 +139,8 @@ Switch to simple mode in settings and **restart**.
 - [ ] With no turbine, the built-in engine's power drops by what the hot water draws.
 - [ ] **Simple:** the engine mode button cycles power / water-cooled / heat recovery. Water-cooled
   reads *(no water)* without plumbing water, and makes 120% with it.
+
+- [ ] **Accumulator as a tank:** pipe a heat accumulator into DBH plumbing next to a shower. Its DBH readout shows a hot water level equal to its charge. Showers lower the charge; a burner's hot water share (or a DBH boiler) raises it. With no DBH hot water tank at all, showers still get hot water from it.
 
 ## 9. With VFE - Factory
 

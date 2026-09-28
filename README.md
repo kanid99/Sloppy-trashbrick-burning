@@ -34,6 +34,21 @@ Both are 2x2 Stirling-engine stoves that burn trashbricks. The high-tech gasifie
 
 A burner's heat goes to **turbines first**. Once a burner is connected to a turbine, its own small engine shuts off.
 
+### Large and industrial burners (advanced mode, Power tab)
+Bigger burners with **no engine of their own**: all heat and no power, so they need steam turbines and aren't in simple mode. Unpiped, they build pressure. Each burns a little less fuel per watt than the tier below.
+
+| | Large cobbled stove | Large gasifier | Industrial gasifier |
+|---|---|---|---|
+| Size | 3x4 | 3x4 | 3x6 |
+| Burn rates | 750 / 1000 / 1500W | 750 / 1000 / 1500W | 1500 / 2250 / 3000W |
+| Fuel a day | 22 / 31 / 54 | 11 / 15 / 24 | 20 / 33 / 46 |
+| Room heat | 12 / 17 / 30 | 4.5 / 7 / 12 | 8 / 12 / 20 |
+| At full burn | one turbine flat out | one turbine flat out | two turbines flat out |
+| Cost | 300 steel, 5 components | 380 steel, 60 plasteel, 9 components | 700 steel, 120 plasteel, 16 components |
+| Safety valve | no, it bursts | yes | yes |
+
+Their intake is the whole 3-cell front edge. Pressure builds at the same pace relative to their size as it does on the small burners.
+
 ### Steam turbines (advanced mode)
 Two tiers, both 2x3. Each turns the heat piped to it into power, from as many burners as it takes. With more than one turbine on a network, the heat is shared by capacity.
 
@@ -107,11 +122,15 @@ Each stove's **engine mode** gizmo has a **turbine feed** setting. In it the sto
 No Dubs mod is needed for any of this.
 
 ### With Dubs Bad Hygiene
-**Sludge pellets:** a biofuel refinery recipe turns 75 fecal sludge into 100 sludge pellets, and both stoves burn them. That's less energy than DBH's sludge-to-chemfuel recipe (35 chemfuel, about 7.8 generator-days), but pellets don't explode when damaged, catch fire less easily, and don't rot.
+**Sludge pellets:** a biofuel refinery recipe turns 75 fecal sludge into 100 sludge pellets, and every burner burns them. That's less energy than DBH's sludge-to-chemfuel recipe (35 chemfuel, about 7.8 generator-days), but pellets don't explode when damaged, catch fire less easily, and don't rot.
 
 **Plumbing:** both stoves connect to DBH plumbing.
 - **Advanced mode:** a stove on the plumbing is also a DBH boiler. Each burner has a **Hot water** share (0–100% in 10% steps; left-click steps, right-click picks). That share of its heat is offered to the plumbing's hot-water tanks and radiators **first**, one boiler unit per watt. Whatever the plumbing doesn't actually draw goes on to the turbines, so a high share only costs power when the tanks and radiators really want the heat. Anything the network leaves over is offered to the plumbing too. With no turbine, what the plumbing draws comes off the built-in engine's power, down to nothing.
 - **Simple mode:** an engine mode gizmo adds **water-cooled** (120% power while water flows, drawing 50 or 40 water a day) and **heat recovery** (a 1600-unit boiler for hot water and heating, at 50% power for the cobbled stove or 60% for the gasifier).
+
+**Accumulator as hot water tank:** on DBH plumbing, the heat accumulator is also a hot water tank, worth three of DBH's own. The tank's temperature *is* the accumulator's charge: showers and baths draw on the stored heat, and DBH boilers on the plumbing, including the burners' hot water share, charge it watt for watt.
+
+The large and industrial burners join DBH plumbing too, with boilers of 4800 and 9600 units.
 
 Works with DBH's Lite mode too: that's a setting inside DBH, not a separate mod.
 

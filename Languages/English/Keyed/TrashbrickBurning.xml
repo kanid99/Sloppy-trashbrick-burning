@@ -90,4 +90,6 @@
 	<STB_AccExplodedText>A heat accumulator at {0} let go, throwing a blast and a cloud of scalding steam out to {1} tiles.\n\nFull tanks, cobbled stoves and worn valves make this likelier. Bleed accumulators now and then to keep the risk down.</STB_AccExplodedText>
 	<STB_AlertAccRisk>Heat accumulator at risk</STB_AlertAccRisk>
 	<STB_AlertAccRiskDesc>A heat accumulator is full enough, worn enough or near a cobbled stove to have a real chance of exploding.\n\nSelect it and use Bleed to have a colonist let pressure off.</STB_AlertAccRiskDesc>
+	<STB_BurnRateLineNoEngine>{0}W: {1} fuel a day ({2} per kW), room heat {3}</STB_BurnRateLineNoEngine>
+	<STB_NoNetworkNoEngine>Nothing piped to it: no engine on board, pipe it to a steam turbine. Pressure is building.</STB_NoNetworkNoEngine>
 </LanguageData>

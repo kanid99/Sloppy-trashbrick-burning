@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+	<!--
+		The heat accumulator doubles as a DBH hot water tank. Plumbing connects it to DBH's pipes, and
+		CompAccumulatorHeatStore keeps the tank's temperature equal to the accumulator's charge, so
+		showers and baths draw on the stored heat, and DBH boilers - our burners' hot water share
+		included - can charge it. It counts as three ordinary hot water tanks.
+	-->
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[defName="STB_HeatAccumulator"]/comps</xpath>
+		<value>
+			<li Class="DubsBadHygiene.CompProperties_Pipe">
+				<mode>Sewage</mode>
+			</li>
+			<li Class="DubCore.CompProperties_HeatStore">
+				<compClass>TrashbrickBurning.DBH.CompAccumulatorHeatStore</compClass>
+				<StoreCapacity>300</StoreCapacity>
+								<FallRate>0</FallRate>
+				<ForRunningWater>true</ForRunningWater>
+			</li>
+		</value>
+	</Operation>
+
+</Patch>

@@ -280,7 +280,9 @@ namespace TrashbrickBurning
             float unused = UnusedWatts;
             if (unused > 1f)
             {
-                pressure += unused / PressureWattsPerHalfDay * days * 2f;
+                // Scaled to the burner's top rate, so a big burner takes as long to fill as a small one.
+                float scale = Mathf.Max(1f, Props.heatLevels.Count > 0 ? Props.heatLevels[Props.heatLevels.Count - 1].watts / 500f : 1f);
+                pressure += unused / (PressureWattsPerHalfDay * scale) * days * 2f;
             }
             else
             {
@@ -304,6 +306,12 @@ namespace TrashbrickBurning
                 SteamBurst.Burst(parent);
             }
         }
+
+        /// <summary>
+        /// The small burners carry a Stirling engine; the large and industrial ones are all heat and
+        /// no engine, and make nothing without a steam turbine.
+        /// </summary>
+        public bool HasEngine => parent.GetComp<CompPowerPlantStirling>() != null;
 
         public void Apply()
         {
@@ -419,8 +427,9 @@ namespace TrashbrickBurning
             foreach (HeatLevel level in Props.heatLevels)
             {
                 float fuel = level.fuelPerDay * fuelMult;
-                table += "\n" + "STB_BurnRateLine".Translate(level.watts.ToString("0"), fuel.ToString("0.#"),
-                    (fuel * 1000f / level.watts).ToString("0.0"), level.roomHeatPerSecond.ToString("0.#"),
+                table += "\n" + (HasEngine ? "STB_BurnRateLine" : "STB_BurnRateLineNoEngine").Translate(
+                    level.watts.ToString("0"), fuel.ToString("0.#"), (fuel * 1000f / level.watts).ToString("0.0"),
+                    level.roomHeatPerSecond.ToString("0.#"),
                     (level.builtInWatts * TrashbrickBurningMod.S.powerMultiplier).ToString("0"));
             }
             return table;
@@ -437,6 +446,10 @@ namespace TrashbrickBurning
                     if (networkConnected)
                     {
                         lines.Add("STB_ToNetwork".Translate(toNetworkWatts.ToString("0")));
+                    }
+                    else if (!HasEngine)
+                    {
+                        lines.Add("STB_NoNetworkNoEngine".Translate());
                     }
                     else
                     {

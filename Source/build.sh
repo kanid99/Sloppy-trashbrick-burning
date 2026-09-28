@@ -60,7 +60,7 @@ build_dbh() {
   mcs -target:library -optimize+ -nostdlib -noconfig \
     -r:"$r/mscorlib.dll" -r:"$r/System.dll" -r:"$r/System.Core.dll" $extra \
     -r:"$r/Assembly-CSharp.dll" -r:"$r/UnityEngine.CoreModule.dll" \
-    -r:"$DBH_DIR/$game/Assemblies/BadHygiene.dll" -r:"$game/Assemblies/TrashbrickBurning.dll" \
+    -r:"$DBH_DIR/$game/Assemblies/BadHygiene.dll" -r:"$DBH_DIR/$game/Assemblies/0DubCore.dll" -r:"$game/Assemblies/TrashbrickBurning.dll" \
     -out:"$out/TrashbrickBurning.DBH.dll" Source/TrashbrickBurning.DBH/*.cs
   echo "built $out"
 }
