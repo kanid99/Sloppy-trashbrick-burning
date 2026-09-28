@@ -64,11 +64,15 @@ namespace TrashbrickBurning.DBH
                 {
                     draw = boiler.Capacity * Mathf.Clamp01(net.HeatStoreCapacitySum / net.BoilerCapacitySum);
                 }
+                // The hot water share is offered first, so the draw comes out of it first; only
+                // beyond that does it eat into what the network left over.
                 engine.hotWaterDrawWatts = draw;
+                engine.hotWaterDrawReservedWatts = Mathf.Min(draw, engine.ReservedWatts);
             }
             else
             {
                 engine.hotWaterDrawWatts = 0f;
+                engine.hotWaterDrawReservedWatts = 0f;
                 bool flowing = false;
                 if (engine.mode == StirlingMode.WaterCooled && engine.Burning && net != null)
                 {
@@ -82,7 +86,8 @@ namespace TrashbrickBurning.DBH
 
     /// <summary>
     /// DBH's boiler, feeding the plumbing's hot water and central heating. Advanced play mode: it
-    /// offers whatever heat the turbines left, as boiler units one to one with watts. Simple: only
+    /// offers the burner's hot water share first, plus whatever heat the network left over, as
+    /// boiler units one to one with watts. Simple: only
     /// in heat recovery mode, at its def capacity. WorkingNow is replaced rather than extended: the
     /// base version checks the power comp's PowerOn, which means nothing on a generator.
     /// </summary>
@@ -99,7 +104,9 @@ namespace TrashbrickBurning.DBH
                 {
                     return false;
                 }
-                return CompStirlingEngine.Advanced ? engine.Burning && engine.surplusWatts > 0.5f : engine.HeatRecoveryActive;
+                return CompStirlingEngine.Advanced
+                    ? engine.Burning && engine.ReservedWatts + engine.surplusWatts > 0.5f
+                    : engine.HeatRecoveryActive;
             }
         }
 
@@ -110,7 +117,8 @@ namespace TrashbrickBurning.DBH
                 CompStirlingEngine engine = Engine;
                 if (engine != null && CompStirlingEngine.Advanced)
                 {
-                    return WorkingNow ? engine.surplusWatts : 0f;
+                    // The hot water share first, plus whatever the network left over.
+                    return WorkingNow ? engine.ReservedWatts + engine.surplusWatts : 0f;
                 }
                 return base.Capacity;
             }

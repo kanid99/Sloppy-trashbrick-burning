@@ -21,7 +21,6 @@
 	<STB_BurnRateDesc>How hard this burner runs. Click to cycle. Hotter burns cost more fuel per watt and heat the room more.\n{0}</STB_BurnRateDesc>
 	<STB_BurnRateLine>{0}W: {1} fuel a day ({2} per kW), room heat {3}, built-in engine {4}W</STB_BurnRateLine>
 	<STB_BurnerStatus>Burning at {0}W of heat, {1} fuel a day</STB_BurnerStatus>
-	<STB_ToHotWater>Drawn by hot water: {0}W</STB_ToHotWater>
 	<STB_SimpleStatus>Burning {0} fuel a day</STB_SimpleStatus>
 	<STB_SettingHazards>Hazards: steam bursts and leaks</STB_SettingHazards>
 	<STB_SettingHazardsDesc>Off: burners without a safety valve vent instead of bursting, and pipes never leak.</STB_SettingHazardsDesc>
@@ -57,4 +56,7 @@
 	<STB_BoilerOffering>Hot water: offering {0} heating units to the plumbing</STB_BoilerOffering>
 	<STB_BoilerIdle>Hot water: nothing to offer the plumbing</STB_BoilerIdle>
 	<STB_BoilerNetwork>Plumbing heating demand: {0} U of {1} U from all boilers</STB_BoilerNetwork>
+	<STB_HotWaterShare>Hot water: {0}</STB_HotWaterShare>
+	<STB_HotWaterShareDesc>The share of this burner's heat offered to Dubs Bad Hygiene's hot water tanks and radiators FIRST, before the steam turbines. Left-click to step it up, right-click to pick.\n\nWhatever the plumbing doesn't actually draw of it goes on to the turbines, so a high share only costs power when the tanks and radiators really want the heat. At 0% the plumbing only gets what the network leaves over.</STB_HotWaterShareDesc>
+	<STB_HotWaterShareStatus>Hot water share: {0} ({1}W offered first), drawn: {2}W</STB_HotWaterShareStatus>
 </LanguageData>

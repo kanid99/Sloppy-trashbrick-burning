@@ -132,6 +132,17 @@ namespace TrashbrickBurning
         /// <summary>Advanced mode, set by the DBH bridge: heat the hot water system actually drew, in watts.</summary>
         public float hotWaterDrawWatts;
 
+        /// <summary>Advanced mode, set by the DBH bridge: the part of that draw that came out of the
+        /// hot water share, i.e. was taken before the network got anything.</summary>
+        public float hotWaterDrawReservedWatts;
+
+        /// <summary>
+        /// Advanced mode with DBH: the share of this burner's heat offered to DBH's hot water and
+        /// heating FIRST, before the turbines. 0 to 1. Whatever DBH doesn't actually draw of it goes
+        /// on to the network, so a high share on a satisfied tank costs the turbines nothing.
+        /// </summary>
+        public float hotWaterShare;
+
         /// <summary>Advanced mode, from HeatNetwork: heat taken by the network, and what's left.</summary>
         public float toNetworkWatts;
         public float surplusWatts;
@@ -170,8 +181,15 @@ namespace TrashbrickBurning
 
         public float RoomHeatPerSecond => Advanced ? Level.roomHeatPerSecond : Props.simpleRoomHeatPerSecond;
 
+        /// <summary>Advanced mode with DBH: the heat offered to hot water first, before the network.</summary>
+        public float ReservedWatts => DbhActive ? HeatWatts * Mathf.Clamp01(hotWaterShare) : 0f;
+
+        /// <summary>The heat the pressurised hot water network gets: everything but what hot water took first.</summary>
+        public float NetworkHeatWatts => Mathf.Max(0f, HeatWatts - hotWaterDrawReservedWatts);
+
         /// <summary>Heat the network and hot water left unused, which builds pressure.</summary>
-        public float UnusedWatts => networkConnected ? Mathf.Max(0f, surplusWatts - hotWaterDrawWatts) : 0f;
+        public float UnusedWatts =>
+            networkConnected ? Mathf.Max(0f, surplusWatts - (hotWaterDrawWatts - hotWaterDrawReservedWatts)) : 0f;
 
         /// <summary>Simple mode, read by the DBH boiler.</summary>
         public bool HeatRecoveryActive => !Advanced && mode == StirlingMode.HeatRecovery && Burning;
@@ -197,6 +215,7 @@ namespace TrashbrickBurning
             Scribe_Values.Look(ref heatLevel, "heatLevel", 0);
             Scribe_Values.Look(ref pressure, "pressure", 0f);
             Scribe_Values.Look(ref ashBuffer, "ashBuffer", 0f);
+            Scribe_Values.Look(ref hotWaterShare, "hotWaterShare", 0f);
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -350,6 +369,10 @@ namespace TrashbrickBurning
                     action = DumpAsh
                 };
             }
+            if (Advanced && DbhActive)
+            {
+                yield return new Command_HotWaterShare(this);
+            }
             if (Advanced)
             {
                 yield return new Command_Action
@@ -416,9 +439,10 @@ namespace TrashbrickBurning
                         lines.Add("STB_NoNetworkBuiltIn".Translate(
                             (Level.builtInWatts * TrashbrickBurningMod.S.powerMultiplier).ToString("0")));
                     }
-                    if (hotWaterDrawWatts > 0.5f)
+                    if (DbhActive)
                     {
-                        lines.Add("STB_ToHotWater".Translate(hotWaterDrawWatts.ToString("0")));
+                        lines.Add("STB_HotWaterShareStatus".Translate(hotWaterShare.ToStringPercent(),
+                            ReservedWatts.ToString("0"), hotWaterDrawWatts.ToString("0")));
                     }
                 }
                 if (pressure > 0.01f)
@@ -453,6 +477,42 @@ namespace TrashbrickBurning
                 lines.Add("STB_AshPan".Translate(ashBuffer.ToString("0.0")));
             }
             return string.Join("\n", lines);
+        }
+    }
+
+    /// <summary>
+    /// The hot water share: left-click steps it up by 10% (wrapping to 0), right-click picks a value.
+    /// Takes the slot DBH's electric boiler "power mode" stepper would have, which can't go to zero
+    /// and is wired to that boiler's electricity use, so it's hidden on burners.
+    /// </summary>
+    public class Command_HotWaterShare : Command_Action
+    {
+        private readonly CompStirlingEngine engine;
+
+        public Command_HotWaterShare(CompStirlingEngine engine)
+        {
+            this.engine = engine;
+            defaultLabel = "STB_HotWaterShare".Translate(engine.hotWaterShare.ToStringPercent());
+            defaultDesc = "STB_HotWaterShareDesc".Translate();
+            icon = TexCommand.DesirePower;
+            action = () => Set(Mathf.Round(engine.hotWaterShare * 10f + 1f) % 11f / 10f);
+        }
+
+        private void Set(float share)
+        {
+            engine.hotWaterShare = Mathf.Clamp01(share);
+        }
+
+        public override IEnumerable<FloatMenuOption> RightClickFloatMenuOptions
+        {
+            get
+            {
+                for (int i = 0; i <= 10; i++)
+                {
+                    float share = i / 10f;
+                    yield return new FloatMenuOption(share.ToStringPercent(), () => Set(share));
+                }
+            }
         }
     }
 }

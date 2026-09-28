@@ -55,7 +55,7 @@ A burner's heat goes, in order:
 1. **Steam turbines**, up to their capacity. An accumulator tops them up if the burners fall short.
 2. **Radiators**: 1x1, heating their room to the target temperature you set through vanilla's own temperature system. The **cobbled radiator** (Electricity: 20 steel, 10 wood) takes up to 150W and leaks about three times as often; the **cast-iron radiator** (Microelectronics: 45 steel) takes up to 250W.
 3. **Heat accumulators**: 2x2, store 24 kWh, charging and discharging at up to 750W. A battery for steam that keeps turbines turning while burners are refuelled or switched off.
-4. **Dubs Bad Hygiene hot water and heating**, if installed.
+4. **Dubs Bad Hygiene hot water and heating**, if installed. With Dubs, each burner's hot water share is offered to the plumbing *before* step 1 (see below).
 5. Whatever's left **builds pressure**.
 
 With nothing piped to it, a burner runs its own small engine instead (100/200/300W), and never builds pressure.
@@ -105,7 +105,7 @@ No Dubs mod is needed for any of this.
 **Sludge pellets:** a biofuel refinery recipe turns 75 fecal sludge into 100 sludge pellets, and both stoves burn them. That's less energy than DBH's sludge-to-chemfuel recipe (35 chemfuel, about 7.8 generator-days), but pellets don't explode when damaged, catch fire less easily, and don't rot.
 
 **Plumbing:** both stoves connect to DBH plumbing.
-- **Advanced mode:** a stove on the plumbing is also a DBH boiler. **Turbines take their heat first**; whatever is left is offered to the plumbing's hot-water tanks and radiators, one boiler unit per watt. The share DBH actually draws (our boiler's capacity times the network's demand over its total boiler capacity) comes off the built-in engine's power, down to nothing.
+- **Advanced mode:** a stove on the plumbing is also a DBH boiler. Each burner has a **Hot water** share (0–100% in 10% steps; left-click steps, right-click picks). That share of its heat is offered to the plumbing's hot-water tanks and radiators **first**, one boiler unit per watt. Whatever the plumbing doesn't actually draw goes on to the turbines, so a high share only costs power when the tanks and radiators really want the heat. Anything the network leaves over is offered to the plumbing too. With no turbine, what the plumbing draws comes off the built-in engine's power, down to nothing.
 - **Simple mode:** an engine mode gizmo adds **water-cooled** (120% power while water flows, drawing 50 or 40 water a day) and **heat recovery** (a 1600-unit boiler for hot water and heating, at 50% power for the cobbled stove or 60% for the gasifier).
 
 Works with DBH's Lite mode too: that's a setting inside DBH, not a separate mod.

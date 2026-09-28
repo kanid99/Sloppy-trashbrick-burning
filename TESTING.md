@@ -112,9 +112,12 @@ Switch to simple mode in settings and **restart**.
 
 - [ ] Sludge pellets: a biofuel refinery has **Make sludge pellets** (75 sludge → 100); both stoves
   and the fuel hopper take them.
-- [ ] **Advanced:** a stove on DBH plumbing *and* a hot water tank acts as a boiler with whatever
-  heat the turbines leave. With no turbine, its built-in engine drops by what the hot water draws
-  (*Drawn by hot water: xW*).
+- [ ] **Advanced:** a stove on DBH plumbing with a hot water tank shows a **Hot water: 0%** button
+  (left-click steps 10%, right-click picks). No **Power Mode** stepper.
+- [ ] At 0% with a turbine taking all its heat, the tank gets nothing. Raise it to 50%: the stove
+  reads *Hot water share: 50% (125W offered first), drawn: xW*, the tank heats, and the turbine's
+  heat drops by the amount drawn. Once the tank is hot and draws nothing, the turbine gets it all back.
+- [ ] With no turbine, the built-in engine's power drops by what the hot water draws.
 - [ ] **Simple:** the engine mode button cycles power / water-cooled / heat recovery. Water-cooled
   reads *(no water)* without plumbing water, and makes 120% with it.
 

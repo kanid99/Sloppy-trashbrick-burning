@@ -17,6 +17,9 @@ namespace TrashbrickBurning
     ///   5. the rest goes back to the burners as surplus - DBH hot water may take it (the bridge
     ///      assembly), and whatever nobody takes builds pressure.
     ///
+    /// Before any of that, with DBH, each burner's hot water share has already been offered to DBH;
+    /// the network only gets what DBH didn't draw of it (CompStirlingEngine.NetworkHeatWatts).
+    ///
     /// Vanilla Expanded Framework's PipeSystem carries the pipes and networks; its own resource
     /// traders switch a consumer fully on or off, which would idle a turbine short of heat, so the
     /// sums are done here instead.
@@ -83,9 +86,9 @@ namespace TrashbrickBurning
             foreach (ThingWithComps thing in Members(net))
             {
                 CompStirlingEngine engine = thing.GetComp<CompStirlingEngine>();
-                if (engine != null && engine.HeatWatts > 0f)
+                if (engine != null && engine.NetworkHeatWatts > 0f)
                 {
-                    f.heat += engine.HeatWatts;
+                    f.heat += engine.NetworkHeatWatts;
                     f.burners++;
                 }
                 CompSteamTurbine turbine = thing.GetComp<CompSteamTurbine>();
@@ -125,7 +128,7 @@ namespace TrashbrickBurning
 
         public static void UpdateBurner(CompStirlingEngine engine)
         {
-            float heat = engine.HeatWatts;
+            float heat = engine.NetworkHeatWatts;
             PipeNet net = NetOf(engine.parent);
             if (net == null)
             {
