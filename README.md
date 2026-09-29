@@ -90,7 +90,17 @@ Burning trash makes exhaust, in both play modes. It has to go somewhere:
 - **How much:** by fuel burnt. The cobbled gasifier is dirty (0.06 polluted cells and 60 units of toxic gas per brick - about 6 cells a day on normal); the trash gasifier's filters cut that to a third of the pollution and a quarter of the gas. The large and industrial burners follow their tier. A settings slider scales it.
 
 ### Other fuels
-Burners also take **wood** (a log is worth 0.4 of a trashbrick) and **chemfuel** (a unit is worth 2.5). A Harmony patch makes refuelling count each fuel at its own value. Switch it off in settings.
+Burners also take **wood** (a log is worth 0.4 of a trashbrick) and **chemfuel** (a unit is worth 2.5); switch those off in settings. A Harmony patch makes refuelling count each fuel at its own value.
+
+They always take the **dirty fuels**, which burn with **more toxic gas and less ground pollution** than trashbricks:
+
+| Fuel | Worth (bricks) | Ground pollution | Toxic gas |
+|---|---|---|---|
+| Trashbrick | 1 | x1 | x1 |
+| Loose trash (VRE) | 1.5 | x0.5 | x3 |
+| Toxic wastepack | 0.5 | x0.25 | x8 |
+
+Cleaning about 6 polluted cells makes one wastepack; burning it puts back a tiny fraction of a cell (about 0.008 in a cobbled gasifier) and a burst of toxic gas, so burning cleaned-up pollution can't loop. The fuel in a burner is a mix: its readout says how dirty the current mix burns. The fuel hopper takes them too.
 
 ### Polish
 - **Effects:** smoke from the cobbled flue and the gasifier's stack, a flickering firebox glow, steam wisps from turbines, the gasifier's safety valve visibly venting, and a spinning cooling fan on each turbine while it makes power.

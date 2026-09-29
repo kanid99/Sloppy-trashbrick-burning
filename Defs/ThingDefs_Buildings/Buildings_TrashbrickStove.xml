@@ -54,6 +54,10 @@
 						     startup if the setting is off. -->
 						<li>WoodLog</li>
 						<li>Chemfuel</li>
+						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
+						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
+						<li>VRecyclingE_Trash</li>
+						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
@@ -92,6 +96,11 @@
 				<otherFuels>
 					<li><thing>WoodLog</thing><value>0.4</value></li>
 					<li><thing>Chemfuel</thing><value>2.5</value></li>
+					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
+					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
+					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
+					     ground pollution, and a lot of toxic gas. -->
+					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
 			</li>
 			<!-- Smoke from the flue, a flickering fire window, and the rattle. Points are in the art's
@@ -194,6 +203,10 @@
 						     startup if the setting is off. -->
 						<li>WoodLog</li>
 						<li>Chemfuel</li>
+						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
+						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
+						<li>VRecyclingE_Trash</li>
+						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
@@ -229,6 +242,11 @@
 				<otherFuels>
 					<li><thing>WoodLog</thing><value>0.4</value></li>
 					<li><thing>Chemfuel</thing><value>2.5</value></li>
+					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
+					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
+					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
+					     ground pollution, and a lot of toxic gas. -->
+					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
 			</li>
 			<!-- Steam wisps from the exhaust stack, where the safety valve vents too. -->
@@ -316,6 +334,10 @@
 						     startup if the setting is off. -->
 						<li>WoodLog</li>
 						<li>Chemfuel</li>
+						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
+						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
+						<li>VRecyclingE_Trash</li>
+						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
@@ -354,6 +376,11 @@
 				<otherFuels>
 					<li><thing>WoodLog</thing><value>0.4</value></li>
 					<li><thing>Chemfuel</thing><value>2.5</value></li>
+					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
+					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
+					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
+					     ground pollution, and a lot of toxic gas. -->
+					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
 			</li>
 			<!-- Smoke from the flue, a flickering fire window, and the rattle. Points are in the art's
@@ -444,6 +471,10 @@
 						     startup if the setting is off. -->
 						<li>WoodLog</li>
 						<li>Chemfuel</li>
+						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
+						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
+						<li>VRecyclingE_Trash</li>
+						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
@@ -480,6 +511,11 @@
 				<otherFuels>
 					<li><thing>WoodLog</thing><value>0.4</value></li>
 					<li><thing>Chemfuel</thing><value>2.5</value></li>
+					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
+					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
+					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
+					     ground pollution, and a lot of toxic gas. -->
+					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
 			</li>
 			<!-- Steam wisps from the exhaust stack, where the safety valve vents too. -->
@@ -563,6 +599,10 @@
 						     startup if the setting is off. -->
 						<li>WoodLog</li>
 						<li>Chemfuel</li>
+						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
+						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
+						<li>VRecyclingE_Trash</li>
+						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
@@ -599,6 +639,11 @@
 				<otherFuels>
 					<li><thing>WoodLog</thing><value>0.4</value></li>
 					<li><thing>Chemfuel</thing><value>2.5</value></li>
+					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
+					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
+					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
+					     ground pollution, and a lot of toxic gas. -->
+					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
 			</li>
 			<!-- Steam wisps from the exhaust stack, where the safety valve vents too. -->
@@ -690,6 +735,8 @@
 						<li>VRecyclingE_TrashBrick</li>
 						<li>WoodLog</li>
 						<li>Chemfuel</li>
+						<li>VRecyclingE_Trash</li>
+						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
 				</filter>
 			</fixedStorageSettings>
@@ -700,6 +747,8 @@
 						<li>VRecyclingE_TrashBrick</li>
 						<li>WoodLog</li>
 						<li>Chemfuel</li>
+						<li>VRecyclingE_Trash</li>
+						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
 				</filter>
 			</defaultStorageSettings>

@@ -9,7 +9,7 @@ namespace TrashbrickBurning
     /// Keep in step with modVersion in About/About.xml.</summary>
     public static class BuildInfo
     {
-        public const string Version = "0.8.1";
+        public const string Version = "0.8.2";
     }
 
     public class TrashbrickSettings : ModSettings
@@ -164,7 +164,10 @@ namespace TrashbrickBurning
                 CompProperties_Refuelable fuel = def.GetCompProperties<CompProperties_Refuelable>();
                 foreach (FuelValue other in engine.otherFuels)
                 {
-                    fuel?.fuelFilter.SetAllow(other.thing, false);
+                    if (other.optional)
+                    {
+                        fuel?.fuelFilter.SetAllow(other.thing, false);
+                    }
                 }
             }
             ThingDef hopper = DefDatabase<ThingDef>.GetNamedSilentFail("STB_FuelHopper");

@@ -132,4 +132,5 @@
 	<STB_DamperDesc>Open or close this exhaust port. Closed, exhaust goes to the other ports on the network - or, with none open, back out of the burners as toxic gas.</STB_DamperDesc>
 	<STB_AlertToxicExhaust>Burner venting toxic exhaust</STB_AlertToxicExhaust>
 	<STB_AlertToxicExhaustDesc>These burners have no exhaust pipe to an open exhaust port, so they're letting their exhaust out around themselves as toxic gas.\n\nRun an exhaust pipe from under them to an exhaust port built outdoors.</STB_AlertToxicExhaustDesc>
+	<STB_FuelMix>Fuel mix burns dirty: x{0} ground pollution, x{1} toxic gas (against trashbricks)</STB_FuelMix>
 </LanguageData>

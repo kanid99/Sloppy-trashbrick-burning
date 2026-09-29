@@ -107,7 +107,8 @@ namespace TrashbrickBurning
 
         private float FuelPerDay => parent.GetComp<CompStirlingEngine>()?.FuelPerDay ?? 0f;
 
-        public float PollutionPerDay => FuelPerDay * Props.pollutionPerFuel * TrashbrickBurningMod.S.pollutionMultiplier;
+        public float PollutionPerDay => FuelPerDay * Props.pollutionPerFuel * TrashbrickBurningMod.S.pollutionMultiplier
+            * (parent.GetComp<CompStirlingEngine>()?.mixPollution ?? 1f);
 
         public override void PostExposeData()
         {
@@ -143,8 +144,9 @@ namespace TrashbrickBurning
             }
             float mult = TrashbrickBurningMod.S.pollutionMultiplier;
             float fuel = engine.FuelPerDay * ticks / GenDate.TicksPerDay;
-            float pollution = fuel * Props.pollutionPerFuel * mult;
-            float gas = fuel * Props.toxGasPerFuel * mult;
+            // Dirtier fuel mixes (wastepacks, loose trash) make more gas and less ground pollution.
+            float pollution = fuel * Props.pollutionPerFuel * mult * engine.mixPollution;
+            float gas = fuel * Props.toxGasPerFuel * mult * engine.mixToxGas;
             if (open.Count > 0)
             {
                 foreach (CompExhaustPort port in open)

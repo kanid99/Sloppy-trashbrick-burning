@@ -40,11 +40,19 @@ namespace TrashbrickBurning
         public float waterPerDay;
     }
 
-    /// <summary>Fuel units one item of another fuel is worth. A trashbrick is 1.</summary>
+    /// <summary>
+    /// Fuel units one item of another fuel is worth (a trashbrick is 1), and how dirty it burns
+    /// against a trashbrick: its exhaust's ground pollution and toxic gas, per fuel unit.
+    /// </summary>
     public class FuelValue
     {
         public ThingDef thing;
         public float value = 1f;
+        public float pollutionFactor = 1f;
+        public float toxGasFactor = 1f;
+
+        /// <summary>Wood and chemfuel: switched off by the "other fuels" setting. Trash always burns.</summary>
+        public bool optional = true;
     }
 
     public class CompProperties_StirlingEngine : CompProperties
@@ -70,6 +78,21 @@ namespace TrashbrickBurning
         public CompProperties_StirlingEngine()
         {
             compClass = typeof(CompStirlingEngine);
+        }
+
+        public FuelValue FuelOf(ThingDef def)
+        {
+            if (otherFuels != null)
+            {
+                for (int i = 0; i < otherFuels.Count; i++)
+                {
+                    if (otherFuels[i].thing == def)
+                    {
+                        return otherFuels[i];
+                    }
+                }
+            }
+            return null;
         }
 
         public float FuelValueOf(ThingDef def)
@@ -158,6 +181,14 @@ namespace TrashbrickBurning
 
         /// <summary>0 to 1; at 1 a burner without a safety valve bursts.</summary>
         public float pressure;
+
+        /// <summary>
+        /// How dirty the fuel in the burner burns, against trashbricks (1): the average of what went
+        /// in, weighted by fuel units. Wastepacks and loose trash push the toxic gas up and the ground
+        /// pollution down. The fuel is well mixed, so burning doesn't change it; refuelling does.
+        /// </summary>
+        public float mixPollution = 1f;
+        public float mixToxGas = 1f;
 
         private bool venting;
 
@@ -249,6 +280,8 @@ namespace TrashbrickBurning
             Scribe_Values.Look(ref pressure, "pressure", 0f);
             Scribe_Values.Look(ref hotWaterShare, "hotWaterShare", 0f);
             Scribe_Values.Look(ref waterFlowing, "waterFlowing", false);
+            Scribe_Values.Look(ref mixPollution, "mixPollution", 1f);
+            Scribe_Values.Look(ref mixToxGas, "mixToxGas", 1f);
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -368,6 +401,21 @@ namespace TrashbrickBurning
                     plant.outputFactor = power;
                     break;
             }
+        }
+
+        /// <summary>Blends fuel going in into the mix, weighted by fuel units.</summary>
+        public void AddToMix(ThingDef def, float units)
+        {
+            FuelValue fv = Props.FuelOf(def);
+            float p = fv?.pollutionFactor ?? 1f;
+            float g = fv?.toxGasFactor ?? 1f;
+            float have = Mathf.Max(0f, parent.GetComp<CompRefuelable>()?.Fuel ?? 0f);
+            if (have + units <= 0.001f)
+            {
+                return;
+            }
+            mixPollution = (mixPollution * have + p * units) / (have + units);
+            mixToxGas = (mixToxGas * have + g * units) / (have + units);
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
@@ -509,6 +557,10 @@ namespace TrashbrickBurning
                     }
                     lines.Add(line);
                 }
+            }
+            if (Mathf.Abs(mixPollution - 1f) > 0.05f || Mathf.Abs(mixToxGas - 1f) > 0.05f)
+            {
+                lines.Add("STB_FuelMix".Translate(mixPollution.ToString("0.##"), mixToxGas.ToString("0.##")));
             }
             return string.Join("\n", lines);
         }

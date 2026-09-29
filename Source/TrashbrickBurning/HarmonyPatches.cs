@@ -39,6 +39,7 @@ namespace TrashbrickBurning
                 fuelThings.RemoveAt(fuelThings.Count - 1);
                 float value = Mathf.Max(0.01f, engine.Props.FuelValueOf(thing.def));
                 int count = Mathf.Min(thing.stackCount, Mathf.Max(1, Mathf.CeilToInt(room / value)));
+                engine.AddToMix(thing.def, count * value);
                 __instance.Refuel(count * value);
                 thing.SplitOff(count).Destroy();
                 room -= count * value;

@@ -54,6 +54,10 @@ God mode on, then build a **cobbled trash gasifier**. Give it trashbricks (debug
 - [ ] An exhaust port built **indoors** gasses its room instead, and says so. Its **damper** closes it:
   with no other open port, the exhaust goes back to gassing the burner's room.
 - [ ] A trash gasifier makes noticeably less gas and pollution than the cobbled one.
+- [ ] **Dirty fuels:** refuel with **loose trash** or **toxic wastepacks**. The burner's readout shows
+  *Fuel mix burns dirty: x0.5 ground pollution, x3 toxic gas* (trash) or x0.25 / x8 (wastepacks),
+  and an unpiped burner gasses its room much faster. Refuelling with bricks brings the mix back
+  toward x1. The fuel hopper accepts both.
 - [ ] **Wall exhaust port:** replaces a wall cell like a cooler; an orange outline shows the cell it
   faces. Facing outdoors, that cell slowly pollutes and puffs smoke. Facing a room, it gasses the room.
 - [ ] **Shared cells:** lay exhaust pipe along the same cells as pressurised hot water pipe. Both
