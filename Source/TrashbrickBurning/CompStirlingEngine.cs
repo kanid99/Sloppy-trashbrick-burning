@@ -633,7 +633,7 @@ namespace TrashbrickBurning
     }
 
     /// <summary>
-    /// Copies this burner's burn rate and hot water share to other burners, so a row of them doesn't
+    /// Copies this burner's mode, hot water share and wastepack setting to other burners, so a row of them doesn't
     /// need setting one by one. Left-click: every burner on this burner's pressurised hot water
     /// network, or every burner on the map if it isn't piped to anything. Right-click: pick which.
     /// Burners are matched by mode (eco, normal, high), so cobbled and proper burners sync together.
@@ -697,6 +697,7 @@ namespace TrashbrickBurning
                 int best = e.Props.heatLevels.FindIndex(l => l.key == source.Level.key);
                 e.heatLevel = best >= 0 ? best : Mathf.Clamp(source.heatLevel, 0, e.Props.heatLevels.Count - 1);
                 e.hotWaterShare = source.hotWaterShare;
+                e.acceptWastepacks = source.acceptWastepacks;
                 e.Apply();
                 count++;
             }

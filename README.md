@@ -34,7 +34,7 @@ The whole system is **trash gasification**. The **cobbled trash gasifier** is th
 | High | 1600W on 150 (10.7W) | 2000W on 112.5 (17.8W) | 300W / 500W | 43 / 53 a day |
 
 - **Stirling engine:** with **no steam turbine on its network**, a burner's own Stirling engine makes a little power, using **three times its output in heat**. The rest of the heat still goes out on the pipe, so even in Stirling mode a burner needs an Overpressure Tank or radiators, or its pressure builds. As soon as a turbine is on the network, the Stirling engines stand down.
-- **Sync burners** copies a burner's mode and hot water share to the other burners on its network, or on the map.
+- **Sync burners** copies a burner's mode, hot water share and Accept wastepacks setting to the other burners on its network, or on the map.
 
 **Simple mode:** the cobbled gasifier makes **1000W** on 20 bricks a day; the trash gasifier makes **1200W** on 12.
 

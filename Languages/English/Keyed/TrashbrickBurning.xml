@@ -61,7 +61,7 @@
 	<STB_AccIdleFull>Full.</STB_AccIdleFull>
 	<STB_AccIdleTurbinesTakeAll>Idle: the turbines and radiators are using all the heat.</STB_AccIdleTurbinesTakeAll>
 	<STB_SyncBurners>Sync burners</STB_SyncBurners>
-	<STB_SyncBurnersDesc>Copy this burner's mode (eco, normal or high) and hot water share to other burners.\n\nLeft-click: every burner on this burner's hot water network (or the whole map, if it isn't piped to anything). Right-click to choose.</STB_SyncBurnersDesc>
+	<STB_SyncBurnersDesc>Copy this burner's mode (eco, normal or high), hot water share and Accept wastepacks setting to other burners.\n\nLeft-click: every burner on this burner's hot water network (or the whole map, if it isn't piped to anything). Right-click to choose.</STB_SyncBurnersDesc>
 	<STB_SyncNetwork>Burners on this hot water network</STB_SyncNetwork>
 	<STB_SyncMap>All burners on the map</STB_SyncMap>
 	<STB_SyncedBurners>Synced {0} other burners.</STB_SyncedBurners>
