@@ -1,5 +1,9 @@
 # Rework design: Trash Gasification
 
+**Scope** (decided): get the baseline chain working well first: Cobbled / Trash Gasifier →
+pipe → turbines, Overpressure Tank and radiators. The large and industrial tiers get rethought
+after that. Until then they stay as they are.
+
 Working notes for the rework. The baseline unit is defined first; everything else hangs off it.
 **Decided** is from your notes. **Proposed** is my suggestion, waiting on you. **Open** needs an answer.
 
@@ -47,6 +51,30 @@ Which set is right? If it's 750 / 1000 / 1500W, the modes are -50% / -33% / 0 on
 Decided: Stirling mode turns off when a turbine is on the network. An Overpressure Tank is still
 needed in Stirling mode, to take the leftover heat.
 
+## Cobbled Trash Gasifier (decided)
+
+The early, cheap version of the baseline. It's worse at everything and riskier. Numbers are first
+guesses, to be tuned in playtesting.
+
+| | Cobbled Trash Gasifier | Trash Gasifier |
+|---|---|---|
+| Fuel, normal | 100 / day | 75 / day |
+| Heat, normal | 1200W | 1500W |
+| Heat per brick a day | 12W | 20W |
+| Eco / Normal / High | same percentages as the baseline | |
+| Stirling power | 75 / 150 / 300W (3x that in heat, as the baseline) | 100 / 250 / 500W |
+| Room heat leak | about 25% of its heat | low, since it's insulated |
+| Pressure safety | no safety valve: at 100% it bursts and breaks down | safety valve vents |
+| Overpressure Tank risk | x4 while one is on the network | normal |
+| Pollution | while burning | none |
+| Research | Electricity + VRE complex recycling | Microelectronics + VRE complex recycling |
+| Cost | about 120 steel, 2 components | about 150 steel, 25 plasteel, 4 components |
+| Look | current jerry-rigged art, loose parts rattle | clean industrial |
+
+**All cobbled gear breaks down more often** (decided): the cobbled gasifier, cobbled turbine and
+cobbled radiator. Proposed: twice vanilla's breakdown rate, via a per-def multiplier on
+CompBreakdownable's mean time between breakdowns.
+
 ## Overpressure Tank (the heat accumulator, renamed)
 
 - Decided: takes heat the turbines don't need. The more it holds, the higher the risk of a burst
@@ -76,7 +104,15 @@ So one Trash Gasifier on Normal (1500W) runs a turbine in medium gear, and high 
 low and medium and 6000W for high, or no cap? And below the gear's minimum, does the turbine
 stall at 0W (heat then goes on to the tank), or run at reduced efficiency?
 
-**Open 4:** do the cobbled turbine's gears differ (lower efficiency, for example)?
+**Cobbled Steam Turbine** (decided): one step worse in every gear, with the same minimum heat:
+
+| Gear | Minimum heat | Steam turbine | Cobbled turbine |
+|---|---|---|---|
+| Low | 500W | 60% | 50% |
+| Medium | 1500W | 70% | 60% |
+| High | 3000W | 80% | 70% |
+
+It also breaks down more often, like all cobbled gear.
 
 ## DBH units to our watts (researched)
 
