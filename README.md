@@ -74,8 +74,9 @@ A burner's heat goes, in order:
 3. **Steam turbines**, one at a time, each up to its maximum.
 4. **Radiators**: 1x1, heating their room to the target temperature you set through vanilla's own temperature system. The **cobbled radiator** (Electricity: 20 steel, 10 wood) takes up to 150W, leaks about three times as often and breaks down; the **cast-iron radiator** (Microelectronics: 45 steel) takes up to 250W. Each has a valve to shut it off.
 5. **Overpressure Tanks**: 2x2, hold 36 kWh, charging and discharging at up to 3000W. A tank takes whatever the turbines and radiators don't. It gives it back to **radiators** the burners can't satisfy, and **tops a stalling turbine up** to its gear's minimum when the burners fall short, through a breakdown or a refuel. With Dubs it also feeds the plumbing's hot water tanks and radiators.
-6. **Dubs Bad Hygiene hot water and heating**, from what's left.
-7. Whatever's left **builds pressure**.
+6. **Steam vents**: 1x1, built into a wall like a cooler (Electricity: 60 steel, 1 component). A vent blows off whatever nothing else takes, up to 3000W, out of its front face as scalding steam. Set it to also **drain the tanks above 25/50/75%** to keep their explosion risk down. Face it outdoors: facing a room, it heats that room fast, and anyone in the plume is burned. For players who'd rather not build DBH heating to let off steam.
+7. **Dubs Bad Hygiene hot water and heating**, from what's left.
+8. Whatever's left **builds pressure**.
 
 ### Hazards (can be switched off)
 - **Overpressure:** heat with nowhere to go builds pressure over about half a day at 500W. The **trash gasifier's safety valve** vents it harmlessly in puffs of steam. The **cobbled gasifier has no working safety valve**: at full pressure it **bursts**. A **1000°C steam cloud** fills everything within 5 tiles in line of sight: rooms are heated by the share of them the cloud fills, and anyone caught in it is scalded, worst at the centre. The gasifier then breaks down and needs repairing. A critical alert warns you from 70% pressure.
@@ -93,10 +94,11 @@ Burners also take **wood** (a log is worth 0.4 of a trashbrick) and **chemfuel**
 - **Effects:** smoke from the cobbled flue and the gasifier's stack, a flickering firebox glow, steam wisps from turbines, the gasifier's safety valve visibly venting, and a spinning cooling fan on each turbine while it makes power.
 - **Sound:** synthesised running loops: the cobbled machines rattle (`Source/Audio/make_rattle.py`), the trash gasifier chuffs like a steam engine and the steam turbine whines (`Source/Audio/make_steam.py`).
 - **Alerts:** burner overpressure (critical), steam turbine getting no heat, steam turbine stalled, burner out of fuel, Overpressure Tank at risk.
+- **Room heat:** burners heat the room they're in (cobbled 5 / 10 / 14 by mode, trash gasifier 1.5 / 3 / 4 - it's insulated). An Overpressure Tank warms its room a little too, leaking up to 20W of its stored heat when full: a fraction of a burner.
 - **Status:** burners show their mode, Stirling output and any heat with nowhere to go; turbines their gear, heat and whether they've stalled; tanks a charge bar, kWh stored, explosion risk and auto-release.
 
 ### Build shortcuts
-Selecting any building from this mod shows build buttons for **every other one**: hopper, gasifiers, pipes, valve, turbines, Overpressure Tank and radiators, in that order, from fuel to power. You can lay out a whole chain without going back to the architect menu. They're the architect's own buttons, so each appears only once researched, and the heat network's stay hidden in simple mode.
+Selecting any building from this mod shows build buttons for **every other one**: hopper, gasifiers, pipes, valve, turbines, Overpressure Tank, steam vent and radiators, in that order, from fuel to power. You can lay out a whole chain without going back to the architect menu. They're the architect's own buttons, so each appears only once researched, and the heat network's stay hidden in simple mode.
 
 ### Settings
 Play mode, hazards on/off, other fuels on/off, and sliders for fuel use, power output, ash and leak frequency.

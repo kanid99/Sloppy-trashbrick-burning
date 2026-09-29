@@ -32,7 +32,7 @@ namespace TrashbrickBurning
             "STB_LargeCobbledStove", "STB_LargeGasifier", "STB_IndustrialGasifier",
             "STB_HotWaterPipe", "STB_HotWaterPipeHidden", "STB_HotWaterValve",
             "STB_CobbledTurbine", "STB_SteamTurbine",
-            "STB_HeatAccumulator",
+            "STB_HeatAccumulator", "STB_SteamVent",
             "STB_CobbledRadiator", "STB_HotWaterRadiator"
         };
 

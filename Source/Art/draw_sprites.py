@@ -1266,6 +1266,33 @@ def turbine_rotor():
     print("wrote", path, out.size)
 
 
+# ------------------------------------------------------------------ steam vent (in a wall)
+def steam_vent(rot):
+    """1x1, built into a wall like a cooler. A heavy steel block with a louvred mouth on the face
+    it blows out of (f = 0, the front) and the hot-water line coming in at the back - the pipe
+    network's orange, its one accent. It fills its cell, so it sits flush in the wall."""
+    v = View(rot, 1, 1, 0.15)   # drawn at (1.3,1.3), so its raised top isn't clipped
+    c = Canvas(v)
+    body = (118, 118, 116)
+
+    def top(box, lift):
+        # Louvres across the front third: a rack of dark slots under lit lips, the repeated mark.
+        for k in range(4):
+            f0 = 0.08 + k * 0.075
+            x0, y0, x1, y1 = v.rect(0.14, f0, 0.86, f0 + 0.045)
+            c.d.rectangle(c.box_px(x0, y0 - lift, x1, y1 - lift), fill=(38, 38, 38, 255))
+            lx0, ly0, lx1, ly1 = v.rect(0.14, f0 + 0.045, 0.86, f0 + 0.06)
+            c.d.rectangle(c.box_px(lx0, ly0 - lift, lx1, ly1 - lift), fill=shade(body, 1.25) + (255,))
+        c.dots([(p[0], p[1] - lift) for p in (v.pt(0.1, 0.5), v.pt(0.9, 0.5), v.pt(0.1, 0.9), v.pt(0.9, 0.9))],
+               0.02, shade(body, 1.22))
+
+    c.slab(0.02, 0.02, 0.98, 0.98, 0.0, 0.25, body, chamfer=0.04, radius=0, top_fn=top)
+    # The hot-water line in at the back: a short straight stub and its flange.
+    c.pipe(0.5, 0.6, 0.5, 0.88, 0.25, 0.11, HOT)
+    c.flush()
+    c.save(f"{OUT}/Things/Building/Power/STB_SteamVent_{rot}.png")
+
+
 if __name__ == "__main__":
     for r in ROTS:
         cobbled_stove(r)
@@ -1274,6 +1301,7 @@ if __name__ == "__main__":
         large_gasifier(r)
         industrial_gasifier(r)
         fuel_hopper(r)
+        steam_vent(r)
         steam_turbine(r)
         cobbled_turbine(r)
     hot_water_pipe()

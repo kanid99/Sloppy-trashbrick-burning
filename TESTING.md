@@ -102,6 +102,14 @@ Add a **steam turbine** to the network.
   room, and the gasifier broken down.
 - [ ] Hazards off: it vents like the trash gasifier instead.
 
+## 5b2. Steam vent and room heat
+
+- [ ] A **steam vent** (Temperature tab) replaces a wall cell like a cooler. While placing it, an orange outline shows the plume cell it faces. A pressurised hot water pipe under the wall connects it.
+- [ ] With a burner whose heat has nowhere else to go, the vent reads *Venting xW*, puffs steam out of its front, and the burner's pressure stops climbing.
+- [ ] **Drain tanks above 50%**: a fuller Overpressure Tank on the network is bled down to half. *Tanks: leave alone* stops that.
+- [ ] Facing into a room, the room heats fast; a pawn standing in the plume gets burns (hazards on). Its valve shuts it.
+- [ ] **Room heat:** in closed rooms, a lit cobbled gasifier warms its room clearly, a trash gasifier less, and a charged Overpressure Tank only slightly (and loses a little charge doing it).
+
 ## 5c. Large and industrial burners
 
 - [ ] They're in the Power tab as **large cobbled trash gasifier**, **large trash gasifier** (3x4) and

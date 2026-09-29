@@ -14,7 +14,8 @@ namespace TrashbrickBurning
     ///      gear's minimum stalls: it still takes the heat, and wastes it;
     ///   2. radiators take what their rooms need;
     ///   3. Overpressure Tanks charge from what's still left;
-    ///   4. the rest goes back to the burners as surplus - DBH hot water may take it (the bridge
+    ///   4. steam vents blow off what's left after that (and drain tanks above their set level);
+    ///   5. the rest goes back to the burners as surplus - DBH hot water may take it (the bridge
     ///      assembly), and whatever nobody takes builds pressure.
     ///
     /// Then the tanks give back: first to any turbine short of its gear's minimum, topping it up so
@@ -43,6 +44,8 @@ namespace TrashbrickBurning
             public float chargeCapacity;
             public float charge;
             public float dischargeCapacity;
+            public float ventCapacity;
+            public float toVents;
             public float leftover;
             public bool anyConsumer;
             public bool anyTurbine;
@@ -155,6 +158,12 @@ namespace TrashbrickBurning
                     f.anyConsumer = true;
                     f.radiatorDemand += radiator.Demand;
                 }
+                CompSteamVent vent = thing.GetComp<CompSteamVent>();
+                if (vent != null)
+                {
+                    f.anyConsumer = true;
+                    f.ventCapacity += vent.Capacity;
+                }
                 CompHeatAccumulator tank = thing.GetComp<CompHeatAccumulator>();
                 if (tank != null)
                 {
@@ -179,6 +188,8 @@ namespace TrashbrickBurning
             rest -= f.toRadiators;
             f.charge = Mathf.Min(rest, f.chargeCapacity);
             rest -= f.charge;
+            f.toVents = Mathf.Min(rest, f.ventCapacity);
+            rest -= f.toVents;
             f.leftover = rest;
 
             // The tanks give back: keep stalling turbines turning first, then the radiators.
@@ -537,6 +548,15 @@ namespace TrashbrickBurning
         /// <summary>Room heat pushed per watt-day bled off.</summary>
         public float bleedHeatPerWattDay = 0.5f;
 
+        /// <summary>
+        /// Heat it leaks through its lagging when full, in watts, scaling with how full it is. It
+        /// warms its room a little - a small fraction of what a burner does - and loses that heat.
+        /// </summary>
+        public float leakWattsWhenFull = 20f;
+
+        /// <summary>Room heat pushed per second for each watt leaked, as radiators.</summary>
+        public float leakHeatPerWattSecond = 0.06f;
+
         public CompProperties_HeatAccumulator()
         {
             compClass = typeof(CompHeatAccumulator);
@@ -605,6 +625,7 @@ namespace TrashbrickBurning
                 lastBledTick = Find.TickManager.TicksGame;
             }
             AutoRelease();
+            LeakHeat();
             PipeNet net = HeatNetwork.NetOf(parent);
             cobbledOnNet = 0;
             if (!TrashbrickBurningMod.Advanced || net == null)
@@ -638,6 +659,18 @@ namespace TrashbrickBurning
                     idleReason = "STB_AccIdleTurbinesTakeAll";
                 }
             }
+        }
+
+        /// <summary>Even lagged, a tank of hot water warms its room a little, losing that heat.</summary>
+        private void LeakHeat()
+        {
+            if (!parent.Spawned || stored <= 0.01f)
+            {
+                return;
+            }
+            float watts = Props.leakWattsWhenFull * Fraction;
+            stored = Mathf.Max(0f, stored - watts * 60f / GenDate.TicksPerDay);
+            GenTemperature.PushHeat(parent, watts * Props.leakHeatPerWattSecond);
         }
 
         /// <summary>Above its set level, vents on its own: safe, but it heats its room hard.</summary>

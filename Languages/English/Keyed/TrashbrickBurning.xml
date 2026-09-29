@@ -120,4 +120,10 @@
 	<STB_WaterUse>Water: {0} a day from the plumbing</STB_WaterUse>
 	<STB_AlertNoWater>Burner has no water</STB_AlertNoWater>
 	<STB_AlertNoWaterDesc>These burners are fuelled and switched on but aren't burning: with Dubs Bad Hygiene they need water from the plumbing.\n\nLay a plumbing pipe under them and connect it to a water supply (a well or pump, and a water tower). This can be switched off in the mod settings.</STB_AlertNoWaterDesc>
+	<STB_VentStatus>Venting {0}W of up to {1}W</STB_VentStatus>
+	<STB_VentMode>{0}</STB_VentMode>
+	<STB_VentDrainNever>Tanks: leave alone</STB_VentDrainNever>
+	<STB_VentDrainAbove>Drain tanks above {0}</STB_VentDrainAbove>
+	<STB_VentDrainDesc>Whether this vent also drains the Overpressure Tanks on its network. It always blows off heat nothing else wants; set a level and it also bleeds the tanks down to it, keeping their explosion risk low - but the stored heat is lost to the steam. Left-click to step, right-click to pick.</STB_VentDrainDesc>
+	<STB_VentValveDesc>Open or close this steam vent. Closed, it vents nothing.</STB_VentValveDesc>
 </LanguageData>

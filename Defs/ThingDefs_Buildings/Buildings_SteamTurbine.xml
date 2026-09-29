@@ -539,4 +539,71 @@
 		</researchPrerequisites>
 	</ThingDef>
 
+	<!--
+		Steam vent: built into a wall like a cooler. Takes what the rest of the network doesn't -
+		so burners don't build pressure - and can drain Overpressure Tanks above a set level,
+		blowing it all out of its front face as heat.
+	-->
+	<ThingDef ParentName="BuildingBase">
+		<defName>STB_SteamVent</defName>
+		<label>steam vent</label>
+		<description>A louvred steam vent built into a wall, like a cooler. It blows off the heat nobody else on its pressurised hot water network wants - after the turbines, radiators and Overpressure Tanks - so the burners don't build pressure, and it can drain the tanks above a level you set. Up to 3000W goes out of its front face as scalding steam: build it facing outdoors. Facing indoors, it heats that room fast, and anyone standing in the plume gets burned. Its valve shuts it. Run a pressurised hot water pipe under the wall to connect it.</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Power/STB_SteamVent</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<drawSize>(1.3,1.3)</drawSize>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<blockLight>true</blockLight>
+		<fillPercent>1</fillPercent>
+		<coversFloor>true</coversFloor>
+		<holdsRoof>true</holdsRoof>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<castEdgeShadows>true</castEdgeShadows>
+		<canOverlapZones>false</canOverlapZones>
+		<rotatable>true</rotatable>
+		<size>(1,1)</size>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<MaxHitPoints>200</MaxHitPoints>
+			<WorkToBuild>1200</WorkToBuild>
+			<Flammability>0</Flammability>
+			<Beauty>-5</Beauty>
+		</statBases>
+		<costList>
+			<Steel>60</Steel>
+			<ComponentIndustrial>1</ComponentIndustrial>
+		</costList>
+		<building>
+			<!-- Replaces a wall cell, like a cooler. -->
+			<canPlaceOverWall>true</canPlaceOverWall>
+		</building>
+		<comps>
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_HotWaterNet</pipeNet>
+			</li>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
+			<li Class="TrashbrickBurning.CompProperties_SteamVent"/>
+			<li Class="CompProperties_Flickable">
+				<commandTexture>Things/Building/Linked/STB_HotWaterValve</commandTexture>
+				<commandLabelKey>STB_ValveLabel</commandLabelKey>
+				<commandDescKey>STB_VentValveDesc</commandDescKey>
+			</li>
+		</comps>
+		<placeWorkers>
+			<li>TrashbrickBurning.PlaceWorker_SteamVent</li>
+		</placeWorkers>
+		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+		<designationCategory>Temperature</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<researchPrerequisites>
+			<li>Electricity</li>
+			<li>VRecyclingE_ComplexRecycling</li>
+		</researchPrerequisites>
+	</ThingDef>
+
 </Defs>
