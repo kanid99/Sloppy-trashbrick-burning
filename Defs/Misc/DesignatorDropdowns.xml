@@ -6,4 +6,8 @@
 		<defName>STB_HotWaterPipes</defName>
 	</DesignatorDropdownGroupDef>
 
+	<!-- The visible and hidden exhaust pipes share one architect button. -->
+	<DesignatorDropdownGroupDef>
+		<defName>STB_ExhaustPipes</defName>
+	</DesignatorDropdownGroupDef>
 </Defs>

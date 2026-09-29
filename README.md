@@ -22,7 +22,7 @@ The whole system is **trash gasification**. The **cobbled trash gasifier** is th
 | Research | Electricity + VRE complex recycling | Microelectronics + VRE complex recycling |
 | Cost | 120 steel, 2 components | 150 steel, 25 plasteel, 4 components |
 | Pressure safety | **no safety valve**: at full pressure it bursts | safety valve vents |
-| Pollution | while burning | none |
+| Exhaust | heavy: 0.06 polluted cells and 60 toxic gas per brick | light: 0.02 and 15 per brick |
 | Breakdowns | twice as often | normal |
 
 **Advanced mode:** each burner has a **mode** button: eco, normal or high. Eco gets the most heat from each brick but makes the least; high makes the most, wastes the most fuel and heats the room most.
@@ -83,9 +83,11 @@ A burner's heat goes, in order:
 - **Overpressure Tank explosions:** a tank more than 20% full can let go, with a blast and a 1000°C steam cloud out to 3-7 tiles depending on how full it is. The risk rises with the square of the fill, with the days since it was last bled (up to x3), and four times over while a cobbled gasifier (no safety valve) is piped to its network. When full and freshly bled on a gasifier-only network it averages one explosion in 60 days. Its readout shows the risk a day, and an **Overpressure Tank at risk** alert fires above 2% a day. **Bleed** (right-click to choose 0/25/50/75%) has a colonist (basic work) open the blow-off valve: the heat goes into the room and the wear resets. Or turn on **Auto-release** and pick a level (25/50/75/100%): above it the tank vents on its own, up to 3000W, straight into its room - safe, but it gets hot fast indoors.
 - **Steam leaks:** pipes, turbines, radiators and Overpressure Tanks spring a leak now and then while hot water flows. On average once every 20 days per network, whatever its size, and adjustable in settings. A leaking part is damaged and sprays scalding steam on the cells around it until a colonist repairs it. Parts badly damaged some other way (raids, fire) leak too.
 
-### Ash
-Burners fill an ash pan as they burn (cobbled 0.25 ash per brick, gasifier 0.1). Like the SloppyMods Riimba station's waste, whole ash items come out **automatically** behind the burner, the side opposite its intake. It never blocks: if the spot's taken, the ash goes on the nearest free cell, and a hopper or storage there catches it for haulers or a conveyor. A **Rake out ash** button empties the pan early.
-- **Ashcrete blocks:** 30 ash makes 20 blocks at a stonecutter's table. A cheap, fireproof, stony building material, weaker and plainer than cut stone.
+### Exhaust and pollution
+Burning trash makes exhaust, in both play modes. It has to go somewhere:
+- **Exhaust pipe** (visible and hidden, one architect button) carries it to an **exhaust port**: a 1x1 soot-black stack (Electricity: 30 steel). Build the port outdoors; the ground around it slowly fills with pollution (Biotech's pollution). A port indoors gasses its room. Several ports on one network share the exhaust; a port's **damper** closes it.
+- **No exhaust pipe to an open port:** the burner lets its exhaust out around itself - **toxic gas** into the cells around it, and pollution on the ground there. Its readout says *EXHAUST* in capitals and a **Burner venting toxic exhaust** alert fires.
+- **How much:** by fuel burnt. The cobbled gasifier is dirty (0.06 polluted cells and 60 units of toxic gas per brick - about 6 cells a day on normal); the trash gasifier's filters cut that to a third of the pollution and a quarter of the gas. The large and industrial burners follow their tier. A settings slider scales it.
 
 ### Other fuels
 Burners also take **wood** (a log is worth 0.4 of a trashbrick) and **chemfuel** (a unit is worth 2.5). A Harmony patch makes refuelling count each fuel at its own value. Switch it off in settings.
@@ -98,10 +100,10 @@ Burners also take **wood** (a log is worth 0.4 of a trashbrick) and **chemfuel**
 - **Status:** burners show their mode, Stirling output and any heat with nowhere to go; turbines their gear, heat and whether they've stalled; tanks a charge bar, kWh stored, explosion risk and auto-release.
 
 ### Build shortcuts
-Selecting any building from this mod shows build buttons for **every other one**: hopper, gasifiers, pipes, valve, turbines, Overpressure Tank, steam vent and radiators, in that order, from fuel to power. You can lay out a whole chain without going back to the architect menu. They're the architect's own buttons, so each appears only once researched, and the heat network's stay hidden in simple mode.
+Selecting any building from this mod shows build buttons for **every other one**: hopper, gasifiers, exhaust pipes and port, hot water pipes, valve, turbines, Overpressure Tank, steam vent and radiators, in that order, from fuel to power. You can lay out a whole chain without going back to the architect menu. They're the architect's own buttons, so each appears only once researched, and the heat network's stay hidden in simple mode.
 
 ### Settings
-Play mode, hazards on/off, other fuels on/off, and sliders for fuel use, power output, ash and leak frequency.
+Play mode, hazards on/off, other fuels on/off, and sliders for fuel use, power output, pollution and leak frequency.
 
 ### One intake, no output
 Each machine has a single intake, marked with a green in-arrow on the edge it faces. The gasifier only takes fuel from a hopper on the cells in front of that intake. Those cells are outlined in green while you place or select it.
@@ -134,7 +136,7 @@ Defs/ThingDefs_Buildings/                both machines, the fuel hopper, the hot
 Mods/DubsBadHygiene/Defs, Patches/       sludge pellets, plumbing and engine modes
 Mods/DubsBadHygiene/1.5, 1.6/Assemblies/ TrashbrickBurning.DBH.dll (references BadHygiene.dll)
 Mods/VFEFactory/Patches/                 factory-hopper tag, hides our hopper
-Source/TrashbrickBurning/                mod settings, CompBuildShortcuts, CompStirlingEngine (burner, pressure, ash), HeatNetwork + turbine/radiator/accumulator, AccumulatorRisk (explosion, bleed job), Hazards (burst, leaks), Ash, CompMachineEffects, CompLooseParts, Alerts, HarmonyPatches (fuel values), CompHopperFeed, PlaceWorker_ShowIntake, CompPowerPlantStirling, CompBurnPollution
+Source/TrashbrickBurning/                mod settings, CompBuildShortcuts, CompStirlingEngine (burner, pressure, Stirling), HeatNetwork + turbine/radiator/accumulator, AccumulatorRisk (explosion, bleed job), Hazards (burst, leaks), CompExhaust (exhaust network, ports), CompSteamVent, CompExtraBreakdowns, CompMachineEffects, CompLooseParts, Alerts, HarmonyPatches (fuel values), CompHopperFeed, PlaceWorker_ShowIntake, CompPowerPlantStirling
 Source/TrashbrickBurning.DBH/            CompStirlingWater, CompStirlingBoiler
 Source/Art/                              draws, verifies and measures every texture
 Source/Audio/make_rattle.py              synthesises the rattle loop

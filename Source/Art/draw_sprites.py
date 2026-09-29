@@ -936,17 +936,15 @@ def cobbled_turbine(rot):
 PIPE_TILE = 128
 
 
-def _pipe_tile(links, blueprint=False):
+def _pipe_tile(links, blueprint=False, lag=(104, 100, 96), band=(150, 146, 140), stripe_col=HOT, width=0.26):
     """One 128px tile of the linked atlas. links = (north, east, south, west). Drawn at SS and
     reduced, tone only inside, the silhouette ring outside, like everything else here."""
     T = PIPE_TILE * SS
     img = Image.new("RGBA", (T, T), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    w = int(T * 0.26)          # lagged pipe: a little thicker than a chemfuel line
+    w = int(T * width)         # lagged pipe: a little thicker than a chemfuel line
     cx = cy = T // 2
     n, e, s_, wst = links
-    lag = (104, 100, 96)       # lagging, a warm grey
-    band = (150, 146, 140)     # steel strapping round the lagging
 
     def run(horiz, a, b):
         """A straight run from a to b along one axis, through the tile centre."""
@@ -964,13 +962,14 @@ def _pipe_tile(links, blueprint=False):
                 gd.line([(0, k), (L, k)], fill=col)
             else:
                 gd.line([(k, 0), (k, L)], fill=col)
-        # The hot line: a thin orange stripe down the pipe's crown, the network's one accent.
-        stripe = max(2, w // 7)
-        off = int(w * 0.3)
-        if horiz:
-            gd.rectangle([0, off, L, off + stripe], fill=HOT + (255,))
-        else:
-            gd.rectangle([off, 0, off + stripe, L], fill=HOT + (255,))
+        # The network's one accent: a thin stripe down the pipe's crown (hot water's orange).
+        if stripe_col is not None:
+            stripe = max(2, w // 7)
+            off = int(w * 0.3)
+            if horiz:
+                gd.rectangle([0, off, L, off + stripe], fill=stripe_col + (255,))
+            else:
+                gd.rectangle([off, 0, off + stripe, L], fill=stripe_col + (255,))
         # Straps every quarter tile, a tone step lighter - greebles, not outlines.
         step = T // 4
         for p in range(step // 2, L, step):
@@ -1146,58 +1145,6 @@ def fire_glow():
     print("wrote", path)
 
 
-# ------------------------------------------------------------------ ash and ashcrete
-def _item(draw_fn, name, variants):
-    """Graphic_StackCount items: small to large, 128px, tone inside and a silhouette ring outside."""
-    import os
-    from stb_draw import SILHOUETTE
-    from PIL import ImageFilter
-    px = 128
-    for suffix, n, seed in variants:
-        img = Image.new("RGBA", (px * SS, px * SS), (0, 0, 0, 0))
-        draw_fn(ImageDraw.Draw(img), px * SS / 32, n, random.Random(seed))
-        a = img.split()[3].point(lambda v: 255 if v > 150 else 0)
-        ring = a.filter(ImageFilter.MaxFilter(2 * 3 * SS // 2 + 1))
-        base = Image.new("RGBA", img.size, SILHOUETTE + (255,))
-        base.putalpha(ring)
-        base.alpha_composite(img)
-        path = f"{OUT}/Things/Item/Resource/{name}/{name}_{suffix}.png"
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        base.resize((px, px), Image.LANCZOS).save(path)
-        print("wrote", path)
-
-
-def ash_items():
-    """Soft grey mounds: stacked discs, each lighter and nudged up - the stove's own shading."""
-    def draw(d, u, n, rnd):
-        mounds = sorted(((16 + rnd.gauss(0, 3 + n), 18 + rnd.gauss(0, 1.5 + n / 2), 5 + n * 0.8 + rnd.random() * 2)
-                         for _ in range(n)), key=lambda m: m[1])
-        for x, y, r in mounds:
-            for k, f in enumerate((0.62, 0.8, 0.96, 1.1)):
-                rr = r * (1 - k * 0.2)
-                yy = y - k * r * 0.12
-                d.ellipse([(x - rr) * u, (yy - rr * 0.62) * u, (x + rr) * u, (yy + rr * 0.62) * u],
-                          fill=shade((150, 148, 144), f) + (255,))
-    _item(draw, "STB_Ash", (("a", 1, 3), ("b", 2, 5), ("c", 3, 8)))
-
-
-def ashcrete_items():
-    """Grey blocks stacked like vanilla's stone blocks: slab faces lit on top, a darker wall below."""
-    def draw(d, u, n, rnd):
-        base = (132, 130, 126)
-        spots = [(10, 20), (18, 20), (14, 14), (22, 14), (6, 14), (18, 8)][:n]
-        for x, y in sorted(spots, key=lambda p: p[1]):
-            w, h, wall = 7, 5, 2
-            d.rectangle([x * u, (y + h) * u, (x + w) * u, (y + h + wall) * u], fill=shade(base, 0.7) + (255,))
-            d.rectangle([x * u, y * u, (x + w) * u, (y + h) * u], fill=shade(base, 1.05 + rnd.random() * 0.08) + (255,))
-            for k in range(3):
-                px_, py_ = x + 1 + rnd.random() * (w - 2), y + 1 + rnd.random() * (h - 2)
-                d.ellipse([(px_ - 0.4) * u, (py_ - 0.4) * u, (px_ + 0.4) * u, (py_ + 0.4) * u],
-                          fill=shade(base, 0.82) + (255,))
-    _item(draw, "STB_AshcreteBlocks", (("a", 2, 1), ("b", 4, 2), ("c", 6, 3)))
-
-
-# ------------------------------------------------------------------ sludge pellets
 def pellets():
     """Graphic_StackCount: three piles, small to large. Items are 128px, one cell."""
     px = 128
@@ -1293,6 +1240,52 @@ def steam_vent(rot):
     c.save(f"{OUT}/Things/Building/Power/STB_SteamVent_{rot}.png")
 
 
+# ------------------------------------------------------------------ exhaust pipe and port
+SOOT = (70, 68, 66)
+
+
+def exhaust_pipe():
+    """The exhaust network's linked atlas, laid out like the hot water pipe's: a narrower bare
+    flue pipe, sooty, its bands a step lighter, and no accent - soot is its colour."""
+    import os
+    kw = dict(lag=(88, 85, 82), band=(112, 108, 104), stripe_col=None, width=0.2)
+    for name, bp in (("STB_ExhaustPipe_Atlas", False), ("STB_ExhaustPipe_Blueprint_Atlas", True)):
+        atlas = Image.new("RGBA", (PIPE_TILE * 4, PIPE_TILE * 4), (0, 0, 0, 0))
+        for i in range(16):
+            links = (bool(i & 1), bool(i & 2), bool(i & 4), bool(i & 8))
+            atlas.alpha_composite(_pipe_tile(links, bp, **kw), ((i % 4) * PIPE_TILE, (3 - i // 4) * PIPE_TILE))
+        path = f"{OUT}/Things/Building/Linked/{name}.png"
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        atlas.save(path)
+        print("wrote", path, atlas.size)
+    icon = _pipe_tile((False, True, False, True), **kw)
+    icon.save(f"{OUT}/Things/Building/Linked/STB_ExhaustPipe_MenuIcon.png")
+    print("wrote", f"{OUT}/Things/Building/Linked/STB_ExhaustPipe_MenuIcon.png")
+
+
+def exhaust_port():
+    """1x1 at drawSize 1.5: a squat banded stack on a base plate, like the flues on the burners,
+    with a soot-black mouth and soot run down from its lip. Not rotatable: one view."""
+    v = View("south", 1, 1, MARGIN_1X1)
+    c = Canvas(v)
+    c.slab(0.1, 0.1, 0.9, 0.9, 0.0, 0.06, shade(DECK, 0.9), chamfer=0.12, radius=0)
+    c.pipe(0.5, 0.9, 0.5, 1.0, 0.02, 0.12, (88, 85, 82))       # the flue coming in at the back
+
+    def mouth(X, Y, R):
+        r = int(R * 0.66)
+        c.d.ellipse([X - r, Y - r - R // 10, X + r, Y + r - R // 10], fill=(30, 28, 26, 255))
+        r2 = int(R * 0.46)
+        c.d.ellipse([X - r2, Y - r2 - R // 14, X + r2, Y + r2 - R // 14], fill=(20, 19, 18, 255))
+    c.cylinder(0.5, 0.56, 0.26, 0.06, 0.62, shade(STEEL, 1.0), wall=shade(STEEL, 0.72), rings=3, cap_fn=mouth)
+    # Soot run down the stack from the lip: tone marks, not outlines.
+    sx, sy = v.pt(0.5, 0.56)
+    for dx, ln in ((-0.14, 0.12), (-0.05, 0.18), (0.08, 0.1)):
+        c.add(sy + 0.3, lambda dx=dx, ln=ln: c.d.line([(c.px(sx + dx), c.px(sy - 0.09)), (c.px(sx + dx), c.px(sy - 0.09 + ln))],
+                                                        fill=SOOT + (255,), width=c.px(0.035)), 0.7)
+    c.flush()
+    c.save(f"{OUT}/Things/Building/Power/STB_ExhaustPort.png")
+
+
 if __name__ == "__main__":
     for r in ROTS:
         cobbled_stove(r)
@@ -1305,12 +1298,12 @@ if __name__ == "__main__":
         steam_turbine(r)
         cobbled_turbine(r)
     hot_water_pipe()
+    exhaust_pipe()
+    exhaust_port()
     hot_water_valve()
     hot_water_radiator()
     cobbled_radiator()
     heat_accumulator()
     fire_glow()
     turbine_rotor()
-    ash_items()
-    ashcrete_items()
     pellets()

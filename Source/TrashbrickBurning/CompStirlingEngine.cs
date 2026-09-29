@@ -64,9 +64,6 @@ namespace TrashbrickBurning
         /// </summary>
         public bool safetyValve;
 
-        /// <summary>Ash made per unit of fuel burnt.</summary>
-        public float ashPerFuel = 0.2f;
-
         /// <summary>Other fuels the burner takes, and what each is worth. Only while the setting allows them.</summary>
         public List<FuelValue> otherFuels = new List<FuelValue>();
 
@@ -110,7 +107,7 @@ namespace TrashbrickBurning
 
     /// <summary>
     /// The stove's firebox and engine. Burns the fuel (CompRefuelable is externally ticked, so the
-    /// burn rate can differ per stove), pushes the waste heat into the room, fills the ash pan, and
+    /// burn rate can differ per stove), pushes the waste heat into the room, and
     /// sets the power plant's output.
     ///
     /// In advanced play mode it's a burner with three modes (eco, normal, high). With DBH its hot
@@ -162,7 +159,6 @@ namespace TrashbrickBurning
         /// <summary>0 to 1; at 1 a burner without a safety valve bursts.</summary>
         public float pressure;
 
-        private float ashBuffer;
         private bool venting;
 
         public CompProperties_StirlingEngine Props => (CompProperties_StirlingEngine)props;
@@ -235,8 +231,6 @@ namespace TrashbrickBurning
 
         public bool Venting => venting;
 
-        public float AshBuffer => ashBuffer;
-
         public IEnumerable<StirlingMode> AvailableModes()
         {
             yield return StirlingMode.Power;
@@ -253,7 +247,6 @@ namespace TrashbrickBurning
             Scribe_Values.Look(ref mode, "stirlingMode", StirlingMode.Power);
             Scribe_Values.Look(ref heatLevel, "heatLevel", 0);
             Scribe_Values.Look(ref pressure, "pressure", 0f);
-            Scribe_Values.Look(ref ashBuffer, "ashBuffer", 0f);
             Scribe_Values.Look(ref hotWaterShare, "hotWaterShare", 0f);
             Scribe_Values.Look(ref waterFlowing, "waterFlowing", false);
         }
@@ -290,16 +283,11 @@ namespace TrashbrickBurning
             {
                 float burnt = FuelPerDay * ticks / GenDate.TicksPerDay;
                 parent.GetComp<CompRefuelable>()?.ConsumeFuel(burnt);
-                ashBuffer += burnt * Props.ashPerFuel * TrashbrickBurningMod.S.ashMultiplier;
                 if (parent.Spawned)
                 {
                     // CompHeatPusher's rate is per second, pushed once every 60 ticks.
                     GenTemperature.PushHeat(parent, RoomHeatPerSecond * ticks / 60f);
                 }
-            }
-            if (parent.Spawned)
-            {
-                Ash.DropWholeUnits(this, ref ashBuffer);
             }
             if (Advanced)
             {
@@ -382,11 +370,6 @@ namespace TrashbrickBurning
             }
         }
 
-        public void DumpAsh()
-        {
-            Ash.DropAll(this, ref ashBuffer);
-        }
-
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra())
@@ -396,16 +379,6 @@ namespace TrashbrickBurning
             if (parent.Faction != Faction.OfPlayer)
             {
                 yield break;
-            }
-            if (ashBuffer > 0.05f)
-            {
-                yield return new Command_Action
-                {
-                    defaultLabel = "STB_DumpAsh".Translate(),
-                    defaultDesc = "STB_DumpAshDesc".Translate(),
-                    icon = TexCommand.Install,
-                    action = DumpAsh
-                };
             }
             if (Advanced && DbhActive)
             {
@@ -536,10 +509,6 @@ namespace TrashbrickBurning
                     }
                     lines.Add(line);
                 }
-            }
-            if (ashBuffer > 0.05f)
-            {
-                lines.Add("STB_AshPan".Translate(ashBuffer.ToString("0.0")));
             }
             return string.Join("\n", lines);
         }

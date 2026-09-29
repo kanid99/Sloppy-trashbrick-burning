@@ -3,7 +3,7 @@
 
 	<!--
 		When a Vanilla Expanded mod adds the "pipe networks" architect tab (Vanilla Chemfuel
-		Expanded's VCHE_PipeNetworks), put our pipes and valve there with everyone else's, instead of
+		Expanded's VCHE_PipeNetworks), put our hot water and exhaust pipes and the valve there with everyone else's, instead of
 		in Power. Keyed on the tab existing, not on a mod ID, so it follows whichever mod provides it.
 		The turbines, radiators and Overpressure Tank stay in Power and Temperature.
 	-->
@@ -13,6 +13,12 @@
 			<operations>
 				<li Class="PatchOperationReplace">
 					<xpath>Defs/ThingDef[@Name="STB_HotWaterPipeBase"]/designationCategory</xpath>
+					<value>
+						<designationCategory>VCHE_PipeNetworks</designationCategory>
+					</value>
+				</li>
+				<li Class="PatchOperationReplace">
+					<xpath>Defs/ThingDef[@Name="STB_ExhaustPipeBase"]/designationCategory</xpath>
 					<value>
 						<designationCategory>VCHE_PipeNetworks</designationCategory>
 					</value>

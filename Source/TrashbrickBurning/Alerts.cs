@@ -167,4 +167,30 @@ namespace TrashbrickBurning
             return AlertReport.CulpritsAre(culprits);
         }
     }
+
+    /// <summary>A burner with no exhaust pipe to a port, gassing its surroundings.</summary>
+    public class Alert_STBToxicExhaust : Alert
+    {
+        private readonly List<Thing> culprits = new List<Thing>();
+
+        public Alert_STBToxicExhaust()
+        {
+            defaultLabel = "STB_AlertToxicExhaust".Translate();
+            defaultExplanation = "STB_AlertToxicExhaustDesc".Translate();
+            defaultPriority = AlertPriority.High;
+        }
+
+        public override AlertReport GetReport()
+        {
+            culprits.Clear();
+            foreach (ThingWithComps b in AlertUtility.PlayerBuildingsWith<CompExhaust>())
+            {
+                if (b.GetComp<CompExhaust>().VentingLocally)
+                {
+                    culprits.Add(b);
+                }
+            }
+            return AlertReport.CulpritsAre(culprits);
+        }
+    }
 }

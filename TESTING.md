@@ -45,8 +45,15 @@ God mode on, then build a **cobbled trash gasifier**. Give it trashbricks (debug
   you can hear the rattle loop. All of it stops when you switch it off, and freezes when you pause.
 - [ ] Refuel from a **fuel hopper** on the intake cells: it pulls fuel as it burns. A hopper on any
   other side does nothing.
-- [ ] **Ash** appears on the cell **behind** it. **Rake out ash** drops the rest now. A stonecutter's
-  table has **Make ashcrete blocks** (30 ash → 20 blocks).
+- [ ] **Exhaust, unpiped:** in a closed room, the lit gasifier fills the room with **toxic gas** (it
+  spreads from the cells around it), pollutes the ground there, reads *EXHAUST: no exhaust pipe...*,
+  and the **Burner venting toxic exhaust** alert fires. Colonists in the room build up toxic buildup.
+- [ ] **Exhaust, piped:** lay an **exhaust pipe** (Power tab, its own dropdown with the hidden pipe)
+  from under the gasifier to an **exhaust port** outdoors. The gas stops, the readout says *piped to 1
+  exhaust ports*, the port puffs smoke and the ground around it slowly turns polluted.
+- [ ] An exhaust port built **indoors** gasses its room instead, and says so. Its **damper** closes it:
+  with no other open port, the exhaust goes back to gassing the burner's room.
+- [ ] A trash gasifier makes noticeably less gas and pollution than the cobbled one.
 - [ ] It (and the cobbled turbine and radiator) breaks down noticeably more often than vanilla
   machines.
 

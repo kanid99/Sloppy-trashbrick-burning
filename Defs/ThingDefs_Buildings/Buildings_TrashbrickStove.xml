@@ -5,7 +5,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_TrashbrickPelletStove</defName>
 		<label>cobbled trash gasifier</label>
-		<description>A trash gasifier cobbled together from scrap plate and a salvaged Stirling engine, burning compressed trashbricks. It has three modes: eco gets the most heat from each brick, high the most heat. With no steam turbine on its pressurised hot water network, its Stirling engine makes a little power (75-300W) from three times that in heat; the rest of its heat goes out on the pipe, so it still needs an Overpressure Tank or radiators, or its pressure builds - and with no safety valve, it bursts. It breaks down often. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that. It heats the room while it runs, and the smoke slowly pollutes the ground around it.</description>
+		<description>A trash gasifier cobbled together from scrap plate and a salvaged Stirling engine, burning compressed trashbricks. It has three modes: eco gets the most heat from each brick, high the most heat. With no steam turbine on its pressurised hot water network, its Stirling engine makes a little power (75-300W) from three times that in heat; the rest of its heat goes out on the pipe, so it still needs an Overpressure Tank or radiators, or its pressure builds - and with no safety valve, it bursts. It breaks down often. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that. It heats the room while it runs. Its exhaust must be piped to an exhaust port, or it fills the room around it with toxic gas.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_CobbledPelletStove</texPath>
@@ -89,7 +89,6 @@
 				</heatLevels>
 				<!-- Jerry-rigged: no working safety valve. At full pressure it bursts. -->
 				<safetyValve>false</safetyValve>
-				<ashPerFuel>0.25</ashPerFuel>
 				<otherFuels>
 					<li><thing>WoodLog</thing><value>0.4</value></li>
 					<li><thing>Chemfuel</thing><value>2.5</value></li>
@@ -117,9 +116,13 @@
 			</li>
 			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
 			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
-			<!-- Only while burning. Needs Biotech, which VRE already requires. -->
-			<li Class="TrashbrickBurning.CompProperties_BurnPollution">
-				<cellsPerDay>3</cellsPerDay>
+			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. -->
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_ExhaustNet</pipeNet>
+			</li>
+			<li Class="TrashbrickBurning.CompProperties_Exhaust">
+				<pollutionPerFuel>0.06</pollutionPerFuel>
+				<toxGasPerFuel>60</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -223,7 +226,6 @@
 				</heatLevels>
 				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
 				<safetyValve>true</safetyValve>
-				<ashPerFuel>0.1</ashPerFuel>
 				<otherFuels>
 					<li><thing>WoodLog</thing><value>0.4</value></li>
 					<li><thing>Chemfuel</thing><value>2.5</value></li>
@@ -242,6 +244,14 @@
 			</li>
 			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
 			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
+			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. -->
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_ExhaustNet</pipeNet>
+			</li>
+			<li Class="TrashbrickBurning.CompProperties_Exhaust">
+				<pollutionPerFuel>0.02</pollutionPerFuel>
+				<toxGasPerFuel>15</toxGasPerFuel>
+			</li>
 		</comps>
 		<placeWorkers>
 			<li>TrashbrickBurning.PlaceWorker_ShowIntake</li>
@@ -264,7 +274,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_LargeCobbledStove</defName>
 		<label>large cobbled trash gasifier</label>
-		<description>A long firebox welded together from whatever plate was lying around, a scrapped boiler drum, two mismatched flues and a salvaged generator, all on compressed trashbricks. Three times the heat of a cobbled trash gasifier from a little less fuel per watt, and just as short of a safety valve. It has no engine of its own: pipe it to a steam turbine. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that. It heats the room while it runs, and the smoke slowly pollutes the ground around it.</description>
+		<description>A long firebox welded together from whatever plate was lying around, a scrapped boiler drum, two mismatched flues and a salvaged generator, all on compressed trashbricks. Three times the heat of a cobbled trash gasifier from a little less fuel per watt, and just as short of a safety valve. It has no engine of its own: pipe it to a steam turbine. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that. It heats the room while it runs. Its exhaust must be piped to an exhaust port, or it fills the room around it with toxic gas.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_LargeCobbledStove</texPath>
@@ -341,7 +351,6 @@
 				</heatLevels>
 				<!-- Jerry-rigged: no working safety valve. At full pressure it bursts. -->
 				<safetyValve>false</safetyValve>
-				<ashPerFuel>0.25</ashPerFuel>
 				<otherFuels>
 					<li><thing>WoodLog</thing><value>0.4</value></li>
 					<li><thing>Chemfuel</thing><value>2.5</value></li>
@@ -369,9 +378,13 @@
 			</li>
 			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
 			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
-			<!-- Only while burning. Needs Biotech, which VRE already requires. -->
-			<li Class="TrashbrickBurning.CompProperties_BurnPollution">
-				<cellsPerDay>8</cellsPerDay>
+			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. -->
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_ExhaustNet</pipeNet>
+			</li>
+			<li Class="TrashbrickBurning.CompProperties_Exhaust">
+				<pollutionPerFuel>0.06</pollutionPerFuel>
+				<toxGasPerFuel>60</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -464,7 +477,6 @@
 				</heatLevels>
 				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
 				<safetyValve>true</safetyValve>
-				<ashPerFuel>0.1</ashPerFuel>
 				<otherFuels>
 					<li><thing>WoodLog</thing><value>0.4</value></li>
 					<li><thing>Chemfuel</thing><value>2.5</value></li>
@@ -481,6 +493,14 @@
 			</li>
 			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
 			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
+			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. -->
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_ExhaustNet</pipeNet>
+			</li>
+			<li Class="TrashbrickBurning.CompProperties_Exhaust">
+				<pollutionPerFuel>0.02</pollutionPerFuel>
+				<toxGasPerFuel>15</toxGasPerFuel>
+			</li>
 		</comps>
 		<placeWorkers>
 			<li>TrashbrickBurning.PlaceWorker_ShowIntake</li>
@@ -576,7 +596,6 @@
 				</heatLevels>
 				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
 				<safetyValve>true</safetyValve>
-				<ashPerFuel>0.1</ashPerFuel>
 				<otherFuels>
 					<li><thing>WoodLog</thing><value>0.4</value></li>
 					<li><thing>Chemfuel</thing><value>2.5</value></li>
@@ -593,6 +612,14 @@
 			</li>
 			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
 			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
+			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. -->
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_ExhaustNet</pipeNet>
+			</li>
+			<li Class="TrashbrickBurning.CompProperties_Exhaust">
+				<pollutionPerFuel>0.02</pollutionPerFuel>
+				<toxGasPerFuel>15</toxGasPerFuel>
+			</li>
 		</comps>
 		<placeWorkers>
 			<li>TrashbrickBurning.PlaceWorker_ShowIntake</li>

@@ -9,7 +9,7 @@ namespace TrashbrickBurning
     /// Keep in step with modVersion in About/About.xml.</summary>
     public static class BuildInfo
     {
-        public const string Version = "0.7.2";
+        public const string Version = "0.8.0";
     }
 
     public class TrashbrickSettings : ModSettings
@@ -32,7 +32,7 @@ namespace TrashbrickBurning
 
         public float fuelUseMultiplier = 1f;
         public float powerMultiplier = 1f;
-        public float ashMultiplier = 1f;
+        public float pollutionMultiplier = 1f;
         public float leakFrequencyMultiplier = 1f;
 
         public override void ExposeData()
@@ -44,7 +44,7 @@ namespace TrashbrickBurning
             Scribe_Values.Look(ref requireWater, "requireWater", true);
             Scribe_Values.Look(ref fuelUseMultiplier, "fuelUseMultiplier", 1f);
             Scribe_Values.Look(ref powerMultiplier, "powerMultiplier", 1f);
-            Scribe_Values.Look(ref ashMultiplier, "ashMultiplier", 1f);
+            Scribe_Values.Look(ref pollutionMultiplier, "pollutionMultiplier", 1f);
             Scribe_Values.Look(ref leakFrequencyMultiplier, "leakFrequencyMultiplier", 1f);
         }
     }
@@ -85,7 +85,7 @@ namespace TrashbrickBurning
             list.Gap();
             Slider(list, "STB_SettingFuelUse", ref s.fuelUseMultiplier);
             Slider(list, "STB_SettingPower", ref s.powerMultiplier);
-            Slider(list, "STB_SettingAsh", ref s.ashMultiplier, 0f);
+            Slider(list, "STB_SettingPollution", ref s.pollutionMultiplier, 0f);
             if (s.hazards)
             {
                 Slider(list, "STB_SettingLeaks", ref s.leakFrequencyMultiplier, 0.1f, 5f);
@@ -93,7 +93,7 @@ namespace TrashbrickBurning
             list.Gap();
             if (list.ButtonText("STB_SettingReset".Translate()))
             {
-                s.fuelUseMultiplier = s.powerMultiplier = s.ashMultiplier = s.leakFrequencyMultiplier = 1f;
+                s.fuelUseMultiplier = s.powerMultiplier = s.pollutionMultiplier = s.leakFrequencyMultiplier = 1f;
             }
             list.Gap();
             list.Label("STB_SettingRestart".Translate());

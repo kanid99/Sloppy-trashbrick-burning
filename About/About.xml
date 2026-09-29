@@ -4,14 +4,14 @@
 	<author>kanid99</author>
 	<packageId>kanid99.SloppyModTrashPower</packageId>
 	<!-- Keep in step with BuildInfo.Version in TrashbrickBurningMod.cs. -->
-	<modVersion>0.7.2</modVersion>
+	<modVersion>0.8.0</modVersion>
 	<supportedVersions>
 		<li>1.5</li>
 		<li>1.6</li>
 	</supportedVersions>
 	<description>Burn the trashbricks from Vanilla Recycling Expanded for power.
 
-Trash gasification: a jerry-rigged cobbled trash gasifier and a cleaner, safer trash gasifier that burn trashbricks. Feed them by hand or from a hopper on their intake.
+Trash gasification: a jerry-rigged cobbled trash gasifier and a cleaner, safer trash gasifier that burn trashbricks. Feed them by hand or from a hopper on their intake, and pipe their exhaust to an exhaust port outside - or it fills their room with toxic gas.
 
 Advanced play mode (default): gasifiers are burners with eco, normal and high modes - the trash gasifier makes 1500W of heat on 75 bricks a day. Pipe them to steam turbines with three gears, radiators and an Overpressure Tank. With no turbine, their own Stirling engine makes a little power. Large (3x4) and industrial (3x6) burners need turbines.
 Simple play mode: the gasifiers are self-contained 1000W and 1200W generators.

@@ -69,7 +69,7 @@ guesses, to be tuned in playtesting.
 | Room heat leak | about 25% of its heat | low, since it's insulated |
 | Pressure safety | no safety valve: at 100% it bursts and breaks down | safety valve vents |
 | Overpressure Tank risk | x4 while one is on the network | normal |
-| Pollution | while burning | none |
+| Exhaust | heavy (0.06 cells, 60 gas per brick) | light (0.02 cells, 15 gas per brick) |
 | Research | Electricity + VRE complex recycling | Microelectronics + VRE complex recycling |
 | Cost | about 120 steel, 2 components | about 150 steel, 25 plasteel, 4 components |
 | Look | current jerry-rigged art, loose parts rattle | clean industrial |
@@ -77,6 +77,12 @@ guesses, to be tuned in playtesting.
 **All cobbled gear breaks down more often** (decided): the cobbled gasifier, cobbled turbine and
 cobbled radiator. Proposed: twice vanilla's breakdown rate, via a per-def multiplier on
 CompBreakdownable's mean time between breakdowns.
+
+## Exhaust (decided)
+
+Ash is gone. Burning trash makes exhaust: piped through exhaust pipe to an exhaust port, it
+pollutes the ground around the port; not piped, it comes out of the burner as toxic gas in its
+room. Like DBH's sewage pipes.
 
 ## Overpressure Tank (the heat accumulator, renamed)
 

@@ -2,7 +2,6 @@
 <LanguageData>
 	<STB_FeedFromHoppers>Draw from hoppers</STB_FeedFromHoppers>
 	<STB_FeedFromHoppersDesc>If on, this machine takes fuel from a hopper on its intake (the green-marked port) whenever it drops below its target fuel level. Works with the fuel hopper, the vanilla hopper, and Vanilla Furniture Expanded - Factory hoppers. Turn off to keep a hopper's contents for something else.</STB_FeedFromHoppersDesc>
-	<STB_PollutesWhileBurning>Pollutes about {0} cells a day while burning</STB_PollutesWhileBurning>
 	<STB_Mode_Power>Engine: power</STB_Mode_Power>
 	<STB_Mode_WaterCooled>Engine: water-cooled</STB_Mode_WaterCooled>
 	<STB_Mode_HeatRecovery>Engine: heat recovery</STB_Mode_HeatRecovery>
@@ -28,17 +27,13 @@
 	<STB_SettingOtherFuelsDesc>A wood log is worth 0.4 of a trashbrick, a unit of chemfuel 2.5. Takes effect after a restart.</STB_SettingOtherFuelsDesc>
 	<STB_SettingFuelUse>Fuel use: {0}</STB_SettingFuelUse>
 	<STB_SettingPower>Power output: {0}</STB_SettingPower>
-	<STB_SettingAsh>Ash: {0}</STB_SettingAsh>
 	<STB_SettingLeaks>Steam leak frequency: {0}</STB_SettingLeaks>
 	<STB_SettingReset>Reset multipliers</STB_SettingReset>
-	<STB_DumpAsh>Rake out ash</STB_DumpAsh>
-	<STB_DumpAshDesc>Put the ash in this burner's pan out now, behind it. Ash comes out on its own as it builds up.</STB_DumpAshDesc>
 	<STB_ToNetwork>To the hot water network: {0}W</STB_ToNetwork>
 	<STB_Pressure>Pressure: {0}</STB_Pressure>
 	<STB_Venting>(safety valve venting)</STB_Venting>
 	<STB_NearVent>(near the safety valve)</STB_NearVent>
 	<STB_NearBurst>(no safety valve - will burst!)</STB_NearBurst>
-	<STB_AshPan>Ash pan: {0}</STB_AshPan>
 	<STB_TurbineFeeders>Fed by {0} burners</STB_TurbineFeeders>
 	<STB_RadiatorStatus>Heat taken: {0}W of {1}W</STB_RadiatorStatus>
 	<STB_AccumulatorStatus>Stored: {0} of {1} kWh ({2}W)</STB_AccumulatorStatus>
@@ -126,4 +121,15 @@
 	<STB_VentDrainAbove>Drain tanks above {0}</STB_VentDrainAbove>
 	<STB_VentDrainDesc>Whether this vent also drains the Overpressure Tanks on its network. It always blows off heat nothing else wants; set a level and it also bleeds the tanks down to it, keeping their explosion risk low - but the stored heat is lost to the steam. Left-click to step, right-click to pick.</STB_VentDrainDesc>
 	<STB_VentValveDesc>Open or close this steam vent. Closed, it vents nothing.</STB_VentValveDesc>
+	<STB_SettingPollution>Pollution: {0}</STB_SettingPollution>
+	<STB_ExhaustPiped>Exhaust: piped to {0} exhaust ports</STB_ExhaustPiped>
+	<STB_ExhaustToPorts>Exhaust: piped to {0} exhaust ports, polluting {1} cells a day there</STB_ExhaustToPorts>
+	<STB_ExhaustLocal>EXHAUST: no exhaust pipe to an exhaust port - venting toxic gas around it and polluting {0} cells a day here</STB_ExhaustLocal>
+	<STB_PortIdle>No exhaust coming through.</STB_PortIdle>
+	<STB_PortActive>Letting out exhaust: polluting about {0} cells a day around it</STB_PortActive>
+	<STB_PortIndoors>Indoors: filling this room with toxic gas. Move it outside.</STB_PortIndoors>
+	<STB_DamperLabel>Toggle damper</STB_DamperLabel>
+	<STB_DamperDesc>Open or close this exhaust port. Closed, exhaust goes to the other ports on the network - or, with none open, back out of the burners as toxic gas.</STB_DamperDesc>
+	<STB_AlertToxicExhaust>Burner venting toxic exhaust</STB_AlertToxicExhaust>
+	<STB_AlertToxicExhaustDesc>These burners have no exhaust pipe to an open exhaust port, so they're letting their exhaust out around themselves as toxic gas.\n\nRun an exhaust pipe from under them to an exhaust port built outdoors.</STB_AlertToxicExhaustDesc>
 </LanguageData>

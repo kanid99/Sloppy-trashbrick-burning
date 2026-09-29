@@ -59,18 +59,10 @@ namespace TrashbrickBurning
         private static readonly Dictionary<PipeNet, bool> TurbineCache = new Dictionary<PipeNet, bool>();
         private static int cacheTick = -1;
 
-        public static PipeNet NetOf(ThingWithComps thing)
-        {
-            List<ThingComp> comps = thing.AllComps;
-            for (int i = 0; i < comps.Count; i++)
-            {
-                if (comps[i] is CompResource res && res.PipeNet != null)
-                {
-                    return res.PipeNet;
-                }
-            }
-            return null;
-        }
+        public const string NetDefName = "STB_HotWaterNet";
+
+        /// <summary>The thing's pressurised hot water network. Burners also sit on the exhaust network.</summary>
+        public static PipeNet NetOf(ThingWithComps thing) => ExhaustNetwork.NetOf(thing, NetDefName);
 
         public static IEnumerable<ThingWithComps> Members(PipeNet net)
         {
