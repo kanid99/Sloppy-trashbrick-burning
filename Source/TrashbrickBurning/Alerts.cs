@@ -141,4 +141,30 @@ namespace TrashbrickBurning
             return AlertReport.CulpritsAre(culprits);
         }
     }
+
+    /// <summary>A burner that would burn but has no plumbing water (Dubs Bad Hygiene).</summary>
+    public class Alert_STBNoWater : Alert
+    {
+        private readonly List<Thing> culprits = new List<Thing>();
+
+        public Alert_STBNoWater()
+        {
+            defaultLabel = "STB_AlertNoWater".Translate();
+            defaultExplanation = "STB_AlertNoWaterDesc".Translate();
+            defaultPriority = AlertPriority.High;
+        }
+
+        public override AlertReport GetReport()
+        {
+            culprits.Clear();
+            foreach (ThingWithComps b in AlertUtility.PlayerBuildingsWith<CompStirlingEngine>())
+            {
+                if (b.GetComp<CompStirlingEngine>().DryStopped)
+                {
+                    culprits.Add(b);
+                }
+            }
+            return AlertReport.CulpritsAre(culprits);
+        }
+    }
 }

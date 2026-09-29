@@ -9,7 +9,7 @@ namespace TrashbrickBurning
     /// Keep in step with modVersion in About/About.xml.</summary>
     public static class BuildInfo
     {
-        public const string Version = "0.7.0";
+        public const string Version = "0.7.1";
     }
 
     public class TrashbrickSettings : ModSettings
@@ -27,6 +27,9 @@ namespace TrashbrickBurning
         /// <summary>Burners also take wood and chemfuel, at their own fuel values.</summary>
         public bool otherFuels = true;
 
+        /// <summary>With Dubs Bad Hygiene in advanced mode, burners only burn with plumbing water flowing.</summary>
+        public bool requireWater = true;
+
         public float fuelUseMultiplier = 1f;
         public float powerMultiplier = 1f;
         public float ashMultiplier = 1f;
@@ -38,6 +41,7 @@ namespace TrashbrickBurning
             Scribe_Values.Look(ref advanced, "advanced", true);
             Scribe_Values.Look(ref hazards, "hazards", true);
             Scribe_Values.Look(ref otherFuels, "otherFuels", true);
+            Scribe_Values.Look(ref requireWater, "requireWater", true);
             Scribe_Values.Look(ref fuelUseMultiplier, "fuelUseMultiplier", 1f);
             Scribe_Values.Look(ref powerMultiplier, "powerMultiplier", 1f);
             Scribe_Values.Look(ref ashMultiplier, "ashMultiplier", 1f);
@@ -74,6 +78,10 @@ namespace TrashbrickBurning
             list.Gap();
             list.CheckboxLabeled("STB_SettingHazards".Translate(), ref s.hazards, "STB_SettingHazardsDesc".Translate());
             list.CheckboxLabeled("STB_SettingOtherFuels".Translate(), ref s.otherFuels, "STB_SettingOtherFuelsDesc".Translate());
+            if (ModsConfig.IsActive(CompStirlingEngine.DubsBadHygieneId))
+            {
+                list.CheckboxLabeled("STB_SettingRequireWater".Translate(), ref s.requireWater, "STB_SettingRequireWaterDesc".Translate());
+            }
             list.Gap();
             Slider(list, "STB_SettingFuelUse", ref s.fuelUseMultiplier);
             Slider(list, "STB_SettingPower", ref s.powerMultiplier);

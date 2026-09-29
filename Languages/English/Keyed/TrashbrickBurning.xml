@@ -114,4 +114,10 @@
 	<STB_ReleaseLevelDesc>The fill level above which it vents on its own. Lower is safer and heats the room more. Left-click steps 25/50/75/100%; right-click to pick.</STB_ReleaseLevelDesc>
 	<STB_TankNoPlumbing>Not on DBH plumbing.</STB_TankNoPlumbing>
 	<STB_TankToPlumbing>To DBH hot water and heating: {0}W (tanks and radiators short {1} U)</STB_TankToPlumbing>
+	<STB_SettingRequireWater>Burners need plumbing water (Dubs Bad Hygiene)</STB_SettingRequireWater>
+	<STB_SettingRequireWaterDesc>On: in advanced play mode, a burner only burns while Dubs Bad Hygiene plumbing supplies its water - 20 to 53 a day by mode. Off: burners draw water when they can but run without it.</STB_SettingRequireWaterDesc>
+	<STB_NoWaterStopped>NO WATER: needs {0} water a day from DBH plumbing to burn. Lay a plumbing pipe under it, connected to a water supply.</STB_NoWaterStopped>
+	<STB_WaterUse>Water: {0} a day from the plumbing</STB_WaterUse>
+	<STB_AlertNoWater>Burner has no water</STB_AlertNoWater>
+	<STB_AlertNoWaterDesc>These burners are fuelled and switched on but aren't burning: with Dubs Bad Hygiene they need water from the plumbing.\n\nLay a plumbing pipe under them and connect it to a water supply (a well or pump, and a water tower). This can be switched off in the mod settings.</STB_AlertNoWaterDesc>
 </LanguageData>

@@ -140,7 +140,8 @@ Switch to simple mode in settings and **restart**.
   reads *(no water)* without plumbing water, and makes 120% with it.
 
 - [ ] **Tank as a DBH boiler:** pipe an Overpressure Tank into DBH plumbing with a DBH hot water tank or radiator. Its readout shows *To DBH hot water and heating: xW* while they're short of heat, and nothing once they're hot. The tank's charge drops by what it gives.
-- [ ] **Water:** a burning trash gasifier on plumbing draws about 40 water a day on normal (20 eco, 53 high).
+- [ ] **Water needed:** with DBH, a fuelled, switched-on burner with **no plumbing** under it doesn't burn: its readout says *NO WATER* and the **Burner has no water** alert fires. On plumbing with no water supply: the same. Connect a well/pump and water tower: it lights within a few seconds and reads *Water: 40 a day* on normal (20 eco, 53 high).
+- [ ] Mod settings, **Burners need plumbing water** off: it burns without water again.
 
 ## 9. With VFE - Factory
 

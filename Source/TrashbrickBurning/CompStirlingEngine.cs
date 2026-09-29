@@ -173,7 +173,8 @@ namespace TrashbrickBurning
 
         public HeatLevel Level => Props.heatLevels[Mathf.Clamp(heatLevel, 0, Props.heatLevels.Count - 1)];
 
-        public bool Burning
+        /// <summary>Switched on, fuelled and not broken down: everything but the water.</summary>
+        public bool WantsToBurn
         {
             get
             {
@@ -183,6 +184,18 @@ namespace TrashbrickBurning
                        && (breakdown == null || !breakdown.BrokenDown);
             }
         }
+
+        /// <summary>
+        /// With Dubs Bad Hygiene in advanced mode (and the setting on), a burner boils water: it only
+        /// burns while its plumbing supplies its mode's water. The DBH bridge pulls the water and sets
+        /// waterFlowing; without DBH there's nothing to need.
+        /// </summary>
+        public bool NeedsWater => Advanced && DbhActive && TrashbrickBurningMod.S.requireWater && Level.waterPerDay > 0f;
+
+        public bool Burning => WantsToBurn && (!NeedsWater || waterFlowing);
+
+        /// <summary>Wants to burn, and only the water is stopping it.</summary>
+        public bool DryStopped => WantsToBurn && NeedsWater && !waterFlowing;
 
         /// <summary>Advanced mode: the heat this burner is making right now.</summary>
         public float HeatWatts => Advanced && Burning ? Level.watts : 0f;
@@ -242,6 +255,7 @@ namespace TrashbrickBurning
             Scribe_Values.Look(ref pressure, "pressure", 0f);
             Scribe_Values.Look(ref ashBuffer, "ashBuffer", 0f);
             Scribe_Values.Look(ref hotWaterShare, "hotWaterShare", 0f);
+            Scribe_Values.Look(ref waterFlowing, "waterFlowing", false);
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -458,6 +472,14 @@ namespace TrashbrickBurning
             if (Advanced)
             {
                 lines.Add("STB_BurnerStatus".Translate(HeatWatts.ToString("0"), FuelPerDay.ToString("0.#")));
+                if (DryStopped)
+                {
+                    lines.Add("STB_NoWaterStopped".Translate(Level.waterPerDay.ToString("0")));
+                }
+                else if (NeedsWater && Burning)
+                {
+                    lines.Add("STB_WaterUse".Translate(Level.waterPerDay.ToString("0")));
+                }
                 if (Burning)
                 {
                     if (StirlingActive)

@@ -68,8 +68,9 @@ namespace TrashbrickBurning.DBH
                 // beyond that does it eat into what the network left over.
                 engine.hotWaterDrawWatts = draw;
                 engine.hotWaterDrawReservedWatts = Mathf.Min(draw, engine.ReservedWatts);
-                // Boiling off: a burning burner on plumbing draws water by its mode.
-                float water = engine.Burning ? engine.Level.waterPerDay : 0f;
+                // Boiling off: a burner that wants to burn draws its mode's water from the plumbing,
+                // and burns only while it gets it (CompStirlingEngine.NeedsWater).
+                float water = engine.WantsToBurn ? engine.Level.waterPerDay : 0f;
                 engine.waterFlowing = water > 0f && net != null
                     && net.PullWater(water * Interval / GenDate.TicksPerDay, out _);
             }

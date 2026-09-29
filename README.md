@@ -117,7 +117,7 @@ Each machine has a single intake, marked with a green in-arrow on the edge it fa
 
 **Overpressure Tank as a boiler:** on DBH plumbing, the Overpressure Tank is also a DBH boiler. It feeds the plumbing's hot water tanks and radiators from the heat it holds, offering only what they're short of, so a satisfied plumbing network doesn't drain it. 1 DBH heating unit = 1W, as DBH's own electric boiler.
 
-**Water:** a burning burner on DBH plumbing draws water by its mode (see the table above).
+**Water (advanced mode):** a burner **needs** water from DBH plumbing to burn, by its mode (see the table above). With no plumbing, or no water on it, it won't light: its readout says *NO WATER* and a **Burner has no water** alert fires. A mod setting turns the requirement off.
 
 The large and industrial burners join DBH plumbing too, with boilers of 4800 and 9600 units.
 
