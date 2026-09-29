@@ -1215,29 +1215,53 @@ def turbine_rotor():
 
 # ------------------------------------------------------------------ steam vent (in a wall)
 def steam_vent(rot):
-    """1x1, built into a wall like a cooler. A heavy steel block with a louvred mouth on the face
-    it blows out of (f = 0, the front) and the hot-water line coming in at the back - the pipe
-    network's orange, its one accent. It fills its cell, so it sits flush in the wall."""
-    v = View(rot, 1, 1, 0.15)   # drawn at (1.3,1.3), so its raised top isn't clipped
+    """1x1, hung on a wall: the wall is on the front edge (f = 0, the side it faces, as vanilla's
+    wall-attachment placeworker wants), and the def nudges the sprite onto the wall's face. A
+    backing plate, a steel box standing off it with a rack of louvres on top, and the hot-water line
+    coming up into it - the network's orange, its one accent. It blows away from the wall."""
+    v = View(rot, 1, 1, 0.15)
     c = Canvas(v)
-    body = (118, 118, 116)
+    body = (122, 122, 120)
 
-    def top(box, lift):
-        # Louvres across the front third: a rack of dark slots under lit lips, the repeated mark.
+    def plate_top(box, lift):
+        c.dots([(p[0], p[1] - lift) for p in (v.pt(0.14, 0.05), v.pt(0.86, 0.05))], 0.02, shade(body, 1.2))
+    c.slab(0.06, 0.0, 0.94, 0.12, 0.0, 0.55, shade(body, 0.88), radius=0.02, top_fn=plate_top)
+
+    def louvres(box, lift):
+        # Slots across the box, the repeated mark, angled away from the wall.
         for k in range(4):
-            f0 = 0.08 + k * 0.075
-            x0, y0, x1, y1 = v.rect(0.14, f0, 0.86, f0 + 0.045)
-            c.d.rectangle(c.box_px(x0, y0 - lift, x1, y1 - lift), fill=(38, 38, 38, 255))
-            lx0, ly0, lx1, ly1 = v.rect(0.14, f0 + 0.045, 0.86, f0 + 0.06)
+            f0 = 0.2 + k * 0.1
+            x0, y0, x1, y1 = v.rect(0.26, f0, 0.74, f0 + 0.05)
+            c.d.rectangle(c.box_px(x0, y0 - lift, x1, y1 - lift), fill=(40, 40, 40, 255))
+            lx0, ly0, lx1, ly1 = v.rect(0.26, f0 + 0.05, 0.74, f0 + 0.066)
             c.d.rectangle(c.box_px(lx0, ly0 - lift, lx1, ly1 - lift), fill=shade(body, 1.25) + (255,))
-        c.dots([(p[0], p[1] - lift) for p in (v.pt(0.1, 0.5), v.pt(0.9, 0.5), v.pt(0.1, 0.9), v.pt(0.9, 0.9))],
-               0.02, shade(body, 1.22))
-
-    c.slab(0.02, 0.02, 0.98, 0.98, 0.0, 0.25, body, chamfer=0.04, radius=0, top_fn=top)
-    # The hot-water line in at the back: a short straight stub and its flange.
-    c.pipe(0.5, 0.6, 0.5, 0.88, 0.25, 0.11, HOT)
+    c.slab(0.2, 0.1, 0.8, 0.66, 0.1, 0.34, body, radius=0.03, chamfer=0.04, top_fn=louvres)
+    # The hot-water line up the wall into the box.
+    c.pipe(0.5, 0.02, 0.5, 0.14, 0.02, 0.1, HOT)
     c.flush()
     c.save(f"{OUT}/Things/Building/Power/STB_SteamVent_{rot}.png")
+
+
+def steam_vent_ground():
+    """1x1 at drawSize 1.5: a standpipe steam vent - the hot-water line turned up out of the
+    ground, a banded riser, and a louvred mushroom cap. Not rotatable: one view."""
+    v = View("south", 1, 1, MARGIN_1X1)
+    c = Canvas(v)
+    c.slab(0.14, 0.14, 0.86, 0.86, 0.0, 0.05, shade(DECK, 0.95), chamfer=0.12, radius=0)
+    c.pipe(0.5, 0.86, 0.5, 1.0, 0.0, 0.12, HOT)              # the line coming in
+    c.cylinder(0.5, 0.52, 0.16, 0.05, 0.45, shade(STEEL, 1.0), rings=2)
+
+    def cap(X, Y, R):
+        # Louvre rings round the cap: tone steps inward, dark gaps between.
+        for k, f in enumerate((0.86, 0.66, 0.46)):
+            r = int(R * f)
+            c.d.ellipse([X - r, Y - r - R // 12, X + r, Y + r - R // 12],
+                        fill=(shade(STEEL, 1.15 - 0.08 * k) if k % 2 == 0 else (46, 46, 46)) + (255,))
+        rr = int(R * 0.22)
+        c.d.ellipse([X - rr, Y - rr - R // 10, X + rr, Y + rr - R // 10], fill=shade(STEEL, 1.3) + (255,))
+    c.cylinder(0.5, 0.52, 0.36, 0.5, 0.1, shade(STEEL, 1.05), rings=1, cap_fn=cap)
+    c.flush()
+    c.save(f"{OUT}/Things/Building/Power/STB_SteamVentGround.png")
 
 
 # ------------------------------------------------------------------ exhaust pipe and port
@@ -1475,6 +1499,7 @@ if __name__ == "__main__":
     hot_water_pipe()
     exhaust_pipe()
     exhaust_port()
+    steam_vent_ground()
     hot_water_valve()
     hot_water_radiator()
     cobbled_radiator()

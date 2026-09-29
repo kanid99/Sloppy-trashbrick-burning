@@ -167,6 +167,8 @@
 		</comps>
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
 		<designationCategory>Power</designationCategory>
+		<!-- The stack and the wall port share one architect button. -->
+		<designatorDropdown>STB_ExhaustPorts</designatorDropdown>
 		<constructEffect>ConstructMetal</constructEffect>
 		<researchPrerequisites>
 			<li>Electricity</li>
@@ -236,6 +238,8 @@
 		</placeWorkers>
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
 		<designationCategory>Power</designationCategory>
+		<!-- The stack and the wall port share one architect button. -->
+		<designatorDropdown>STB_ExhaustPorts</designatorDropdown>
 		<constructEffect>ConstructMetal</constructEffect>
 		<researchPrerequisites>
 			<li>Electricity</li>

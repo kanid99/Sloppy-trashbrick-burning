@@ -132,7 +132,7 @@
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_Exhaust">
 				<pollutionPerFuel>0.06</pollutionPerFuel>
-				<toxGasPerFuel>300</toxGasPerFuel>
+				<toxGasPerFuel>600</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -270,7 +270,7 @@
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_Exhaust">
 				<pollutionPerFuel>0.02</pollutionPerFuel>
-				<toxGasPerFuel>100</toxGasPerFuel>
+				<toxGasPerFuel>200</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -414,7 +414,7 @@
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_Exhaust">
 				<pollutionPerFuel>0.06</pollutionPerFuel>
-				<toxGasPerFuel>300</toxGasPerFuel>
+				<toxGasPerFuel>600</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -539,7 +539,7 @@
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_Exhaust">
 				<pollutionPerFuel>0.02</pollutionPerFuel>
-				<toxGasPerFuel>100</toxGasPerFuel>
+				<toxGasPerFuel>200</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -668,7 +668,7 @@
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_Exhaust">
 				<pollutionPerFuel>0.02</pollutionPerFuel>
-				<toxGasPerFuel>100</toxGasPerFuel>
+				<toxGasPerFuel>200</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>

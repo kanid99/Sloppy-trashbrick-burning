@@ -11,6 +11,12 @@ namespace TrashbrickBurning
         /// <summary>The most heat it vents.</summary>
         public float maxWatts = 3000f;
 
+        /// <summary>
+        /// Hung on a wall, or standing on the ground: it blows its steam into its own cell. Otherwise
+        /// (the old in-wall vent) into the cell it faces.
+        /// </summary>
+        public bool plumeAtSelf;
+
         /// <summary>Heat pushed into the plume cell per second for each watt vented: a vanilla heater's rate, twice a radiator's.</summary>
         public float heatPerWattSecond = 0.12f;
 
@@ -66,7 +72,7 @@ namespace TrashbrickBurning
 
         public float Venting => venting;
 
-        public IntVec3 PlumeCell => parent.Position + parent.Rotation.FacingCell;
+        public IntVec3 PlumeCell => Props.plumeAtSelf ? parent.Position : parent.Position + parent.Rotation.FacingCell;
 
         public override void PostExposeData()
         {

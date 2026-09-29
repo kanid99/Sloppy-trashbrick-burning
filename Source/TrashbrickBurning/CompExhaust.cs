@@ -48,6 +48,19 @@ namespace TrashbrickBurning
             return ports;
         }
 
+        /// <summary>
+        /// Toxic gas straight into the gas grid, overflowing: a cell holds at most 255, and without
+        /// overflow everything past that is thrown away, so a steady stream into one cell never built
+        /// up. With it, the excess floods out into the cells around, as a real leak would.
+        /// </summary>
+        public static void AddToxGas(IntVec3 cell, Map map, int amount)
+        {
+            if (amount > 0 && cell.InBounds(map))
+            {
+                map.gasGrid.AddGas(cell, GasType.ToxGas, amount, true);
+            }
+        }
+
         /// <summary>Toxic gas into a cell next to the source that gas can occupy.</summary>
         public static void ReleaseToxGas(Thing source, int amount)
         {
@@ -68,7 +81,7 @@ namespace TrashbrickBurning
             {
                 return;
             }
-            GasUtility.AddGas(cells.RandomElement(), map, GasType.ToxGas, amount);
+            AddToxGas(cells.RandomElement(), map, amount);
         }
     }
 
@@ -199,7 +212,7 @@ namespace TrashbrickBurning
                 {
                     if (outlet.HasValue && !cell.Impassable(map))
                     {
-                        GasUtility.AddGas(cell, map, GasType.ToxGas, amount);
+                        ExhaustNetwork.AddToxGas(cell, map, amount);
                     }
                     else
                     {

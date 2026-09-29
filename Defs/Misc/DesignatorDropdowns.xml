@@ -10,4 +10,13 @@
 	<DesignatorDropdownGroupDef>
 		<defName>STB_ExhaustPipes</defName>
 	</DesignatorDropdownGroupDef>
+	<!-- Wall-hung and ground steam vents share one architect button. -->
+	<DesignatorDropdownGroupDef>
+		<defName>STB_SteamVents</defName>
+	</DesignatorDropdownGroupDef>
+
+	<!-- The exhaust stack and the wall exhaust port share one architect button. -->
+	<DesignatorDropdownGroupDef>
+		<defName>STB_ExhaustPorts</defName>
+	</DesignatorDropdownGroupDef>
 </Defs>

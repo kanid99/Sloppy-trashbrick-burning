@@ -22,7 +22,7 @@ The whole system is **trash gasification**. The **cobbled trash gasifier** is th
 | Research | Electricity + VRE complex recycling | Microelectronics + VRE complex recycling |
 | Cost | 120 steel, 2 components | 150 steel, 25 plasteel, 4 components |
 | Pressure safety | **no safety valve**: at full pressure it bursts | safety valve vents |
-| Exhaust | heavy: 0.06 polluted cells and 300 toxic gas per brick | light: 0.02 and 100 per brick |
+| Exhaust | heavy: 0.06 polluted cells and 600 toxic gas per brick | light: 0.02 and 200 per brick |
 | Breakdowns | twice as often | normal |
 
 **Advanced mode:** each burner has a **mode** button: eco, normal or high. Eco gets the most heat from each brick but makes the least; high makes the most, wastes the most fuel and heats the room most.
@@ -74,7 +74,7 @@ A burner's heat goes, in order:
 3. **Steam turbines**, one at a time, each up to its maximum.
 4. **Radiators**: 1x1, heating their room to the target temperature you set through vanilla's own temperature system. The **cobbled radiator** (Electricity: 20 steel, 10 wood) takes up to 150W, leaks about three times as often and breaks down; the **cast-iron radiator** (Microelectronics: 45 steel) takes up to 250W. Each has a valve to shut it off.
 5. **Overpressure Tanks**: 2x2, hold 36 kWh, charging and discharging at up to 3000W. A tank takes whatever the turbines and radiators don't. It gives it back to **radiators** the burners can't satisfy, and **tops a stalling turbine up** to its gear's minimum when the burners fall short, through a breakdown or a refuel. With Dubs it also feeds the plumbing's hot water tanks and radiators.
-6. **Steam vents**: 1x1, built into a wall like a cooler (Electricity: 60 steel, 1 component). A vent blows off whatever nothing else takes, up to 3000W, out of its front face as scalding steam. Set it to also **drain the tanks above 25/50/75%** to keep their explosion risk down. Face it outdoors: facing a room, it heats that room fast, and anyone in the plume is burned. For players who'd rather not build DBH heating to let off steam.
+6. **Steam vents**: 1x1, two kinds under one architect button (Electricity): a **wall steam vent** hung on a wall like the wall exhaust port, blowing on the side it hangs on, and a free-standing **steam vent** standpipe. A vent blows off whatever nothing else takes, up to 3000W, as scalding steam. Set it to also **drain the tanks above 25/50/75%** to keep their explosion risk down. Put it outdoors: indoors it heats the room fast, and anyone in the steam is burned. For players who'd rather not build DBH heating to let off steam.
 7. **Dubs Bad Hygiene hot water and heating**, from what's left.
 8. Whatever's left **builds pressure**.
 
@@ -85,10 +85,10 @@ A burner's heat goes, in order:
 
 ### Exhaust and pollution
 Burning trash makes exhaust, in both play modes. It has to go somewhere:
-- **Exhaust pipe** (visible and hidden, one architect button) carries it to an **exhaust port**: a 1x1 soot-black stack (Electricity: 30 steel). Build the port outdoors; the ground around it slowly fills with pollution (Biotech's pollution). A port indoors gasses its room. Several ports on one network share the exhaust; a port's **damper** closes it. A **wall exhaust port** (35 steel) hangs on a wall like a wall lamp or an over-the-wall unit and blows the exhaust out on the side it hangs on: hang it on the outside of a wall and pipe to it under the wall. Exhaust pipe and pressurised hot water pipe are separate networks and can share a cell.
+- **Exhaust pipe** (visible and hidden, one architect button) carries it to an **exhaust port**: a 1x1 soot-black stack (Electricity: 30 steel). Build the port outdoors; the ground around it slowly fills with pollution (Biotech's pollution). A port indoors gasses its room. Several ports on one network share the exhaust; a port's **damper** closes it. The stack and a **wall exhaust port** share one architect button. The wall port (35 steel) hangs on a wall like a wall lamp or an over-the-wall unit and blows the exhaust out on the side it hangs on: hang it on the outside of a wall and pipe to it under the wall. Exhaust pipe and pressurised hot water pipe are separate networks and can share a cell.
 - **At the port:** exhaust comes out as toxic gas (it drifts off outdoors, and builds up fast in a closed room), a little heat, and ground pollution.
 - **No exhaust pipe to an open port:** the burner lets its exhaust out around itself - **toxic gas** into the cells around it, and pollution on the ground there. Its readout says *EXHAUST* in capitals and a **Burner venting toxic exhaust** alert fires.
-- **How much:** by fuel burnt. The cobbled gasifier is dirty (0.06 polluted cells and 300 units of toxic gas per brick - about 6 cells a day on normal); the trash gasifier's filters cut that to a third of the pollution and a third of the gas. The large and industrial burners follow their tier. A settings slider scales it.
+- **How much:** by fuel burnt. The cobbled gasifier is dirty (0.06 polluted cells and 600 units of toxic gas per brick - about 6 cells a day on normal); the trash gasifier's filters cut that to a third of the pollution and a third of the gas. The large and industrial burners follow their tier. A settings slider scales it.
 
 ### Other fuels
 Burners also take **wood** (a log is worth 0.4 of a trashbrick) and **chemfuel** (a unit is worth 2.5); switch those off in settings. A Harmony patch makes refuelling count each fuel at its own value.
