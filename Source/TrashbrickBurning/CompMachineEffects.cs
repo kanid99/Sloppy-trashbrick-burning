@@ -30,6 +30,14 @@ namespace TrashbrickBurning
         /// <summary>Looped while running.</summary>
         public SoundDef sound;
 
+        /// <summary>A part that spins while running - a turbine's cooling fan - drawn over the sprite.</summary>
+        public MachinePoint rotor;
+        public float rotorSize = 0.6f;
+        public string rotorTexPath = "Things/Building/Power/STB_TurbineRotor";
+
+        /// <summary>Degrees a tick at full speed.</summary>
+        public float rotorSpeed = 24f;
+
         public CompProperties_MachineEffects()
         {
             compClass = typeof(CompMachineEffects);
@@ -137,9 +145,41 @@ namespace TrashbrickBurning
             }
         }
 
+        private float rotorAngle;
+        private float rotorSpeed;
+        private int lastRotorTick = -1;
+
+        /// <summary>
+        /// The fan spins up while running and coasts down when it stops. Driven by game ticks, so it
+        /// freezes when paused; drawn every frame, so it needs drawerType MapMeshAndRealTime.
+        /// </summary>
+        private void DrawRotor()
+        {
+            if (Props.rotor == null)
+            {
+                return;
+            }
+            int tick = Find.TickManager.TicksGame;
+            if (lastRotorTick >= 0 && tick > lastRotorTick)
+            {
+                int dt = System.Math.Min(tick - lastRotorTick, 60);
+                float target = Running ? 1f : 0f;
+                rotorSpeed = UnityEngine.Mathf.MoveTowards(rotorSpeed, target, dt / 90f);
+                rotorAngle = (rotorAngle + rotorSpeed * Props.rotorSpeed * dt) % 360f;
+            }
+            lastRotorTick = tick;
+            Material mat = MaterialPool.MatFrom(Props.rotorTexPath, ShaderDatabase.Cutout);
+            Vector3 pos = WorldPos(Props.rotor);
+            pos.y = parent.def.Altitude + 0.06f;
+            Matrix4x4 matrix = Matrix4x4.TRS(pos, Quaternion.AngleAxis(rotorAngle, Vector3.up),
+                new Vector3(Props.rotorSize, 1f, Props.rotorSize));
+            Graphics.DrawMesh(MeshPool.plane10, matrix, mat, 0);
+        }
+
         public override void PostDraw()
         {
             base.PostDraw();
+            DrawRotor();
             if (Props.glow == null || !Running)
             {
                 return;

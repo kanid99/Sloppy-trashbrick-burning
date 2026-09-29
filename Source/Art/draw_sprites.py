@@ -1236,6 +1236,36 @@ def pellets():
         print("wrote", path, out.size)
 
 
+# ------------------------------------------------------------------ turbine cooling fan (overlay)
+def turbine_rotor():
+    """The generator's cooling fan, drawn flat and spun by CompMachineEffects while the turbine
+    makes power. Top-down: a dark hub, five blades as tone wedges, a guard ring. Round, so it
+    reads the same at any angle; the blades are what shows it turning. Black only at the rim."""
+    px = 128
+    S = px * SS
+    img = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    c = S / 2
+    R = S * 0.46
+    d.ellipse([c - R, c - R, c + R, c + R], fill=(14, 14, 14, 255))                  # silhouette
+    r = R * 0.93
+    d.ellipse([c - r, c - r, c + r, c + r], fill=shade(STEEL, 0.62) + (255,))       # guard ring
+    r2 = R * 0.84
+    d.ellipse([c - r2, c - r2, c + r2, c + r2], fill=(46, 46, 46, 255))              # the dark behind
+    for k in range(5):
+        a0 = k * 72 - 14
+        d.pieslice([c - r2, c - r2, c + r2, c + r2], a0, a0 + 34, fill=shade(STEEL, 1.08) + (255,))
+        d.pieslice([c - r2, c - r2, c + r2, c + r2], a0 + 24, a0 + 34, fill=shade(STEEL, 0.86) + (255,))
+    rh = R * 0.26
+    d.ellipse([c - rh, c - rh, c + rh, c + rh], fill=shade(STEEL, 0.74) + (255,))    # hub
+    rb = R * 0.1
+    d.ellipse([c - rb, c - rb, c + rb, c + rb], fill=shade(STEEL, 1.2) + (255,))     # spinner cap
+    out = img.resize((px, px), Image.LANCZOS)
+    path = f"{OUT}/Things/Building/Power/STB_TurbineRotor.png"
+    out.save(path)
+    print("wrote", path, out.size)
+
+
 if __name__ == "__main__":
     for r in ROTS:
         cobbled_stove(r)
@@ -1252,6 +1282,7 @@ if __name__ == "__main__":
     cobbled_radiator()
     heat_accumulator()
     fire_glow()
+    turbine_rotor()
     ash_items()
     ashcrete_items()
     pellets()

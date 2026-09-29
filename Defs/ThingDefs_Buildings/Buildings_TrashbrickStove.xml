@@ -4,8 +4,8 @@
 	<!-- Modelled on the vanilla wood-fired generator, fuelled by trashbricks from Vanilla Recycling Expanded. -->
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_TrashbrickPelletStove</defName>
-		<label>cobbled pellet stove</label>
-		<description>A firebox welded together from scrap plate, driving a salvaged Stirling engine on compressed trashbricks. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that. It heats the room while it runs, and the smoke slowly pollutes the ground around it.</description>
+		<label>cobbled trash gasifier</label>
+		<description>A trash gasifier cobbled together from scrap plate and a salvaged Stirling engine, burning compressed trashbricks. It has three modes: eco gets the most heat from each brick, high the most heat. With no steam turbine on its pressurised hot water network, its Stirling engine makes a little power (75-300W) from three times that in heat; the rest of its heat goes out on the pipe, so it still needs an Overpressure Tank or radiators, or its pressure builds - and with no safety valve, it bursts. It breaks down often. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that. It heats the room while it runs, and the smoke slowly pollutes the ground around it.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_CobbledPelletStove</texPath>
@@ -45,7 +45,7 @@
 			<li Class="CompProperties_Refuelable">
 				<!-- Trashbricks per day at full burn. One garbage compactor makes 25 a day. -->
 				<fuelConsumptionRate>20.0</fuelConsumptionRate>
-				<fuelCapacity>50.0</fuelCapacity>
+				<fuelCapacity>150.0</fuelCapacity>
 				<fuelLabel>Trashbricks</fuelLabel>
 				<fuelFilter>
 					<thingDefs>
@@ -65,6 +65,8 @@
 				<glowColor>(217,112,33,0)</glowColor>
 			</li>
 			<li Class="CompProperties_Breakdownable"/>
+			<!-- Cobbled gear breaks down twice as often as vanilla machines. -->
+			<li Class="TrashbrickBurning.CompProperties_ExtraBreakdowns"/>
 			<!-- Pulls fuel from any adjacent hopper (ours, vanilla, or VFE Factory's). -->
 			<li Class="TrashbrickBurning.CompProperties_HopperFeed"/>
 			<!--
@@ -72,7 +74,8 @@
 				the room, and sets the power output. Simple play mode uses the simple* values and the
 				power comp's output. Advanced play mode makes it a burner at one of these heat levels:
 				hotter burns cost more fuel per watt and waste more heat into the room. Its heat goes to
-				steam turbines first; with none connected, the built-in engine makes builtInWatts.
+				steam turbines first; with no turbine on the network, the Stirling engine makes stirlingWatts
+				from three times that in heat, and the rest still goes out on the pipe.
 			-->
 			<li Class="TrashbrickBurning.CompProperties_StirlingEngine">
 				<simpleFuelPerDay>20</simpleFuelPerDay>
@@ -80,9 +83,9 @@
 				<cooledPowerFactor>1.2</cooledPowerFactor>
 				<heatRecoveryPowerFactor>0.5</heatRecoveryPowerFactor>
 				<heatLevels>
-					<li><watts>250</watts><fuelPerDay>8</fuelPerDay><roomHeatPerSecond>4</roomHeatPerSecond><builtInWatts>100</builtInWatts></li>
-					<li><watts>350</watts><fuelPerDay>12</fuelPerDay><roomHeatPerSecond>6</roomHeatPerSecond><builtInWatts>200</builtInWatts></li>
-					<li><watts>500</watts><fuelPerDay>20</fuelPerDay><roomHeatPerSecond>10</roomHeatPerSecond><builtInWatts>300</builtInWatts></li>
+					<li><key>Eco</key><watts>600</watts><fuelPerDay>40</fuelPerDay><roomHeatPerSecond>5</roomHeatPerSecond><stirlingWatts>75</stirlingWatts><waterPerDay>16</waterPerDay></li>
+					<li><key>Normal</key><watts>1200</watts><fuelPerDay>100</fuelPerDay><roomHeatPerSecond>10</roomHeatPerSecond><stirlingWatts>150</stirlingWatts><waterPerDay>32</waterPerDay></li>
+					<li><key>High</key><watts>1600</watts><fuelPerDay>150</fuelPerDay><roomHeatPerSecond>14</roomHeatPerSecond><stirlingWatts>300</stirlingWatts><waterPerDay>43</waterPerDay></li>
 				</heatLevels>
 				<!-- Jerry-rigged: no working safety valve. At full pressure it bursts. -->
 				<safetyValve>false</safetyValve>
@@ -139,8 +142,8 @@
 	-->
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_TrashbrickGasifier</defName>
-		<label>trashbrick gasifier</label>
-		<description>A sealed gasifier that bakes trashbricks into syngas and burns it cleanly under a Stirling engine. It gets twice the power from each brick that a pellet stove does, and the catalytic filters catch the fumes, so it doesn't pollute. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
+		<label>trash gasifier</label>
+		<description>A sealed trash gasifier that bakes trashbricks into syngas and burns it cleanly: 1500W of heat on 75 bricks a day in normal mode, 750W on 30 in eco, 2000W on 112 in high. With no steam turbine on its pressurised hot water network, its Stirling engine makes some power (100-500W) from three times that in heat; the rest goes out on the pipe to an Overpressure Tank or radiators. A safety valve vents any pressure left over. It gets twice the power from each brick that a pellet stove does, and the catalytic filters catch the fumes, so it doesn't pollute. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_TrashbrickGasifier</texPath>
@@ -179,7 +182,7 @@
 			<li Class="CompProperties_Refuelable">
 				<!-- Simple play mode's burn rate: 100W-days per brick against the cobbled stove's 50. -->
 				<fuelConsumptionRate>12.0</fuelConsumptionRate>
-				<fuelCapacity>60.0</fuelCapacity>
+				<fuelCapacity>150.0</fuelCapacity>
 				<fuelLabel>Trashbricks</fuelLabel>
 				<fuelFilter>
 					<thingDefs>
@@ -205,7 +208,8 @@
 				the room, and sets the power output. Simple play mode uses the simple* values and the
 				power comp's output. Advanced play mode makes it a burner at one of these heat levels:
 				hotter burns cost more fuel per watt and waste more heat into the room. Its heat goes to
-				steam turbines first; with none connected, the built-in engine makes builtInWatts.
+				steam turbines first; with no turbine on the network, the Stirling engine makes stirlingWatts
+				from three times that in heat, and the rest still goes out on the pipe.
 			-->
 			<li Class="TrashbrickBurning.CompProperties_StirlingEngine">
 				<simpleFuelPerDay>12</simpleFuelPerDay>
@@ -213,9 +217,9 @@
 				<cooledPowerFactor>1.2</cooledPowerFactor>
 				<heatRecoveryPowerFactor>0.6</heatRecoveryPowerFactor>
 				<heatLevels>
-					<li><watts>250</watts><fuelPerDay>4</fuelPerDay><roomHeatPerSecond>1.5</roomHeatPerSecond><builtInWatts>100</builtInWatts></li>
-					<li><watts>350</watts><fuelPerDay>6</fuelPerDay><roomHeatPerSecond>2.5</roomHeatPerSecond><builtInWatts>200</builtInWatts></li>
-					<li><watts>500</watts><fuelPerDay>9</fuelPerDay><roomHeatPerSecond>4</roomHeatPerSecond><builtInWatts>300</builtInWatts></li>
+					<li><key>Eco</key><watts>750</watts><fuelPerDay>30</fuelPerDay><roomHeatPerSecond>1.5</roomHeatPerSecond><stirlingWatts>100</stirlingWatts><waterPerDay>20</waterPerDay></li>
+					<li><key>Normal</key><watts>1500</watts><fuelPerDay>75</fuelPerDay><roomHeatPerSecond>3</roomHeatPerSecond><stirlingWatts>250</stirlingWatts><waterPerDay>40</waterPerDay></li>
+					<li><key>High</key><watts>2000</watts><fuelPerDay>112.5</fuelPerDay><roomHeatPerSecond>4</roomHeatPerSecond><stirlingWatts>500</stirlingWatts><waterPerDay>53</waterPerDay></li>
 				</heatLevels>
 				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
 				<safetyValve>true</safetyValve>
@@ -228,6 +232,8 @@
 			<!-- Steam wisps from the exhaust stack, where the safety valve vents too. -->
 			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
 				<steam><a>0.36</a><f>1.7</f><z>0.57</z></steam>
+				<smoke><a>0.36</a><f>1.7</f><z>0.6</z></smoke>
+				<sound>STB_SteamEngineAmbience</sound>
 			</li>
 
 			<!-- Joins the pressurised hot water network when a pipe runs under it. -->
@@ -257,8 +263,8 @@
 	-->
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_LargeCobbledStove</defName>
-		<label>large cobbled stove</label>
-		<description>A long firebox welded together from whatever plate was lying around, a scrapped boiler drum, two mismatched flues and a salvaged generator, all on compressed trashbricks. Three times the heat of a cobbled pellet stove from a little less fuel per watt, and just as short of a safety valve. It has no engine of its own: pipe it to a steam turbine. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that. It heats the room while it runs, and the smoke slowly pollutes the ground around it.</description>
+		<label>large cobbled trash gasifier</label>
+		<description>A long firebox welded together from whatever plate was lying around, a scrapped boiler drum, two mismatched flues and a salvaged generator, all on compressed trashbricks. Three times the heat of a cobbled trash gasifier from a little less fuel per watt, and just as short of a safety valve. It has no engine of its own: pipe it to a steam turbine. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that. It heats the room while it runs, and the smoke slowly pollutes the ground around it.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_LargeCobbledStove</texPath>
@@ -311,6 +317,7 @@
 				<glowColor>(217,112,33,0)</glowColor>
 			</li>
 			<li Class="CompProperties_Breakdownable"/>
+			<li Class="TrashbrickBurning.CompProperties_ExtraBreakdowns"/>
 			<!-- Pulls fuel from any adjacent hopper (ours, vanilla, or VFE Factory's). -->
 			<li Class="TrashbrickBurning.CompProperties_HopperFeed"/>
 			<!--
@@ -318,7 +325,8 @@
 				the room, and sets the power output. Simple play mode uses the simple* values and the
 				power comp's output. Advanced play mode makes it a burner at one of these heat levels:
 				hotter burns cost more fuel per watt and waste more heat into the room. Its heat goes to
-				steam turbines first; with none connected, the built-in engine makes builtInWatts.
+				steam turbines first; with no turbine on the network, the Stirling engine makes stirlingWatts
+				from three times that in heat, and the rest still goes out on the pipe.
 			-->
 			<li Class="TrashbrickBurning.CompProperties_StirlingEngine">
 				<!-- No engine of its own: it only makes heat, for steam turbines, so it's advanced mode only. -->
@@ -327,9 +335,9 @@
 				<cooledPowerFactor>1.2</cooledPowerFactor>
 				<heatRecoveryPowerFactor>0.5</heatRecoveryPowerFactor>
 				<heatLevels>
-					<li><watts>750</watts><fuelPerDay>22</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
-					<li><watts>1000</watts><fuelPerDay>31</fuelPerDay><roomHeatPerSecond>17</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
-					<li><watts>1500</watts><fuelPerDay>54</fuelPerDay><roomHeatPerSecond>30</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
+					<li><key>Eco</key><watts>750</watts><fuelPerDay>22</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>20</waterPerDay></li>
+					<li><key>Normal</key><watts>1000</watts><fuelPerDay>31</fuelPerDay><roomHeatPerSecond>17</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>27</waterPerDay></li>
+					<li><key>High</key><watts>1500</watts><fuelPerDay>54</fuelPerDay><roomHeatPerSecond>30</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>40</waterPerDay></li>
 				</heatLevels>
 				<!-- Jerry-rigged: no working safety valve. At full pressure it bursts. -->
 				<safetyValve>false</safetyValve>
@@ -381,8 +389,8 @@
 
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_LargeGasifier</defName>
-		<label>large trashbrick gasifier</label>
-		<description>A bigger sealed gasifier: one large chamber, a longer filter bank and its own generator. Three times the heat of a trashbrick gasifier from a little less fuel per watt - at full burn, enough to run one steam turbine flat out. Like the small one it bakes trashbricks into syngas and burns it cleanly, but it has no engine of its own: pipe it to a steam turbine. It gets twice the power from each brick that a pellet stove does, and the catalytic filters catch the fumes, so it doesn't pollute. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
+		<label>large trash gasifier</label>
+		<description>A bigger sealed gasifier: one large chamber, a longer filter bank and its own generator. Three times the heat of a trash gasifier from a little less fuel per watt - at full burn, enough to run one steam turbine flat out. Like the small one it bakes trashbricks into syngas and burns it cleanly, but it has no engine of its own: pipe it to a steam turbine. It gets twice the power from each brick that a pellet stove does, and the catalytic filters catch the fumes, so it doesn't pollute. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_LargeGasifier</texPath>
@@ -440,7 +448,8 @@
 				the room, and sets the power output. Simple play mode uses the simple* values and the
 				power comp's output. Advanced play mode makes it a burner at one of these heat levels:
 				hotter burns cost more fuel per watt and waste more heat into the room. Its heat goes to
-				steam turbines first; with none connected, the built-in engine makes builtInWatts.
+				steam turbines first; with no turbine on the network, the Stirling engine makes stirlingWatts
+				from three times that in heat, and the rest still goes out on the pipe.
 			-->
 			<li Class="TrashbrickBurning.CompProperties_StirlingEngine">
 				<!-- No engine of its own: it only makes heat, for steam turbines, so it's advanced mode only. -->
@@ -449,9 +458,9 @@
 				<cooledPowerFactor>1.2</cooledPowerFactor>
 				<heatRecoveryPowerFactor>0.6</heatRecoveryPowerFactor>
 				<heatLevels>
-					<li><watts>750</watts><fuelPerDay>11</fuelPerDay><roomHeatPerSecond>4.5</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
-					<li><watts>1000</watts><fuelPerDay>15</fuelPerDay><roomHeatPerSecond>7</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
-					<li><watts>1500</watts><fuelPerDay>24</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
+					<li><key>Eco</key><watts>750</watts><fuelPerDay>11</fuelPerDay><roomHeatPerSecond>4.5</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>20</waterPerDay></li>
+					<li><key>Normal</key><watts>1000</watts><fuelPerDay>15</fuelPerDay><roomHeatPerSecond>7</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>27</waterPerDay></li>
+					<li><key>High</key><watts>1500</watts><fuelPerDay>24</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>40</waterPerDay></li>
 				</heatLevels>
 				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
 				<safetyValve>true</safetyValve>
@@ -492,8 +501,8 @@
 	-->
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_IndustrialGasifier</defName>
-		<label>industrial trashbrick gasifier</label>
-		<description>A plant-scale gasifier: two chambers in series, a double filter bank, twin exhaust stacks and a full-size generator on one long skid. Six times the heat of a trashbrick gasifier and the most out of every brick - at full burn, enough to run two steam turbines flat out. Like the small one it burns clean. It has no engine of its own: pipe it to steam turbines. It gets twice the power from each brick that a pellet stove does, and the catalytic filters catch the fumes, so it doesn't pollute. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
+		<label>industrial trash gasifier</label>
+		<description>A plant-scale gasifier: two chambers in series, a double filter bank, twin exhaust stacks and a full-size generator on one long skid. Six times the heat of a trash gasifier and the most out of every brick - at full burn, enough to run two steam turbines flat out. Like the small one it burns clean. It has no engine of its own: pipe it to steam turbines. It gets twice the power from each brick that a pellet stove does, and the catalytic filters catch the fumes, so it doesn't pollute. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_IndustrialGasifier</texPath>
@@ -551,7 +560,8 @@
 				the room, and sets the power output. Simple play mode uses the simple* values and the
 				power comp's output. Advanced play mode makes it a burner at one of these heat levels:
 				hotter burns cost more fuel per watt and waste more heat into the room. Its heat goes to
-				steam turbines first; with none connected, the built-in engine makes builtInWatts.
+				steam turbines first; with no turbine on the network, the Stirling engine makes stirlingWatts
+				from three times that in heat, and the rest still goes out on the pipe.
 			-->
 			<li Class="TrashbrickBurning.CompProperties_StirlingEngine">
 				<!-- No engine of its own: it only makes heat, for steam turbines, so it's advanced mode only. -->
@@ -560,9 +570,9 @@
 				<cooledPowerFactor>1.2</cooledPowerFactor>
 				<heatRecoveryPowerFactor>0.6</heatRecoveryPowerFactor>
 				<heatLevels>
-					<li><watts>1500</watts><fuelPerDay>20</fuelPerDay><roomHeatPerSecond>8</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
-					<li><watts>2250</watts><fuelPerDay>33</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
-					<li><watts>3000</watts><fuelPerDay>46</fuelPerDay><roomHeatPerSecond>20</roomHeatPerSecond><builtInWatts>0</builtInWatts></li>
+					<li><key>Eco</key><watts>1500</watts><fuelPerDay>20</fuelPerDay><roomHeatPerSecond>8</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>40</waterPerDay></li>
+					<li><key>Normal</key><watts>2250</watts><fuelPerDay>33</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>60</waterPerDay></li>
+					<li><key>High</key><watts>3000</watts><fuelPerDay>46</fuelPerDay><roomHeatPerSecond>20</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>80</waterPerDay></li>
 				</heatLevels>
 				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
 				<safetyValve>true</safetyValve>
@@ -605,7 +615,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_FuelHopper</defName>
 		<label>fuel hopper</label>
-		<description>A hopper for trashbrick fuel. Build it on a pellet stove's or gasifier's intake - the green-marked port - with its spout toward the machine, and the machine pulls fuel from it as it burns. Haulers or a conveyor belt can fill it. It holds up to three stacks.</description>
+		<description>A hopper for trashbrick fuel. Build it on a trash gasifier's intake - the green-marked port - with its spout toward the machine, and the machine pulls fuel from it as it burns. Haulers or a conveyor belt can fill it. It holds up to three stacks.</description>
 		<thingClass>Building_Storage</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_FuelHopper</texPath>

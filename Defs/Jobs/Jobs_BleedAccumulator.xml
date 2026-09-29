@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-	<!-- Opening a heat accumulator's blow-off valve: less stored heat, less risk, a hot room. -->
+	<!-- Opening a Overpressure Tank's blow-off valve: less stored heat, less risk, a hot room. -->
 	<JobDef>
 		<defName>STB_BleedAccumulator</defName>
 		<driverClass>TrashbrickBurning.JobDriver_BleedAccumulator</driverClass>
@@ -10,7 +10,7 @@
 
 	<WorkGiverDef>
 		<defName>STB_BleedAccumulator</defName>
-		<label>bleed heat accumulators</label>
+		<label>bleed overpressure tanks</label>
 		<giverClass>TrashbrickBurning.WorkGiver_BleedAccumulator</giverClass>
 		<workType>BasicWorker</workType>
 		<verb>bleed</verb>

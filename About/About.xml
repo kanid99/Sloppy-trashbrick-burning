@@ -4,17 +4,17 @@
 	<author>kanid99</author>
 	<packageId>kanid99.SloppyModTrashPower</packageId>
 	<!-- Keep in step with BuildInfo.Version in TrashbrickBurningMod.cs. -->
-	<modVersion>0.6.3</modVersion>
+	<modVersion>0.7.0</modVersion>
 	<supportedVersions>
 		<li>1.5</li>
 		<li>1.6</li>
 	</supportedVersions>
 	<description>Burn the trashbricks from Vanilla Recycling Expanded for power.
 
-Adds two trashbrick stoves: a cobbled pellet stove and a cleaner, twice-as-efficient gasifier. Feed them by hand or from a hopper on their intake.
+Trash gasification: a jerry-rigged cobbled trash gasifier and a cleaner, safer trash gasifier that burn trashbricks. Feed them by hand or from a hopper on their intake.
 
-Advanced play mode (default): the stoves are burners making 250, 350 or 500W of heat. Pipe them to a steam turbine - a jerry-rigged 750W one early on, a 1500W one later - and on their own they make only 100-300W. Large (3x4) cobbled and gasifier burners make 750-1500W of heat, and an industrial (3x6) gasifier up to 3000W; they have no engine of their own and need turbines.
-Simple play mode: the stoves are self-contained 1000W and 1200W generators.
+Advanced play mode (default): gasifiers are burners with eco, normal and high modes - the trash gasifier makes 1500W of heat on 75 bricks a day. Pipe them to steam turbines with three gears, radiators and an Overpressure Tank. With no turbine, their own Stirling engine makes a little power. Large (3x4) and industrial (3x6) burners need turbines.
+Simple play mode: the gasifiers are self-contained 1000W and 1200W generators.
 
 With Dubs Bad Hygiene: fecal sludge pellets as a second fuel, and a plumbing connection. Stoves heat the plumbing's hot water with whatever the turbines don't use.
 With Vanilla Furniture Expanded - Factory: belt-fed through factory hoppers.

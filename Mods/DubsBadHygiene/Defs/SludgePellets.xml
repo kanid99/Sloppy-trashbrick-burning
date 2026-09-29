@@ -5,7 +5,7 @@
 	<ThingDef ParentName="ResourceBase">
 		<defName>STB_SludgePellets</defName>
 		<label>sludge pellets</label>
-		<description>Fecal sludge that has been dried, pressed and baked into hard fuel pellets for a pellet stove. Pellets give less energy than refining the sludge into chemfuel, but they don't explode when damaged, burn slowly, and don't rot.</description>
+		<description>Fecal sludge that has been dried, pressed and baked into hard fuel pellets for a trash gasifier. Pellets give less energy than refining the sludge into chemfuel, but they don't explode when damaged, burn slowly, and don't rot.</description>
 		<graphicData>
 			<texPath>Things/Item/Resource/STB_SludgePellets</texPath>
 			<graphicClass>Graphic_StackCount</graphicClass>
@@ -36,7 +36,7 @@
 	<RecipeDef>
 		<defName>STB_Make_SludgePellets</defName>
 		<label>make sludge pellets</label>
-		<description>Dry and press fecal sludge into stable fuel pellets for a pellet stove.</description>
+		<description>Dry and press fecal sludge into stable fuel pellets for a trash gasifier.</description>
 		<jobString>Pressing sludge pellets.</jobString>
 		<effectWorking>Cremate</effectWorking>
 		<soundWorking>Recipe_Cremate</soundWorking>

@@ -71,7 +71,7 @@
 	<ThingDef ParentName="STB_HotWaterPipeBase">
 		<defName>STB_HotWaterPipe</defName>
 		<label>pressurised hot water pipe</label>
-		<description>Lagged, pressure-rated pipe that carries superheated water from trashbrick burners to a steam turbine. Can be placed under walls and other buildings.</description>
+		<description>Lagged, pressure-rated pipe that carries superheated water from trash gasifiers to a steam turbine. Can be placed under walls and other buildings.</description>
 		<graphicData>
 			<texPath>Things/Building/Linked/STB_HotWaterPipe_Atlas</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -185,14 +185,13 @@
 	</ThingDef>
 
 	<!--
-		The cobbled turbine: the low-tech one. Same 2x3 set, built from scrap at Electricity. It
-		takes up to 1000W of heat and loses a quarter of it, so 750W at most - two burners at 500W,
-		or four at 250W.
+		The cobbled steam turbine: one gear step less efficient than the steam turbine, up to 4800W
+		of heat, and it breaks down twice as often.
 	-->
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_CobbledTurbine</defName>
 		<label>cobbled steam turbine</label>
-		<description>A steam turbine pieced together from scrap plate and a salvaged generator, driven by pressurised hot water piped from trashbrick burners. It takes up to 1000W of their heat, but its worn blades and leaky seals waste a quarter of it, so it makes at most 750W - and it rattles. A burner feeding a turbine shuts down its own small engine. Connect it by running a pressurised hot water pipe under it.</description>
+		<description>A steam turbine pieced together from scrap plate and a salvaged generator, driven by pressurised hot water from trash gasifiers. It takes up to 4800W of heat. Three gears: low turns over on 500W at 50%, medium needs 1500W for 60%, high needs 3000W for 70%. Below its gear's minimum it stalls, wasting the heat. It rattles, and breaks down often. With a turbine on the network, the burners' own Stirling engines stand down. Connect it with a pressurised hot water pipe under it.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_CobbledTurbine</texPath>
@@ -224,8 +223,13 @@
 			<li Class="TrashbrickBurning.CompProperties_SteamTurbine">
 				<basePowerConsumption>0</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
-				<capacityWatts>1000</capacityWatts>
-				<efficiency>0.75</efficiency>
+				<!-- Three cobbled burners on high. -->
+				<maxHeatWatts>4800</maxHeatWatts>
+				<gears>
+					<li><key>Low</key><minWatts>500</minWatts><efficiency>0.5</efficiency></li>
+					<li><key>Medium</key><minWatts>1500</minWatts><efficiency>0.6</efficiency></li>
+					<li><key>High</key><minWatts>3000</minWatts><efficiency>0.7</efficiency></li>
+				</gears>
 				<soundAmbientProducingPower>WoodFiredGenerator_Ambience</soundAmbientProducingPower>
 			</li>
 			<li Class="PipeSystem.CompProperties_Resource">
@@ -245,7 +249,11 @@
 			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
 				<steam><a>1.0</a><f>1.75</f><z>0.45</z></steam>
 				<sound>STB_RattleAmbience</sound>
+				<!-- The generator's cooling fan, spinning while it makes power. -->
+				<rotor><a>1.0</a><f>2.43</f><z>0.47</z></rotor>
+				<rotorSize>0.62</rotorSize>
 			</li>
+			<li Class="TrashbrickBurning.CompProperties_ExtraBreakdowns"/>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Breakdownable"/>
 			<li Class="CompProperties_HeatPusher">
@@ -264,15 +272,14 @@
 	</ThingDef>
 
 	<!--
-		The turbine (advanced play mode). Takes up to 1500W of heat from the burners on its network
-		and turns it into 1500W of power, one to one, however many burners it takes: three at 500W,
-		or six at 250W for less fuel. More than one turbine on a network share the heat by capacity.
-		No intake - the network connects wherever a pipe runs under it.
+		The steam turbine (advanced play mode). Takes up to 6000W of heat from the burners on its
+		network - three trash gasifiers on high - in one of three gears. Several turbines on a network
+		fill one at a time. No intake: the network connects wherever a pipe runs under it.
 	-->
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_SteamTurbine</defName>
-		<label>trashbrick steam turbine</label>
-		<description>A compact steam turbine and generator, driven by pressurised hot water piped from trashbrick burners. It turns up to 1500W of their heat into 1500W of power, from as many burners as it takes, and a burner feeding a turbine shuts down its own small engine. Connect it by running a pressurised hot water pipe under it.</description>
+		<label>steam turbine</label>
+		<description>A compact steam turbine and generator, driven by pressurised hot water from trash gasifiers. It takes up to 6000W of heat - three gasifiers on high. Three gears: low turns over on 500W at 60%, medium needs 1500W for 70%, high needs 3000W for 80%. Below its gear's minimum it stalls, wasting the heat. With a turbine on the network, the burners' own Stirling engines stand down. Connect it with a pressurised hot water pipe under it.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_SteamTurbine</texPath>
@@ -281,6 +288,8 @@
 			<drawSize>(3,4)</drawSize>
 		</graphicData>
 		<altitudeLayer>Building</altitudeLayer>
+		<!-- RealTime as well, so the cooling fan can spin every frame. -->
+		<drawerType>MapMeshAndRealTime</drawerType>
 		<passability>PassThroughOnly</passability>
 		<pathCost>150</pathCost>
 		<blockWind>true</blockWind>
@@ -304,7 +313,13 @@
 			<li Class="TrashbrickBurning.CompProperties_SteamTurbine">
 				<basePowerConsumption>0</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
-				<capacityWatts>1500</capacityWatts>
+				<!-- Three trash gasifiers on high. -->
+				<maxHeatWatts>6000</maxHeatWatts>
+				<gears>
+					<li><key>Low</key><minWatts>500</minWatts><efficiency>0.6</efficiency></li>
+					<li><key>Medium</key><minWatts>1500</minWatts><efficiency>0.7</efficiency></li>
+					<li><key>High</key><minWatts>3000</minWatts><efficiency>0.8</efficiency></li>
+				</gears>
 				<soundAmbientProducingPower>ChemfuelFiredGenerator_Ambience</soundAmbientProducingPower>
 			</li>
 			<li Class="PipeSystem.CompProperties_Resource">
@@ -316,6 +331,10 @@
 			<li Class="TrashbrickBurning.CompProperties_SteamLeak"/>
 			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
 				<steam><a>1.0</a><f>1.75</f><z>0.5</z></steam>
+				<sound>STB_TurbineAmbience</sound>
+				<!-- The generator's cooling fan, spinning while it makes power. -->
+				<rotor><a>1.0</a><f>2.43</f><z>0.47</z></rotor>
+				<rotorSize>0.62</rotorSize>
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Breakdownable"/>
@@ -342,7 +361,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_HotWaterRadiator</defName>
 		<label>hot water radiator</label>
-		<description>A cast radiator that heats its room with pressurised hot water from trashbrick burners, up to the temperature you set. Radiators only get heat the steam turbines on their network leave over. Connect it by running a pressurised hot water pipe under it.</description>
+		<description>A cast radiator that heats its room with pressurised hot water from trash gasifiers, up to the temperature you set. Radiators get the heat the steam turbines on their network leave over, then draw on the Overpressure Tank. Connect it by running a pressurised hot water pipe under it.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_HotWaterRadiator</texPath>
@@ -404,7 +423,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_CobbledRadiator</defName>
 		<label>cobbled radiator</label>
-		<description>A radiator knocked together from three lengths of salvaged pipe, lashed with wire and propped on timber. It heats its room with pressurised hot water from trashbrick burners, up to the temperature you set - just not much, and its joints weep steam more often than a proper radiator's. Radiators only get heat the steam turbines on their network leave over. Connect it by running a pressurised hot water pipe under it.</description>
+		<description>A radiator knocked together from three lengths of salvaged pipe, lashed with wire and propped on timber. It heats its room with pressurised hot water from trash gasifiers, up to the temperature you set - just not much, and its joints weep steam more often than a proper radiator's. Radiators get the heat the steam turbines on their network leave over, then draw on the Overpressure Tank. Connect it by running a pressurised hot water pipe under it.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_CobbledRadiator</texPath>
@@ -452,6 +471,9 @@
 			<li Class="TrashbrickBurning.CompProperties_SteamLeak">
 				<mtbDaysPerNetwork>7</mtbDaysPerNetwork>
 			</li>
+			<!-- Cobbled gear breaks down: a cobbled radiator can too. -->
+			<li Class="CompProperties_Breakdownable"/>
+			<li Class="TrashbrickBurning.CompProperties_ExtraBreakdowns"/>
 		</comps>
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
 		<designationCategory>Temperature</designationCategory>
@@ -463,14 +485,13 @@
 	</ThingDef>
 
 	<!--
-		Heat accumulator: a battery for steam. Charges from heat nothing else on the network is
-		using, discharges into turbines when the burners fall short. 1000 watt-days (24 kWh) at up
-		to 750W either way.
+		Overpressure Tank (defName kept from the heat accumulator, so saves keep it): takes what
+		the turbines and radiators don't use, feeds radiators, and keeps stalling turbines turning.
 	-->
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_HeatAccumulator</defName>
-		<label>heat accumulator</label>
-		<description>A lagged tank of superheated water. It stores heat nothing else on its pressurised hot water network is using, and gives it back to the steam turbines when the burners fall short - so the turbines keep turning while burners are refuelled or switched off. Holds 24 kWh, charging and discharging at up to 750W. Connect it by running a pressurised hot water pipe under it.</description>
+		<label>overpressure tank</label>
+		<description>An insulated tank that takes the heat the turbines and radiators don't use, so the burners don't build pressure. It feeds radiators from what it holds, and tops a stalling turbine up to its gear's minimum when the burners fall short - through a breakdown or a refuel. With Dubs Bad Hygiene it also feeds the plumbing's hot water tanks and radiators. The fuller it is, the likelier it is to explode: have a colonist bleed it now and then, or set it to auto-release above a level, which vents the heat into its room.</description>
 		<thingClass>Building</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
@@ -503,8 +524,8 @@
 			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
 			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
 			<li Class="TrashbrickBurning.CompProperties_HeatAccumulator">
-				<capacityWattDays>1000</capacityWattDays>
-				<rateWatts>750</rateWatts>
+				<capacityWattDays>1500</capacityWattDays>
+				<rateWatts>3000</rateWatts>
 			</li>
 			<!-- Springs a steam leak now and then while hot water flows; leaks until repaired. -->
 			<li Class="TrashbrickBurning.CompProperties_SteamLeak"/>

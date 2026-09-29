@@ -1,5 +1,7 @@
 # Rework design: Trash Gasification
 
+**Status:** the baseline chain is built in 0.7.0, waiting on playtesting.
+
 **Scope** (decided): get the baseline chain working well first: Cobbled / Trash Gasifier →
 pipe → turbines, Overpressure Tank and radiators. The large and industrial tiers get rethought
 after that. Until then they stay as they are.
@@ -37,7 +39,7 @@ Reconciled numbers (proposed, keeping 1500W on 75 a day as normal):
 | Stirling power | 100W | 250W | 500W |
 | Heat the Stirling uses (3x its output) | 300W | 750W | 1500W |
 | Heat left over in Stirling mode | 450W | 750W | 500W |
-| Water use with DBH | scales with heat; baseline **open** | | |
+| Water use with DBH (decided) | 20 / day | **40 / day** | 53 / day |
 
 What changed from your notes: eco's fuel cut goes from -33% to -60%, so eco really is the
 thrifty mode. The Stirling leftover becomes 450 / 750 / 500W, not 450 / 250 / 0W: that needed
@@ -112,8 +114,8 @@ So one Trash Gasifier on Normal (1500W) runs a turbine in medium gear, and high 
 takes up to **6000W** (3 x 2000W) and the cobbled turbine up to **4800W** (3 x 1600W cobbled).
 Heat over the maximum goes on to radiators and the Overpressure Tank.
 
-**Below the gear's minimum** (proposed): the turbine stalls and makes nothing, and the heat goes
-on to the tank and radiators. That makes the gear a real choice: high gear is best, but only if
+**Below the gear's minimum** (decided): the turbine stalls and makes nothing, and the heat is
+wasted - it takes it but doesn't turn. That makes the gear a real choice: high gear is best, but only if
 you can keep 3000W flowing. Its readout says when it has stalled and which gear would run.
 
 **Cobbled Steam Turbine** (decided): one step worse in every gear, with the same minimum heat:

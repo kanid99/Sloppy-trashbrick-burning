@@ -176,7 +176,7 @@ namespace TrashbrickBurning
                 return;
             }
             HeatNetwork.Flow f = HeatNetwork.Compute(net);
-            bool hot = f.heat > 0f || f.discharge > 0f || f.reserveDischarge > 0f;
+            bool hot = f.heat > 0f || f.Discharge > 0f;
             if (!hot)
             {
                 return;

@@ -7,19 +7,19 @@
 	<STB_Mode_WaterCooled>Engine: water-cooled</STB_Mode_WaterCooled>
 	<STB_Mode_HeatRecovery>Engine: heat recovery</STB_Mode_HeatRecovery>
 	<STB_ModeDescDBH>What the Stirling engine's cold side does. Click to cycle.\n\nPower: makes its own power.\nWater-cooled: draws water from the plumbing to run its cold side cooler, for {0} output while water is flowing.\nHeat recovery: sends its heat into the plumbing as a boiler, for hot water and central heating, at {1} output.</STB_ModeDescDBH>
-	<STB_TurbineLoad>Heat supplied: {0}W of {1}W capacity, converted at {2}</STB_TurbineLoad>
+	<STB_TurbineLoad>Heat taken: {0}W of {1}W</STB_TurbineLoad>
 	<STB_ValveLabel>Toggle valve</STB_ValveLabel>
 	<STB_ValveDesc>Open or close this pressurised hot water line.</STB_ValveDesc>
 	<STB_NoWater>no water</STB_NoWater>
 	<STB_SettingsCategory>SloppyMod Trash POWER!</STB_SettingsCategory>
 	<STB_SettingAdvanced>Advanced play mode (burners and steam turbines)</STB_SettingAdvanced>
-	<STB_SettingAdvancedDesc>On: stoves are burners that feed steam turbines through pressurised hot water pipes. Off: stoves are simple self-contained generators.</STB_SettingAdvancedDesc>
-	<STB_SettingAdvancedExplain>Advanced: each stove is a burner making 250, 350 or 500W of heat. Hotter burns cost more fuel per watt and heat the room more. Pipe burners to steam turbines, radiators and heat accumulators; heat nothing uses builds pressure, and a cobbled stove with nowhere to put it bursts. With nothing piped to it, a burner's own engine makes only 100, 200 or 300W. With Dubs Bad Hygiene, heat the network leaves over goes to the plumbing's hot water and heating.</STB_SettingAdvancedExplain>
-	<STB_SettingSimpleExplain>Simple: each stove is a self-contained generator - 1000W for the cobbled stove, 1200W for the gasifier - with no pipes or turbines. With Dubs Bad Hygiene, stoves can also be water-cooled or used as boilers.</STB_SettingSimpleExplain>
-	<STB_SettingRestart>Burn rates and power switch over straight away. Restart the game to add or remove the turbine and pipes in the build menu.</STB_SettingRestart>
-	<STB_BurnRate>Burn rate: {0}W</STB_BurnRate>
-	<STB_BurnRateDesc>How hard this burner runs. Click to cycle. Hotter burns cost more fuel per watt and heat the room more.\n{0}</STB_BurnRateDesc>
-	<STB_BurnRateLine>{0}W: {1} fuel a day ({2} per kW), room heat {3}, built-in engine {4}W</STB_BurnRateLine>
+	<STB_SettingAdvancedDesc>On: gasifiers are burners that feed steam turbines through pressurised hot water pipes. Off: gasifiers are simple self-contained generators.</STB_SettingAdvancedDesc>
+	<STB_SettingAdvancedExplain>Advanced: each gasifier is a burner with three modes - eco (most heat from each brick), normal and high (most heat). Pipe burners to steam turbines, radiators and Overpressure Tanks; heat nothing uses builds pressure, and a cobbled gasifier with nowhere to put it bursts. With no turbine on its network, a burner's own Stirling engine makes a little power from three times that in heat. With Dubs Bad Hygiene, heat the network leaves over goes to the plumbing's hot water and heating.</STB_SettingAdvancedExplain>
+	<STB_SettingSimpleExplain>Simple: each gasifier is a self-contained generator - 1000W for the cobbled one, 1200W for the trash gasifier - with no pipes or turbines. With Dubs Bad Hygiene, they can also be water-cooled or used as boilers.</STB_SettingSimpleExplain>
+	<STB_SettingRestart>Modes and power switch over straight away. Restart the game to add or remove the turbines and pipes in the build menu.</STB_SettingRestart>
+	<STB_BurnRate>Mode: {0} ({1}W)</STB_BurnRate>
+	<STB_BurnRateDesc>How hard this burner runs. Click to cycle. Eco gets the most heat from each brick but makes the least; high makes the most heat, wastes the most fuel and heats the room most. The Stirling engine runs only with no steam turbine on the network, and takes three times its output in heat.\n{0}</STB_BurnRateDesc>
+	<STB_BurnRateLine>{0}: {1}W on {2} fuel a day ({3}W per brick a day); Stirling {4}W, leaving {5}W of heat</STB_BurnRateLine>
 	<STB_BurnerStatus>Burning at {0}W of heat, {1} fuel a day</STB_BurnerStatus>
 	<STB_SimpleStatus>Burning {0} fuel a day</STB_SimpleStatus>
 	<STB_SettingHazards>Hazards: steam bursts and leaks</STB_SettingHazards>
@@ -34,7 +34,6 @@
 	<STB_DumpAsh>Rake out ash</STB_DumpAsh>
 	<STB_DumpAshDesc>Put the ash in this burner's pan out now, behind it. Ash comes out on its own as it builds up.</STB_DumpAshDesc>
 	<STB_ToNetwork>To the hot water network: {0}W</STB_ToNetwork>
-	<STB_NoNetworkBuiltIn>Nothing piped to it: built-in engine up to {0}W</STB_NoNetworkBuiltIn>
 	<STB_Pressure>Pressure: {0}</STB_Pressure>
 	<STB_Venting>(safety valve venting)</STB_Venting>
 	<STB_NearVent>(near the safety valve)</STB_NearVent>
@@ -44,11 +43,11 @@
 	<STB_RadiatorStatus>Heat taken: {0}W of {1}W</STB_RadiatorStatus>
 	<STB_AccumulatorStatus>Stored: {0} of {1} kWh ({2}W)</STB_AccumulatorStatus>
 	<STB_BurstLabel>Steam burst</STB_BurstLabel>
-	<STB_BurstText>The {0} built up more pressure than its jerry-rigged plumbing could hold and burst, filling everything within five tiles with scalding steam. Anyone caught in it is burned, and the room is dangerously hot until it cools.\n\nIt needs repairing before it will burn again. A burner builds pressure when the heat it makes has nowhere to go: turbines full or switched off, radiators satisfied, accumulators charged. Turn its burn rate down, add a turbine or an accumulator - or build a gasifier, which has a safety valve.</STB_BurstText>
+	<STB_BurstText>The {0} built up more pressure than its jerry-rigged plumbing could hold and burst, filling everything within five tiles with scalding steam. Anyone caught in it is burned, and the room is dangerously hot until it cools.\n\nIt needs repairing before it will burn again. A burner builds pressure when the heat it makes has nowhere to go: turbines full or switched off, radiators satisfied, Overpressure Tanks full. Turn it down to eco, add a turbine or an Overpressure Tank - or build a trash gasifier, which has a safety valve.</STB_BurstText>
 	<STB_LeakMessage>A {0} has sprung a steam leak. It will scald anyone nearby until it's repaired.</STB_LeakMessage>
 	<STB_Leaking>Leaking scalding steam - repair it</STB_Leaking>
 	<STB_AlertOverpressure>Burner overpressure</STB_AlertOverpressure>
-	<STB_AlertOverpressureDesc>These burners have no safety valve and are building pressure because their heat has nowhere to go. At full pressure they burst into a 1000°C steam cloud.\n\nTurn their burn rate down, switch them off, or give the heat somewhere to go: another turbine, a radiator, a heat accumulator.</STB_AlertOverpressureDesc>
+	<STB_AlertOverpressureDesc>These burners have no safety valve and are building pressure because their heat has nowhere to go. At full pressure they burst into a 1000°C steam cloud.\n\nTurn them down, switch them off, or give the heat somewhere to go: another turbine, a radiator, an Overpressure Tank.</STB_AlertOverpressureDesc>
 	<STB_AlertTurbineIdle>Steam turbine getting no heat</STB_AlertTurbineIdle>
 	<STB_AlertTurbineIdleDesc>These turbines are switched on but no burner on their network is sending them heat. Check the pipes and valves, and that the burners are lit and fuelled.</STB_AlertTurbineIdleDesc>
 	<STB_AlertOutOfFuel>Burner out of fuel</STB_AlertOutOfFuel>
@@ -62,22 +61,15 @@
 	<STB_HotWaterShareDesc>The share of this burner's heat offered to Dubs Bad Hygiene's hot water tanks and radiators FIRST, before the steam turbines. Left-click to step it up, right-click to pick.\n\nWhatever the plumbing doesn't actually draw of it goes on to the turbines, so a high share only costs power when the tanks and radiators really want the heat. At 0% the plumbing only gets what the network leaves over.</STB_HotWaterShareDesc>
 	<STB_HotWaterShareStatus>Hot water share: {0} ({1}W offered first), drawn: {2}W</STB_HotWaterShareStatus>
 	<STB_SettingVersion>Build {0}</STB_SettingVersion>
-	<STB_AccModeBuffer>Mode: buffer</STB_AccModeBuffer>
-	<STB_AccModeReserve>Mode: reserve</STB_AccModeReserve>
-	<STB_AccModeDesc>Buffer: stores heat nothing else on the network is using, and tops the turbines up whenever the burners fall short. On a network whose turbines can take every watt the burners make, it has nothing to store.\n\nReserve: charges first, before the turbines, and gives the heat back only once the burners stop - out of fuel, switched off or broken down - to keep the turbines turning.</STB_AccModeDesc>
 	<STB_AccIdleNoPipe>Not connected to a pressurised hot water pipe.</STB_AccIdleNoPipe>
 	<STB_AccIdleNoHeat>No burners are sending heat.</STB_AccIdleNoHeat>
 	<STB_AccIdleFull>Full.</STB_AccIdleFull>
-	<STB_AccIdleTurbinesTakeAll>Idle: the turbines are using all the heat. Switch to reserve mode to charge first.</STB_AccIdleTurbinesTakeAll>
-	<STB_AccIdleNoTurbine>Holding its charge: no running turbine to give it to.</STB_AccIdleNoTurbine>
+	<STB_AccIdleTurbinesTakeAll>Idle: the turbines and radiators are using all the heat.</STB_AccIdleTurbinesTakeAll>
 	<STB_SyncBurners>Sync burners</STB_SyncBurners>
-	<STB_SyncBurnersDesc>Copy this burner's burn rate and hot water share to other burners.\n\nLeft-click: every burner on this burner's hot water network (or the whole map, if it isn't piped to anything). Right-click to choose.</STB_SyncBurnersDesc>
+	<STB_SyncBurnersDesc>Copy this burner's mode (eco, normal or high) and hot water share to other burners.\n\nLeft-click: every burner on this burner's hot water network (or the whole map, if it isn't piped to anything). Right-click to choose.</STB_SyncBurnersDesc>
 	<STB_SyncNetwork>Burners on this hot water network</STB_SyncNetwork>
 	<STB_SyncMap>All burners on the map</STB_SyncMap>
 	<STB_SyncedBurners>Synced {0} other burners.</STB_SyncedBurners>
-	<STB_AccModeReserveLevel>Mode: reserve, holding {0}</STB_AccModeReserveLevel>
-	<STB_AccReserveLevel>Reserve: {0}</STB_AccReserveLevel>
-	<STB_AccReserveLevelDesc>How much of the tank to hold back for when the burners stop. It charges up to this level first, before the turbines; anything above it behaves like buffer mode - filled from spare heat and used whenever the burners fall short.\n\nLeft-click steps 25/50/75/100%. Right-click to pick.</STB_AccReserveLevelDesc>
 	<STB_AccRisk>Explosion risk: {0} a day (blast out to {1} tiles)</STB_AccRisk>
 	<STB_AccRiskNone>Explosion risk: none below {0} full</STB_AccRiskNone>
 	<STB_AccWear>Last bled {0} days ago: risk x{1}</STB_AccWear>
@@ -87,13 +79,39 @@
 	<STB_AccBleedCancel>Cancel bleed</STB_AccBleedCancel>
 	<STB_AccBleedTo>Bleed down to {0}</STB_AccBleedTo>
 	<STB_AccBleedNothing>Already at or below {0}.</STB_AccBleedNothing>
-	<STB_AccBleedDesc>Have a colonist (basic work) open the blow-off valve. The stored heat drops to the chosen level and goes into the room the tank is in, and the valve wear resets.\n\nA tank's explosion risk rises with how full it is, with the days since it was last bled, and four times over while a cobbled stove - which has no safety valve - is piped to its network.\n\nLeft-click: request or cancel. Right-click: choose how far down.</STB_AccBleedDesc>
-	<STB_AccExplodedLabel>Heat accumulator exploded</STB_AccExplodedLabel>
-	<STB_AccExplodedText>A heat accumulator at {0} let go, throwing a blast and a cloud of scalding steam out to {1} tiles.\n\nFull tanks, cobbled stoves and worn valves make this likelier. Bleed accumulators now and then to keep the risk down.</STB_AccExplodedText>
-	<STB_AlertAccRisk>Heat accumulator at risk</STB_AlertAccRisk>
-	<STB_AlertAccRiskDesc>A heat accumulator is full enough, worn enough or near a cobbled stove to have a real chance of exploding.\n\nSelect it and use Bleed to have a colonist let pressure off.</STB_AlertAccRiskDesc>
-	<STB_BurnRateLineNoEngine>{0}W: {1} fuel a day ({2} per kW), room heat {3}</STB_BurnRateLineNoEngine>
-	<STB_NoNetworkNoEngine>Nothing piped to it: no engine on board, pipe it to a steam turbine. Pressure is building.</STB_NoNetworkNoEngine>
+	<STB_AccBleedDesc>Have a colonist (basic work) open the blow-off valve. The stored heat drops to the chosen level and goes into the room the tank is in, and the valve wear resets.\n\nA tank's explosion risk rises with how full it is, with the days since it was last bled, and four times over while a cobbled gasifier - which has no safety valve - is piped to its network.\n\nLeft-click: request or cancel. Right-click: choose how far down.</STB_AccBleedDesc>
+	<STB_AccExplodedLabel>Overpressure Tank exploded</STB_AccExplodedLabel>
+	<STB_AccExplodedText>An Overpressure Tank at {0} let go, throwing a blast and a cloud of scalding steam out to {1} tiles.\n\nFull tanks, cobbled gasifiers and worn valves make this likelier. Bleed tanks now and then, or set them to auto-release.</STB_AccExplodedText>
+	<STB_AlertAccRisk>Overpressure Tank at risk</STB_AlertAccRisk>
+	<STB_AlertAccRiskDesc>An Overpressure Tank is full enough, worn enough or near a cobbled gasifier to have a real chance of exploding.\n\nSelect it and use Bleed to have a colonist let pressure off, or turn on auto-release.</STB_AlertAccRiskDesc>
+	<STB_BurnRateLineNoEngine>{0}: {1}W on {2} fuel a day ({3}W per brick a day)</STB_BurnRateLineNoEngine>
+	<STB_NoNetworkNoEngine>Nothing piped to it: no engine on board, pipe it to a steam turbine.</STB_NoNetworkNoEngine>
 	<STB_RadiatorValveLabel>Radiator valve</STB_RadiatorValveLabel>
 	<STB_RadiatorValveDesc>Open or close the valve feeding this radiator. Closed, it takes no heat from the hot water network - for rooms you don't want heated. No electricity is involved.</STB_RadiatorValveDesc>
+	<STB_BurnMode_Eco>eco</STB_BurnMode_Eco>
+	<STB_BurnMode_Normal>normal</STB_BurnMode_Normal>
+	<STB_BurnMode_High>high</STB_BurnMode_High>
+	<STB_StirlingStatus>Stirling engine: {0}W of power from {1}W of heat (no turbine on its network)</STB_StirlingStatus>
+	<STB_StirlingOffTurbine>Stirling engine off: a steam turbine is on its network</STB_StirlingOffTurbine>
+	<STB_UnusedHeat>Heat with nowhere to go: {0}W - pipe it to an Overpressure Tank or radiators</STB_UnusedHeat>
+	<STB_TurbineGearStatus>Gear: {0} (turns over on {1}W, {2} efficient)</STB_TurbineGearStatus>
+	<STB_TurbineStalled>STALLED: {0}W is under the {1}W this gear needs, and the heat is wasted.</STB_TurbineStalled>
+	<STB_TurbineTryGear>{0} gear would turn.</STB_TurbineTryGear>
+	<STB_TurbineFromTank>Kept turning by the Overpressure Tank.</STB_TurbineFromTank>
+	<STB_TurbineGear>Gear: {0}</STB_TurbineGear>
+	<STB_TurbineGearDesc>Higher gears turn more of the heat into power, but need more heat to turn at all. Below its gear's minimum the turbine stalls: it still takes the heat, and wastes it. An Overpressure Tank on the network tops a stalling turbine up while it has heat to give. Left-click to step, right-click to pick.\n{0}</STB_TurbineGearDesc>
+	<STB_GearLine>{0}: turns over on {1}W, {2} efficient</STB_GearLine>
+	<STB_Gear_Low>low</STB_Gear_Low>
+	<STB_Gear_Medium>medium</STB_Gear_Medium>
+	<STB_Gear_High>high</STB_Gear_High>
+	<STB_AlertTurbineStalled>Steam turbine stalled</STB_AlertTurbineStalled>
+	<STB_AlertTurbineStalledDesc>These turbines are taking heat but getting less than their gear needs to turn, so the heat is wasted and they make no power. Shift them to a lower gear, or send them more heat.</STB_AlertTurbineStalledDesc>
+	<STB_AutoRelease>Auto-release</STB_AutoRelease>
+	<STB_AutoReleaseDesc>Vent steam on its own above a level you set, so it stays safe without a colonist bleeding it. The vented heat goes into the room it's in - a lot of it. Build it outdoors, or somewhere that can take the heat.</STB_AutoReleaseDesc>
+	<STB_AutoReleaseStatus>Auto-release above {0}</STB_AutoReleaseStatus>
+	<STB_AutoReleaseVenting>(venting {0}W)</STB_AutoReleaseVenting>
+	<STB_ReleaseLevel>Release above: {0}</STB_ReleaseLevel>
+	<STB_ReleaseLevelDesc>The fill level above which it vents on its own. Lower is safer and heats the room more. Left-click steps 25/50/75/100%; right-click to pick.</STB_ReleaseLevelDesc>
+	<STB_TankNoPlumbing>Not on DBH plumbing.</STB_TankNoPlumbing>
+	<STB_TankToPlumbing>To DBH hot water and heating: {0}W (tanks and radiators short {1} U)</STB_TankToPlumbing>
 </LanguageData>

@@ -9,76 +9,78 @@ A RimWorld mod (1.5 / 1.6) for burning trash bricks, and maybe more, for power.
 
 ## What it adds
 ### Play modes (Mod settings)
-**Advanced** (default): stoves are **burners** that feed **steam turbines** through pressurised hot water pipes.
-**Simple**: stoves are self-contained generators, and the turbines and pipes aren't in the build menu.
-Burn rates and power switch over straight away; the build menu updates after a restart.
+**Advanced** (default): gasifiers are **burners** that feed **steam turbines** through pressurised hot water pipes.
+**Simple**: gasifiers are self-contained generators, and the turbines and pipes aren't in the build menu.
+Modes and power switch over straight away; the build menu updates after a restart.
 
-### The two stoves (Power tab)
-Both are 2x2 Stirling-engine stoves that burn trashbricks. The high-tech gasifier's advantage is fuel efficiency: it uses about half the fuel for the same heat, and it doesn't pollute.
+### Trash gasifiers (Power tab)
+The whole system is **trash gasification**. The **cobbled trash gasifier** is the early, jerry-rigged one. The **trash gasifier** is the baseline unit: cleaner, more efficient and safer.
 
-| | Cobbled pellet stove | Trashbrick gasifier |
+| | Cobbled trash gasifier | Trash gasifier |
 |---|---|---|
+| Size | 2x2 | 2x2 |
 | Research | Electricity + VRE complex recycling | Microelectronics + VRE complex recycling |
 | Cost | 120 steel, 2 components | 150 steel, 25 plasteel, 4 components |
-| Pollution | ~3 cells/day at simple rate, scales with fuel burnt, **only while burning** | none, catalytic filters |
+| Pressure safety | **no safety valve**: at full pressure it bursts | safety valve vents |
+| Pollution | while burning | none |
+| Breakdowns | twice as often | normal |
 
-**Simple mode:** the cobbled stove makes **1000W** on 20 bricks a day and heats the room; the gasifier makes **1200W** on 12 a day and is insulated.
+**Advanced mode:** each burner has a **mode** button: eco, normal or high. Eco gets the most heat from each brick but makes the least; high makes the most, wastes the most fuel and heats the room most.
 
-**Advanced mode:** each stove is a burner with a **burn rate** gizmo. Hotter burns cost more fuel per watt and dump more waste heat into the room:
-
-| Burn rate | Cobbled: fuel/day | Gasifier: fuel/day | Room heat (cobbled / gasifier) | Built-in engine, no turbine |
+| Mode | Cobbled: heat on fuel/day | Trash gasifier: heat on fuel/day | Stirling power (cobbled / gasifier) | Water with DBH (cobbled / gasifier) |
 |---|---|---|---|---|
-| 250W | 8 (32 per kW) | 4 (16 per kW) | 4 / 1.5 | 100W |
-| 350W | 12 (34 per kW) | 6 (17 per kW) | 6 / 2.5 | 200W |
-| 500W | 20 (40 per kW) | 9 (18 per kW) | 10 / 4 | 300W |
+| Eco | 600W on 40 (15W per brick) | 750W on 30 (**25W per brick**) | 75W / 100W | 16 / 20 a day |
+| Normal | 1200W on 100 (12W) | **1500W on 75** (20W) | 150W / 250W | 32 / 40 a day |
+| High | 1600W on 150 (10.7W) | 2000W on 112.5 (17.8W) | 300W / 500W | 43 / 53 a day |
 
-A burner's heat goes to **turbines first**. Once a burner is connected to a turbine, its own small engine shuts off.
+- **Stirling engine:** with **no steam turbine on its network**, a burner's own Stirling engine makes a little power, using **three times its output in heat**. The rest of the heat still goes out on the pipe, so even in Stirling mode a burner needs an Overpressure Tank or radiators, or its pressure builds. As soon as a turbine is on the network, the Stirling engines stand down.
+- **Sync burners** copies a burner's mode and hot water share to the other burners on its network, or on the map.
+
+**Simple mode:** the cobbled gasifier makes **1000W** on 20 bricks a day; the trash gasifier makes **1200W** on 12.
 
 ### Large and industrial burners (advanced mode, Power tab)
-Bigger burners with **no engine of their own**: all heat and no power, so they need steam turbines and aren't in simple mode. Unpiped, they build pressure. Each burns a little less fuel per watt than the tier below.
+Bigger burners with **no engine of their own**, so they need steam turbines. These will be rethought once the baseline chain has been playtested; for now they keep their numbers.
 
-| | Large cobbled stove | Large gasifier | Industrial gasifier |
+| | Large cobbled trash gasifier | Large trash gasifier | Industrial trash gasifier |
 |---|---|---|---|
 | Size | 3x4 | 3x4 | 3x6 |
-| Burn rates | 750 / 1000 / 1500W | 750 / 1000 / 1500W | 1500 / 2250 / 3000W |
+| Eco / normal / high | 750 / 1000 / 1500W | 750 / 1000 / 1500W | 1500 / 2250 / 3000W |
 | Fuel a day | 22 / 31 / 54 | 11 / 15 / 24 | 20 / 33 / 46 |
-| Room heat | 12 / 17 / 30 | 4.5 / 7 / 12 | 8 / 12 / 20 |
-| At full burn | one turbine flat out | one turbine flat out | two turbines flat out |
-| Cost | 300 steel, 5 components | 380 steel, 60 plasteel, 9 components | 700 steel, 120 plasteel, 16 components |
 | Safety valve | no, it bursts | yes | yes |
 
-Their intake is the whole 3-cell front edge. Pressure builds at the same pace relative to their size as it does on the small burners.
-
 ### Steam turbines (advanced mode)
-Two tiers, both 2x3. Each turns the heat piped to it into power, from as many burners as it takes. With more than one turbine on a network, the heat is shared by capacity.
+Two tiers, both 2x3, with **three gears**. A higher gear turns more of the heat into power but needs more heat to turn at all. **Below its gear's minimum a turbine stalls**: it still takes its share of the heat, wastes it, and makes nothing.
+
+| Gear | Minimum heat | Steam turbine | Cobbled steam turbine |
+|---|---|---|---|
+| Low | 500W | 60% | 50% |
+| Medium | 1500W | 70% | 60% |
+| High | 3000W | 80% | 70% |
 
 | | Cobbled steam turbine | Steam turbine |
 |---|---|---|
 | Research | Electricity + VRE complex recycling | Microelectronics + VRE complex recycling |
-| Cost | 200 steel, 3 components | 250 steel, 20 plasteel, 6 components |
-| Heat taken | up to 1000W | up to 1500W |
-| Conversion | 75%, **750W max** | 100%, **1500W max** |
-| Burners to fill it | 2 at 500W, or 4 at 250W | 3 at 500W, or 6 at 250W |
+| Most heat it takes | 4800W (3 cobbled on high) | 6000W (3 gasifiers on high) |
+| Breakdowns | twice as often | normal |
+
+One trash gasifier on normal (1500W) runs a turbine in medium gear. High gear takes two. Several turbines on one network fill one at a time. The turbine's readout says when it has stalled and which gear would turn; a **Steam turbine stalled** alert warns you too. Turbines spin a cooling fan and hum while they make power.
 
 - **Pipes:** our own network on Vanilla Expanded Framework's PipeSystem, the same system VE's chemfuel pipes use. That gives the usual overlay, plus a visible pipe, a **hidden pipe** and a **valve**, all at the Electricity tier. The visible and hidden pipe share **one architect button** (a dropdown). They sit in the Power tab, or in VE's **pipe networks** tab when a mod adds it (Vanilla Chemfuel Expanded). A building joins the network where a pipe runs under it.
-- **Status:** each burner shows its heat, fuel use and where its heat is going; each turbine shows the heat it's getting, its capacity and its conversion rate.
-
-For scale: a full steam turbine takes 48–60 bricks a day from cobbled stoves, or 24–27 from gasifiers. One garbage compactor makes 25.
 
 ### The heat network (advanced mode)
 A burner's heat goes, in order:
-1. **Steam turbines**, up to their capacity. An accumulator tops them up if the burners fall short.
-2. **Radiators**: 1x1, heating their room to the target temperature you set through vanilla's own temperature system. The **cobbled radiator** (Electricity: 20 steel, 10 wood) takes up to 150W and leaks about three times as often; the **cast-iron radiator** (Microelectronics: 45 steel) takes up to 250W.
-3. **Heat accumulators**: 2x2, store 24 kWh, charging and discharging at up to 750W. Two modes: **buffer** (default) stores heat nothing else is using and tops the turbines up when the burners fall short, so on a network whose turbines take every watt it has nothing to store; **reserve** charges *first*, before the turbines, and gives the heat back only once the burners stop, to keep the turbines turning through a refuel or a breakdown. Its readout says why it's idle. In reserve mode you choose how much to hold back (25/50/75/100%); anything above that level acts as a buffer.
-4. **Dubs Bad Hygiene hot water and heating**, if installed. With Dubs, each burner's hot water share is offered to the plumbing *before* step 1 (see below).
-5. Whatever's left **builds pressure**.
-
-With nothing piped to it, a burner runs its own small engine instead (100/200/300W), and never builds pressure.
+1. With Dubs Bad Hygiene, its **hot water share** to the plumbing (see below).
+2. Its own **Stirling engine**, only if no turbine is on the network.
+3. **Steam turbines**, one at a time, each up to its maximum.
+4. **Radiators**: 1x1, heating their room to the target temperature you set through vanilla's own temperature system. The **cobbled radiator** (Electricity: 20 steel, 10 wood) takes up to 150W, leaks about three times as often and breaks down; the **cast-iron radiator** (Microelectronics: 45 steel) takes up to 250W. Each has a valve to shut it off.
+5. **Overpressure Tanks**: 2x2, hold 36 kWh, charging and discharging at up to 3000W. A tank takes whatever the turbines and radiators don't. It gives it back to **radiators** the burners can't satisfy, and **tops a stalling turbine up** to its gear's minimum when the burners fall short, through a breakdown or a refuel. With Dubs it also feeds the plumbing's hot water tanks and radiators.
+6. **Dubs Bad Hygiene hot water and heating**, from what's left.
+7. Whatever's left **builds pressure**.
 
 ### Hazards (can be switched off)
-- **Overpressure:** heat with nowhere to go builds pressure over about half a day at 500W. The **gasifier's safety valve** vents it harmlessly in puffs of steam. The **cobbled stove has no working safety valve**: at full pressure it **bursts**. A **1000°C steam cloud** fills everything within 5 tiles in line of sight: rooms are heated by the share of them the cloud fills, and anyone caught in it is scalded, worst at the centre. The stove then breaks down and needs repairing. A critical alert warns you from 70% pressure.
-- **Accumulator explosions:** a heat accumulator more than 20% full can let go, with a blast and a 1000°C steam cloud out to 3-7 tiles depending on how full it is. The risk rises with the square of the fill, with the days since it was last bled (up to x3), and four times over while a cobbled stove (no safety valve) is piped to its network. When full and freshly bled on a gasifier-only network it averages one explosion in 60 days. Its readout shows the risk a day, and a **Heat accumulator at risk** alert fires above 2% a day. **Bleed** (right-click to choose 0/25/50/75%) has a colonist (basic work) open the blow-off valve: the heat goes into the room and the wear resets.
-- **Steam leaks:** pipes, turbines, radiators and accumulators spring a leak now and then while hot water flows. On average once every 20 days per network, whatever its size, and adjustable in settings. A leaking part is damaged and sprays scalding steam on the cells around it until a colonist repairs it. Parts badly damaged some other way (raids, fire) leak too.
+- **Overpressure:** heat with nowhere to go builds pressure over about half a day at 500W. The **trash gasifier's safety valve** vents it harmlessly in puffs of steam. The **cobbled gasifier has no working safety valve**: at full pressure it **bursts**. A **1000°C steam cloud** fills everything within 5 tiles in line of sight: rooms are heated by the share of them the cloud fills, and anyone caught in it is scalded, worst at the centre. The gasifier then breaks down and needs repairing. A critical alert warns you from 70% pressure.
+- **Overpressure Tank explosions:** a tank more than 20% full can let go, with a blast and a 1000°C steam cloud out to 3-7 tiles depending on how full it is. The risk rises with the square of the fill, with the days since it was last bled (up to x3), and four times over while a cobbled gasifier (no safety valve) is piped to its network. When full and freshly bled on a gasifier-only network it averages one explosion in 60 days. Its readout shows the risk a day, and an **Overpressure Tank at risk** alert fires above 2% a day. **Bleed** (right-click to choose 0/25/50/75%) has a colonist (basic work) open the blow-off valve: the heat goes into the room and the wear resets. Or turn on **Auto-release** and pick a level (25/50/75/100%): above it the tank vents on its own, up to 3000W, straight into its room - safe, but it gets hot fast indoors.
+- **Steam leaks:** pipes, turbines, radiators and Overpressure Tanks spring a leak now and then while hot water flows. On average once every 20 days per network, whatever its size, and adjustable in settings. A leaking part is damaged and sprays scalding steam on the cells around it until a colonist repairs it. Parts badly damaged some other way (raids, fire) leak too.
 
 ### Ash
 Burners fill an ash pan as they burn (cobbled 0.25 ash per brick, gasifier 0.1). Like the SloppyMods Riimba station's waste, whole ash items come out **automatically** behind the burner, the side opposite its intake. It never blocks: if the spot's taken, the ash goes on the nearest free cell, and a hopper or storage there catches it for haulers or a conveyor. A **Rake out ash** button empties the pan early.
@@ -88,47 +90,34 @@ Burners fill an ash pan as they burn (cobbled 0.25 ash per brick, gasifier 0.1).
 Burners also take **wood** (a log is worth 0.4 of a trashbrick) and **chemfuel** (a unit is worth 2.5). A Harmony patch makes refuelling count each fuel at its own value. Switch it off in settings.
 
 ### Polish
-- **Effects:** smoke from the cobbled flue, a flickering firebox glow, steam wisps from turbines and the gasifier's stack, and the gasifier's safety valve visibly venting.
-- **Sound:** the jerry-rigged machines play a rattling running loop (`Sounds/STB/CobbledRattle.wav`, synthesised by `Source/Audio/make_rattle.py`).
-- **Alerts:** burner overpressure (critical), steam turbine getting no heat, burner out of fuel.
-- **Status:** turbines show how many burners feed them; accumulators show a charge bar and kWh stored.
-- **Sync burners:** a burner's **Sync burners** button copies its burn rate and hot water share to every other burner on its hot water network (or on the map if it isn't piped to one). Right-click to choose which.
+- **Effects:** smoke from the cobbled flue and the gasifier's stack, a flickering firebox glow, steam wisps from turbines, the gasifier's safety valve visibly venting, and a spinning cooling fan on each turbine while it makes power.
+- **Sound:** synthesised running loops: the cobbled machines rattle (`Source/Audio/make_rattle.py`), the trash gasifier chuffs like a steam engine and the steam turbine whines (`Source/Audio/make_steam.py`).
+- **Alerts:** burner overpressure (critical), steam turbine getting no heat, steam turbine stalled, burner out of fuel, Overpressure Tank at risk.
+- **Status:** burners show their mode, Stirling output and any heat with nowhere to go; turbines their gear, heat and whether they've stalled; tanks a charge bar, kWh stored, explosion risk and auto-release.
 
 ### Build shortcuts
-Selecting any building from this mod shows build buttons for **every other one**: hopper, stoves, pipes, valve, turbines, accumulator and radiators, in that order, from fuel to power. You can lay out a whole chain without going back to the architect menu. They're the architect's own buttons, so each appears only once researched, and the heat network's stay hidden in simple mode.
+Selecting any building from this mod shows build buttons for **every other one**: hopper, gasifiers, pipes, valve, turbines, Overpressure Tank and radiators, in that order, from fuel to power. You can lay out a whole chain without going back to the architect menu. They're the architect's own buttons, so each appears only once researched, and the heat network's stay hidden in simple mode.
 
 ### Settings
 Play mode, hazards on/off, other fuels on/off, and sliders for fuel use, power output, ash and leak frequency.
 
 ### One intake, no output
-Each machine has a single intake, marked with a green in-arrow on the edge it faces. The stove only takes fuel from a hopper on the cells in front of that intake. Those cells are outlined in green while you place or select it.
+Each machine has a single intake, marked with a green in-arrow on the edge it faces. The gasifier only takes fuel from a hopper on the cells in front of that intake. Those cells are outlined in green while you place or select it.
 
 - **Hoppers:** any building with `isHopper` works on the intake: the vanilla hopper, the VFE Factory hopper, or this mod's fuel hopper. Each machine has a **Draw from hoppers** toggle.
-- **Fuel hopper:** 1x1, 25 steel, holds 3 stacks. Its filter is locked to stove fuels at Important priority, so haulers keep it full. Point its spout at the machine.
-- **With VFE Factory:** VFE's factory hopper is used and ours leaves the build menu; hoppers already built keep working. A belt pushes into the hopper and the stove pulls from it, so **belt -> hopper -> stove** buffers the fuel. Set the factory hopper's filter to allow trashbricks, since it starts empty. A belt pointed straight at a stove also refuels it, from any side; that's VFE's own behavior.
-
-### Steam turbine (pressurised hot water)
-Each stove's **engine mode** gizmo has a **turbine feed** setting. In it the stove stops making its own power and sends its heat down a **pressurised hot water pipe** to a **trashbrick steam turbine**, which converts it more efficiently.
-
-| | Own Stirling engine | Feeding a turbine |
-|---|---|---|
-| Cobbled pellet stove | 1000W | 1400W |
-| Trashbrick gasifier | 1200W | 1700W |
-
-- **Turbine:** 2x3, up to **5000W**, and several stoves can feed one. With more than one turbine on a network, the heat is shared by capacity. Needs Microelectronics and VRE complex recycling; costs 250 steel, 20 plasteel and 6 components.
-- **Pipes:** our own pipe network built on Vanilla Expanded Framework's PipeSystem, the same system VE's chemfuel pipes use. That gives the usual overlay, plus a visible pipe, a **hidden pipe** (buried, VE style) and a **valve** to split or cut lines. A building joins the network where a pipe runs under it.
-- **Status:** a stove in turbine feed with no turbine on its network says so, and the turbine shows how much heat it is getting against its capacity.
-
-No Dubs mod is needed for any of this.
+- **Fuel hopper:** 1x1, 25 steel, holds 3 stacks. Its filter is locked to gasifier fuels at Important priority, so haulers keep it full. Point its spout at the machine.
+- **With VFE Factory:** VFE's factory hopper is used and ours leaves the build menu; hoppers already built keep working. A belt pushes into the hopper and the gasifier pulls from it, so **belt -> hopper -> gasifier** buffers the fuel. Set the factory hopper's filter to allow trashbricks, since it starts empty. A belt pointed straight at a gasifier also refuels it, from any side; that's VFE's own behavior.
 
 ### With Dubs Bad Hygiene
 **Sludge pellets:** a biofuel refinery recipe turns 75 fecal sludge into 100 sludge pellets, and every burner burns them. That's less energy than DBH's sludge-to-chemfuel recipe (35 chemfuel, about 7.8 generator-days), but pellets don't explode when damaged, catch fire less easily, and don't rot.
 
-**Plumbing:** both stoves connect to DBH plumbing.
-- **Advanced mode:** a stove on the plumbing is also a DBH boiler. Each burner has a **Hot water** share (0–100% in 10% steps; left-click steps, right-click picks). That share of its heat is offered to the plumbing's hot-water tanks and radiators **first**, one boiler unit per watt. Whatever the plumbing doesn't actually draw goes on to the turbines, so a high share only costs power when the tanks and radiators really want the heat. Anything the network leaves over is offered to the plumbing too. With no turbine, what the plumbing draws comes off the built-in engine's power, down to nothing.
-- **Simple mode:** an engine mode gizmo adds **water-cooled** (120% power while water flows, drawing 50 or 40 water a day) and **heat recovery** (a 1600-unit boiler for hot water and heating, at 50% power for the cobbled stove or 60% for the gasifier).
+**Plumbing:** every burner connects to DBH plumbing.
+- **Advanced mode:** a burner on the plumbing is also a DBH boiler. Each burner has a **Hot water** share (0–100% in 10% steps; left-click steps, right-click picks). That share of its heat is offered to the plumbing's hot-water tanks and radiators **first**, one boiler unit per watt. Whatever the plumbing doesn't actually draw goes on to the turbines, so a high share only costs power when the tanks and radiators really want the heat. Anything the network leaves over is offered to the plumbing too. What the plumbing draws of the share comes before the Stirling engine, so it can cut the Stirling's power.
+- **Simple mode:** an engine mode gizmo adds **water-cooled** (120% power while water flows, drawing 50 or 40 water a day) and **heat recovery** (a 1600-unit boiler for hot water and heating, at 50% power for the cobbled gasifier or 60% for the trash gasifier).
 
-**Accumulator as hot water tank:** on DBH plumbing, the heat accumulator is also a hot water tank, worth three of DBH's own. The tank's temperature *is* the accumulator's charge: showers and baths draw on the stored heat, and DBH boilers on the plumbing, including the burners' hot water share, charge it watt for watt.
+**Overpressure Tank as a boiler:** on DBH plumbing, the Overpressure Tank is also a DBH boiler. It feeds the plumbing's hot water tanks and radiators from the heat it holds, offering only what they're short of, so a satisfied plumbing network doesn't drain it. 1 DBH heating unit = 1W, as DBH's own electric boiler.
+
+**Water:** a burning burner on DBH plumbing draws water by its mode (see the table above).
 
 The large and industrial burners join DBH plumbing too, with boilers of 4800 and 9600 units.
 

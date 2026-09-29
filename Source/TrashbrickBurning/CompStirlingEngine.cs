@@ -19,17 +19,25 @@ namespace TrashbrickBurning
     }
 
     /// <summary>
-    /// Advanced play mode: one burn rate. Hotter burns cost more fuel per watt and waste more heat
-    /// into the room, but give the built-in engine more to work with when nothing is piped to it.
+    /// Advanced play mode: one operating mode - eco, normal or high. Eco gets the most heat from each
+    /// brick but makes the least; high makes the most and wastes the most.
     /// </summary>
     public class HeatLevel
     {
+        /// <summary>"Eco", "Normal" or "High": the STB_BurnMode_ key.</summary>
+        public string key = "Normal";
         public float watts;
         public float fuelPerDay;
         public float roomHeatPerSecond;
 
-        /// <summary>The built-in engine's output at this rate, with nothing on its network using heat.</summary>
-        public float builtInWatts = 100f;
+        /// <summary>
+        /// The built-in Stirling engine's output in this mode. It uses three times this in heat, and
+        /// runs only while no steam turbine is on the burner's network. 0 for burners without one.
+        /// </summary>
+        public float stirlingWatts;
+
+        /// <summary>DBH plumbing water drawn a day in this mode, while burning on plumbing.</summary>
+        public float waterPerDay;
     }
 
     /// <summary>Fuel units one item of another fuel is worth. A trashbrick is 1.</summary>
@@ -105,12 +113,12 @@ namespace TrashbrickBurning
     /// burn rate can differ per stove), pushes the waste heat into the room, fills the ash pan, and
     /// sets the power plant's output.
     ///
-    /// In advanced play mode it's a burner. Its heat goes, in order, to steam turbines, radiators and
-    /// heat accumulators on its pressurised hot water network (HeatNetwork), then to Dubs Bad
-    /// Hygiene hot water if the bridge assembly is loaded. Whatever is still left builds pressure:
-    /// a burner with a safety valve vents it, one without eventually bursts. Only when nothing on its
-    /// network uses heat does its own small engine run instead (100-300W, by burn rate), and then
-    /// there's no pressure, because the engine takes it all.
+    /// In advanced play mode it's a burner with three modes (eco, normal, high). With DBH its hot
+    /// water share goes to DBH first. With no steam turbine on its network, its own Stirling engine
+    /// takes three times its output in heat. The rest goes, in order, to turbines, radiators and
+    /// Overpressure Tanks on its pressurised hot water network (HeatNetwork), then to DBH hot water.
+    /// Whatever is still left builds pressure: a burner with a safety valve vents it, one without
+    /// eventually bursts.
     /// </summary>
     public class CompStirlingEngine : ThingComp
     {
@@ -119,6 +127,9 @@ namespace TrashbrickBurning
 
         /// <summary>Pressure climbs from empty to bursting in half a day at 500W of unused heat.</summary>
         private const float PressureWattsPerHalfDay = 500f;
+
+        /// <summary>The Stirling engine turns a third of the heat it takes into power.</summary>
+        public const float StirlingHeatPerWatt = 3f;
 
         private const float VentAt = 0.85f;
         public const float WarnAt = 0.7f;
@@ -184,12 +195,27 @@ namespace TrashbrickBurning
         /// <summary>Advanced mode with DBH: the heat offered to hot water first, before the network.</summary>
         public float ReservedWatts => DbhActive ? HeatWatts * Mathf.Clamp01(hotWaterShare) : 0f;
 
-        /// <summary>The heat the pressurised hot water network gets: everything but what hot water took first.</summary>
-        public float NetworkHeatWatts => Mathf.Max(0f, HeatWatts - hotWaterDrawReservedWatts);
+        /// <summary>
+        /// The Stirling engine runs only while no steam turbine is on the burner's network - piped to
+        /// nothing, or to radiators and tanks alone.
+        /// </summary>
+        public bool StirlingActive =>
+            Advanced && Burning && HasEngine && Level.stirlingWatts > 0f && !HeatNetwork.HasTurbine(HeatNetwork.NetOf(parent));
 
-        /// <summary>Heat the network and hot water left unused, which builds pressure.</summary>
-        public float UnusedWatts =>
-            networkConnected ? Mathf.Max(0f, surplusWatts - (hotWaterDrawWatts - hotWaterDrawReservedWatts)) : 0f;
+        /// <summary>Heat the Stirling engine takes: three times its output, from what hot water left.</summary>
+        public float StirlingHeatWatts =>
+            StirlingActive ? Mathf.Min(Mathf.Max(0f, HeatWatts - hotWaterDrawReservedWatts), Level.stirlingWatts * StirlingHeatPerWatt) : 0f;
+
+        public float StirlingPowerWatts => StirlingHeatWatts / StirlingHeatPerWatt;
+
+        /// <summary>The heat the pressurised hot water network gets: what hot water and the Stirling engine left.</summary>
+        public float NetworkHeatWatts => Mathf.Max(0f, HeatWatts - hotWaterDrawReservedWatts - StirlingHeatWatts);
+
+        /// <summary>
+        /// Heat nothing took - not the network, not hot water - which builds pressure. A burner piped
+        /// to nothing still has its Stirling engine's leftover heat: it needs an Overpressure Tank too.
+        /// </summary>
+        public float UnusedWatts => Mathf.Max(0f, surplusWatts - (hotWaterDrawWatts - hotWaterDrawReservedWatts));
 
         /// <summary>Simple mode, read by the DBH boiler.</summary>
         public bool HeatRecoveryActive => !Advanced && mode == StirlingMode.HeatRecovery && Burning;
@@ -324,17 +350,7 @@ namespace TrashbrickBurning
             if (Advanced)
             {
                 plant.outputFactor = 1f;
-                if (networkConnected || !Burning)
-                {
-                    plant.fixedWatts = 0f;
-                }
-                else
-                {
-                    // Heat the hot water system draws doesn't turn the engine: its power drops
-                    // in proportion, down to nothing.
-                    float heat = Mathf.Max(1f, HeatWatts);
-                    plant.fixedWatts = Level.builtInWatts * power * Mathf.Clamp01(1f - hotWaterDrawWatts / heat);
-                }
+                plant.fixedWatts = StirlingPowerWatts * power;
                 return;
             }
             plant.fixedWatts = null;
@@ -389,7 +405,7 @@ namespace TrashbrickBurning
             {
                 yield return new Command_Action
                 {
-                    defaultLabel = "STB_BurnRate".Translate(Level.watts.ToString("0")),
+                    defaultLabel = "STB_BurnRate".Translate(("STB_BurnMode_" + Level.key).Translate(), Level.watts.ToString("0")),
                     defaultDesc = "STB_BurnRateDesc".Translate(BurnRateTable()),
                     icon = TexCommand.DesirePower,
                     action = () =>
@@ -428,9 +444,10 @@ namespace TrashbrickBurning
             {
                 float fuel = level.fuelPerDay * fuelMult;
                 table += "\n" + (HasEngine ? "STB_BurnRateLine" : "STB_BurnRateLineNoEngine").Translate(
-                    level.watts.ToString("0"), fuel.ToString("0.#"), (fuel * 1000f / level.watts).ToString("0.0"),
-                    level.roomHeatPerSecond.ToString("0.#"),
-                    (level.builtInWatts * TrashbrickBurningMod.S.powerMultiplier).ToString("0"));
+                    ("STB_BurnMode_" + level.key).Translate(), level.watts.ToString("0"), fuel.ToString("0.#"),
+                    (level.watts / Mathf.Max(0.01f, fuel)).ToString("0.0"),
+                    (level.stirlingWatts * TrashbrickBurningMod.S.powerMultiplier).ToString("0"),
+                    (level.watts - level.stirlingWatts * StirlingHeatPerWatt).ToString("0"));
             }
             return table;
         }
@@ -443,6 +460,16 @@ namespace TrashbrickBurning
                 lines.Add("STB_BurnerStatus".Translate(HeatWatts.ToString("0"), FuelPerDay.ToString("0.#")));
                 if (Burning)
                 {
+                    if (StirlingActive)
+                    {
+                        lines.Add("STB_StirlingStatus".Translate(
+                            (StirlingPowerWatts * TrashbrickBurningMod.S.powerMultiplier).ToString("0"),
+                            StirlingHeatWatts.ToString("0")));
+                    }
+                    else if (HasEngine && Level.stirlingWatts > 0f)
+                    {
+                        lines.Add("STB_StirlingOffTurbine".Translate());
+                    }
                     if (networkConnected)
                     {
                         lines.Add("STB_ToNetwork".Translate(toNetworkWatts.ToString("0")));
@@ -451,10 +478,9 @@ namespace TrashbrickBurning
                     {
                         lines.Add("STB_NoNetworkNoEngine".Translate());
                     }
-                    else
+                    if (UnusedWatts > 1f)
                     {
-                        lines.Add("STB_NoNetworkBuiltIn".Translate(
-                            (Level.builtInWatts * TrashbrickBurningMod.S.powerMultiplier).ToString("0")));
+                        lines.Add("STB_UnusedHeat".Translate(UnusedWatts.ToString("0")));
                     }
                     if (DbhActive)
                     {
@@ -537,7 +563,7 @@ namespace TrashbrickBurning
     /// Copies this burner's burn rate and hot water share to other burners, so a row of them doesn't
     /// need setting one by one. Left-click: every burner on this burner's pressurised hot water
     /// network, or every burner on the map if it isn't piped to anything. Right-click: pick which.
-    /// Cobbled stoves and gasifiers share the same three burn rates, so both are synced.
+    /// Burners are matched by mode (eco, normal, high), so cobbled and proper burners sync together.
     /// </summary>
     public class Command_SyncBurners : Command_Action
     {
@@ -588,23 +614,15 @@ namespace TrashbrickBurning
         private void Sync(IEnumerable<CompStirlingEngine> targets)
         {
             int count = 0;
-            float watts = source.Level.watts;
             foreach (CompStirlingEngine e in targets)
             {
                 if (e == source)
                 {
                     continue;
                 }
-                // Match by watts, not index, in case a burner type ever has different levels.
-                int best = 0;
-                for (int i = 0; i < e.Props.heatLevels.Count; i++)
-                {
-                    if (Mathf.Abs(e.Props.heatLevels[i].watts - watts) < Mathf.Abs(e.Props.heatLevels[best].watts - watts))
-                    {
-                        best = i;
-                    }
-                }
-                e.heatLevel = best;
+                // Match by mode (eco, normal, high): the cobbled and proper burners differ in watts.
+                int best = e.Props.heatLevels.FindIndex(l => l.key == source.Level.key);
+                e.heatLevel = best >= 0 ? best : Mathf.Clamp(source.heatLevel, 0, e.Props.heatLevels.Count - 1);
                 e.hotWaterShare = source.hotWaterShare;
                 e.Apply();
                 count++;

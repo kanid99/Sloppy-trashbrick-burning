@@ -23,4 +23,46 @@
 		</subSounds>
 	</SoundDef>
 
+	<!-- The trash gasifier's steam plant: a steady chuff over a firebox rumble. Synthesised by Source/Audio/make_steam.py. -->
+	<SoundDef>
+		<defName>STB_SteamEngineAmbience</defName>
+		<context>MapOnly</context>
+		<sustain>true</sustain>
+		<maxSimultaneous>3</maxSimultaneous>
+		<priorityMode>PrioritizeNearest</priorityMode>
+		<subSounds>
+			<li>
+				<grains>
+					<li Class="AudioGrain_Clip">
+						<clipPath>STB/SteamEngine</clipPath>
+					</li>
+				</grains>
+				<volumeRange>12~14</volumeRange>
+				<distRange>6~28</distRange>
+				<sustainLoop>true</sustainLoop>
+			</li>
+		</subSounds>
+	</SoundDef>
+
+	<!-- The steam turbine: shaft hum, blade whine and rushing steam. Synthesised by Source/Audio/make_steam.py. -->
+	<SoundDef>
+		<defName>STB_TurbineAmbience</defName>
+		<context>MapOnly</context>
+		<sustain>true</sustain>
+		<maxSimultaneous>3</maxSimultaneous>
+		<priorityMode>PrioritizeNearest</priorityMode>
+		<subSounds>
+			<li>
+				<grains>
+					<li Class="AudioGrain_Clip">
+						<clipPath>STB/TurbineWhine</clipPath>
+					</li>
+				</grains>
+				<volumeRange>12~14</volumeRange>
+				<distRange>6~28</distRange>
+				<sustainLoop>true</sustainLoop>
+			</li>
+		</subSounds>
+	</SoundDef>
+
 </Defs>

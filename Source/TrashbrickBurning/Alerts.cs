@@ -111,4 +111,34 @@ namespace TrashbrickBurning
             return AlertReport.CulpritsAre(culprits);
         }
     }
+
+    /// <summary>A turbine taking heat but stalled below its gear's minimum, wasting it.</summary>
+    public class Alert_STBTurbineStalled : Alert
+    {
+        private readonly List<Thing> culprits = new List<Thing>();
+
+        public Alert_STBTurbineStalled()
+        {
+            defaultLabel = "STB_AlertTurbineStalled".Translate();
+            defaultExplanation = "STB_AlertTurbineStalledDesc".Translate();
+        }
+
+        public override AlertReport GetReport()
+        {
+            culprits.Clear();
+            if (!TrashbrickBurningMod.Advanced)
+            {
+                return false;
+            }
+            foreach (ThingWithComps b in AlertUtility.PlayerBuildingsWith<CompSteamTurbine>())
+            {
+                CompSteamTurbine t = b.GetComp<CompSteamTurbine>();
+                if (t.Stalled && t.HeatWatts >= 1f)
+                {
+                    culprits.Add(b);
+                }
+            }
+            return AlertReport.CulpritsAre(culprits);
+        }
+    }
 }

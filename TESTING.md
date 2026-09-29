@@ -1,8 +1,8 @@
 # Playtest checklist
 
-Nothing here has run in RimWorld yet. It all compiles against the real 1.5 and 1.6 game, VEF and DBH
-assemblies, but this is the first contact with the game itself. Work top to bottom: each section
-leans on the one before it.
+The rework (0.7.0) hasn't run in RimWorld yet: modes, Stirling, gears, the Overpressure Tank and
+the new sounds are all first contact. It compiles against the real 1.5 and 1.6 game, VEF and DBH
+assemblies. Work top to bottom: each section leans on the one before it.
 
 ## Install
 
@@ -25,90 +25,89 @@ Yellow warnings are worth sending too.
   fuels, four sliders and a reset button.
 - [ ] Start a new colony (or dev quickstart). No red errors in the log.
 - [ ] Debug actions > **Research all** (or research Electricity, Microelectronics and VRE complex
-  recycling). The **Power** tab has cobbled pellet stove, trashbrick gasifier, fuel hopper, both
-  turbines, heat accumulator, pressurised hot water pipe and hidden pipe, and valve. The
+  recycling). The **Power** tab has cobbled trash gasifier, trash gasifier, fuel hopper, both
+  turbines, Overpressure Tank, pressurised hot water pipe and hidden pipe, and valve. The
   **Temperature** tab has cobbled radiator and hot water radiator.
 
-## 2. A cobbled stove on its own (advanced mode, the default)
+## 2. A cobbled trash gasifier on its own (advanced mode, the default)
 
-God mode on, then build a **cobbled pellet stove**. Give it trashbricks (debug spawn
+God mode on, then build a **cobbled trash gasifier**. Give it trashbricks (debug spawn
 `VRecyclingE_TrashBrick`) or wood.
 
 - [ ] While placing it, a **green outline** shows the two cells in front of its intake (the side
   with the green arrow). Rotate it: the outline and the arrow move together in all four facings.
-- [ ] Lit, its inspect panel reads roughly *Burning at 250W of heat, 8 fuel a day* and *Nothing
-  piped to it: built-in engine up to 100W*. Its power readout shows **100W**.
-- [ ] The **Burn rate** button cycles 250 → 350 → 500W; power goes 100 → 200 → 300W, and fuel use
-  8 → 12 → 20 a day.
-- [ ] **Smoke** puffs from the flue, the **fire window flickers**, the loose cables and gauges
-  **rattle**, and you can hear the **rattle loop**. All of it stops when you switch the stove off,
-  and freezes when you pause.
-- [ ] The room warms up (more at 500W than at 250W).
-- [ ] Refuel from a **fuel hopper** built on the intake cells: it pulls fuel as it burns. A hopper on
-  any other side does nothing.
-- [ ] With several burners, **Sync burners** copies the selected one's burn rate and hot water share to the rest on its network (or the map); a message says how many.
-- [ ] Wood is worth less than trashbricks: 10 logs fill it less than 10 bricks do.
-- [ ] After a while **ash** appears on the cell **behind** the stove. **Rake out ash** drops the rest
-  now.
-- [ ] A stonecutter's table has **Make ashcrete blocks** (30 ash → 20 blocks), and walls can be built
-  from ashcrete.
+- [ ] Its **Mode** button cycles eco → normal → high: 600W on 40 a day, 1200W on 100, 1600W on 150.
+  The button's tooltip lists all three with Stirling power and leftover heat.
+- [ ] Unpiped and lit on normal, it reads *Stirling engine: 150W of power from 450W of heat* and
+  *Heat with nowhere to go: 750W*. Its power readout shows **150W**. **Pressure** starts climbing:
+  a burner needs an Overpressure Tank or radiators even in Stirling mode.
+- [ ] **Smoke** puffs from the flue, the **fire window flickers**, the loose parts **rattle**, and
+  you can hear the rattle loop. All of it stops when you switch it off, and freezes when you pause.
+- [ ] Refuel from a **fuel hopper** on the intake cells: it pulls fuel as it burns. A hopper on any
+  other side does nothing.
+- [ ] **Ash** appears on the cell **behind** it. **Rake out ash** drops the rest now. A stonecutter's
+  table has **Make ashcrete blocks** (30 ash → 20 blocks).
+- [ ] It (and the cobbled turbine and radiator) breaks down noticeably more often than vanilla
+  machines.
 
-## 3. Pipes and a turbine
+## 3. The trash gasifier
 
-Build a **cobbled steam turbine** and lay **pressurised hot water pipe** from under the stove to under
-the turbine.
+- [ ] Modes: 750W on 30 a day, 1500W on 75, 2000W on 112.5. Stirling 100 / 250 / 500W.
+- [ ] Smoke and steam wisps from its stack, and a **chuffing steam engine** sound while it runs.
+- [ ] Unpiped on normal: 250W of power, 750W of leftover heat. Pressure climbs to 85%, then the
+  safety valve **vents** puffs of steam. It never bursts.
 
-- [ ] The pipe overlay shows while placing pipe, and the pipes link up (straights, corners, tees).
-- [ ] The stove now reads *To the hot water network: 250W* and its own power drops to **0W**.
-- [ ] The turbine reads *Heat supplied: 250W of 1000W capacity, converted at 75%* and *Fed by 1
-  burners*, and outputs about **188W** (250 × 0.75).
-- [ ] Add a second stove at 500W on the same pipe: the turbine gets 750W → about **560W**.
-- [ ] The cobbled turbine's loose parts rattle while it's producing.
-- [ ] Switch the stoves off: **Steam turbine getting no heat** alert.
-- [ ] The **hidden pipe** also links, and a **valve** switched off cuts the turbine off.
-- [ ] Rotate the turbines through all four facings; the art should look like the same machine
-  each way.
+## 4. Pipes, the Overpressure Tank and radiators (no turbine yet)
 
-## 3b. Large and industrial burners
+Lay **pressurised hot water pipe** from a trash gasifier to an **Overpressure Tank**.
 
-- [ ] The Power tab has **large cobbled stove** and **large trashbrick gasifier** (3x4) and **industrial trashbrick gasifier** (3x6). Place each in all four facings: the green outline covers the whole 3-cell front, and the art faces the same way.
-- [ ] None of them has a power readout or joins the power grid. Unpiped, the inspect says *no engine on board, pipe it to a steam turbine* and pressure climbs.
-- [ ] A large burner at 1500W on a steam turbine gives it its full 1500W. An industrial at 3000W fills two turbines.
-- [ ] The large cobbled stove smokes, flickers and rattles like the small one; the gasifiers vent steam from their stacks.
-- [ ] In simple mode none of the three is in the build menu.
+- [ ] The tank fills by the burner's leftover heat (*Stored: x of 36 kWh (+750W)* on normal), and
+  the burner's pressure stops climbing. The Stirling engine keeps making power.
+- [ ] A **radiator** on the same pipe in a cold, enclosed room takes heat first and warms the room
+  to its target. With the burner off, the radiator keeps drawing from the tank.
+- [ ] The radiator's **Radiator valve** closes it off.
+- [ ] Tank hazards (hazards on): the readout shows **Explosion risk** (none below 20% full), days
+  since it was last bled, and *risk x4* with a cobbled gasifier on the network. The bar reddens as
+  the risk climbs; above 2% a day the **Overpressure Tank at risk** alert fires.
+- [ ] **Bleed to 25%**: a colonist walks over, works a few seconds with steam puffs, the stored heat
+  drops, the room warms, and the wear resets.
+- [ ] **Auto-release** on, **Release above: 50%**: once the tank is over half full it vents on its
+  own (*venting xW*), puffs steam, and its room heats up fast.
 
-## 4. Pressure and the steam burst (hazards on)
+## 5. Steam turbines and gears
 
-Leave a **cobbled stove at 500W** connected to a turbine, then switch the **turbine off**.
+Add a **steam turbine** to the network.
 
-- [ ] The stove's inspect shows **Pressure** climbing (about 12% an hour of game time at 500W).
-- [ ] From 70%: the red **Burner overpressure** alert, and the inspect says *no safety valve - will
-  burst!*
-- [ ] At 100%: a **Steam burst** letter, a big smoke cloud, pawns within 5 tiles in line of sight get
-  burns, a small enclosed room jumps towards 1000°C (check with the temperature overlay), and the
-  stove is **broken down** and needs a component.
-- [ ] Repeat with a **gasifier**: it stops at 85%, **vents** puffs of steam from its stack, and never
-  bursts.
-- [ ] Turn **hazards off** in settings: the cobbled stove now vents like the gasifier.
+- [ ] Every burner on the network now reads *Stirling engine off: a steam turbine is on its network*,
+  and its power drops to 0.
+- [ ] The turbine has a **Gear** button: low / medium / high, turning over on 500 / 1500 / 3000W at
+  60% / 70% / 80%.
+- [ ] One gasifier on normal (1500W), turbine in **medium**: about **1050W** of power.
+- [ ] Shift to **high** with that one gasifier: the turbine **stalls** - *STALLED: 1500W is under the
+  3000W this gear needs* and *medium gear would turn* - makes 0W, and the **Steam turbine stalled**
+  alert fires. The heat is wasted: the tank doesn't charge from it.
+- [ ] Two gasifiers on normal in high gear: about **2400W**.
+- [ ] The turbine's **cooling fan spins** while it makes power, spins down when it stops, and freezes
+  when you pause. The steam turbine has a **whine** running loop.
+- [ ] Reserve steam: with a charged tank, switch the burners off. The tank tops the turbine up to its
+  gear's minimum (*Kept turning by the Overpressure Tank*) until it runs dry.
+- [ ] The **cobbled steam turbine** is one step worse (50 / 60 / 70%), takes up to 4800W, rattles,
+  and breaks down more.
+- [ ] Rotate the turbines through all four facings: the art and the fan look right each way.
 
-## 5. Radiators and the accumulator
+## 5b. Burst (hazards on)
 
-- [ ] A **radiator** on the network in an enclosed, cold room takes heat (*Heat taken: 150W of
-  150W* for the cobbled one) and warms the room to its **target temperature**, then stops taking
-  heat. It only gets what the turbines leave over.
-- [ ] A **heat accumulator** in **buffer** mode (default) on a network whose turbine can take all the
-  heat stays empty and says *Idle: the turbines are using all the heat*. With more heat than the
-  turbines can take, it fills (orange bar, *Stored: x of 24 kWh (+W)*).
-- [ ] Switch it to **reserve**: it charges straight away, taking heat before the turbine. Switch the
-  stoves off: it discharges into the turbine, which keeps running until the tank is empty.
-- [ ] In reserve mode a **Reserve: 100%** button steps 25/50/75/100%. At 50% the tank charges first up to half, then only from spare heat above that; with the stoves off it hands over everything above 50% first, then the reserve.
-- [ ] Hazards on: the accumulator's readout shows **Explosion risk** (none below 20% full), days since it was last bled, and *Cobbled burner on the network: risk x4* with a cobbled stove piped in. The charge bar reddens as the risk climbs, and above 2% a day the **Heat accumulator at risk** alert fires.
-- [ ] **Bleed to 25%**: a colonist walks over, works for a few seconds with steam puffs, the stored heat drops to 25%, the room warms, and the wear resets to x1. Right-click picks 0/25/50/75%.
-- [ ] To see an explosion: dev-mode fill a tank next to a cobbled stove and wait, or set its explosion MTB low in the def. There's a blast, a steam cloud sized by how full it was, a letter, the tank left wrecked and empty.
-- [ ] Selecting any of the mod's buildings shows **build buttons for all the others** (not itself),
-  in chain order: hopper, stoves, pipes, valve, turbines, accumulator, radiators. Unresearched ones
-  don't appear.
-- [ ] With a radiator or accumulator soaking up the spare heat, pressure no longer climbs.
+- [ ] A **cobbled gasifier on high** with nowhere for its heat to go climbs to 70% (the red **Burner
+  overpressure** alert) and at 100% **bursts**: a letter, a steam cloud, burns within 5 tiles, a hot
+  room, and the gasifier broken down.
+- [ ] Hazards off: it vents like the trash gasifier instead.
+
+## 5c. Large and industrial burners
+
+- [ ] They're in the Power tab as **large cobbled trash gasifier**, **large trash gasifier** (3x4) and
+  **industrial trash gasifier** (3x6). The green outline covers the whole 3-cell front.
+- [ ] No power readout; they need a turbine. Unpiped, their heat builds pressure.
+- [ ] Selecting any building from the mod shows **build buttons for all the others**.
 
 ## 6. Steam leaks
 
@@ -124,28 +123,29 @@ debug action (take damage).
 
 Switch to simple mode in settings and **restart**.
 
-- [ ] Turbines, pipes, valve, radiators and the accumulator are gone from the build menu.
-- [ ] A cobbled stove makes **1000W** on 20 fuel a day; a gasifier **1200W** on 12.
+- [ ] Turbines, pipes, valve, radiators, the Overpressure Tank and the large and industrial burners are gone from the build menu.
+- [ ] A cobbled trash gasifier makes **1000W** on 20 fuel a day; a trash gasifier **1200W** on 12.
 
 ## 8. With Dubs Bad Hygiene
 
-- [ ] Sludge pellets: a biofuel refinery has **Make sludge pellets** (75 sludge → 100); both stoves
+- [ ] Sludge pellets: a biofuel refinery has **Make sludge pellets** (75 sludge → 100); every burner
   and the fuel hopper take them.
-- [ ] **Advanced:** a stove on DBH plumbing with a hot water tank shows a **Hot water: 0%** button
+- [ ] **Advanced:** a burner on DBH plumbing with a hot water tank shows a **Hot water: 0%** button
   (left-click steps 10%, right-click picks). No **Power Mode** stepper.
-- [ ] At 0% with a turbine taking all its heat, the tank gets nothing. Raise it to 50%: the stove
+- [ ] At 0% with a turbine taking all its heat, the tank gets nothing. Raise it to 50%: the burner
   reads *Hot water share: 50% (125W offered first), drawn: xW*, the tank heats, and the turbine's
   heat drops by the amount drawn. Once the tank is hot and draws nothing, the turbine gets it all back.
-- [ ] With no turbine, the built-in engine's power drops by what the hot water draws.
+- [ ] With no turbine, a hot water share the plumbing draws comes before the Stirling engine, so its power drops.
 - [ ] **Simple:** the engine mode button cycles power / water-cooled / heat recovery. Water-cooled
   reads *(no water)* without plumbing water, and makes 120% with it.
 
-- [ ] **Accumulator as a tank:** pipe a heat accumulator into DBH plumbing next to a shower. Its DBH readout shows a hot water level equal to its charge. Showers lower the charge; a burner's hot water share (or a DBH boiler) raises it. With no DBH hot water tank at all, showers still get hot water from it.
+- [ ] **Tank as a DBH boiler:** pipe an Overpressure Tank into DBH plumbing with a DBH hot water tank or radiator. Its readout shows *To DBH hot water and heating: xW* while they're short of heat, and nothing once they're hot. The tank's charge drops by what it gives.
+- [ ] **Water:** a burning trash gasifier on plumbing draws about 40 water a day on normal (20 eco, 53 high).
 
 ## 9. With VFE - Factory
 
-- [ ] Our fuel hopper is gone from the build menu. A **factory hopper** on the intake feeds the stove.
-- [ ] A conveyor into that factory hopper keeps the stove fed (belt → hopper → stove).
+- [ ] Our fuel hopper is gone from the build menu. A **factory hopper** on the intake feeds the gasifier.
+- [ ] A conveyor into that factory hopper keeps the gasifier fed (belt → hopper → gasifier).
 
 ## What to send me
 
