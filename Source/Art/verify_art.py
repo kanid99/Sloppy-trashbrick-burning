@@ -190,6 +190,35 @@ for name, td in defs.items():
         print(f"ok   {name}: loose layer {tex} in four views, clear of the intake" if feeds
               else f"ok   {name}: loose layer {tex} in four views")
 
+# 2d. animation frames (CompMachineEffects animTexPath): every frame in all four views at the
+# building's own size, and the building drawn in real time so they can play.
+for name, td in defs.items():
+    comps = td.find("comps")
+    if comps is None:
+        continue
+    for li in comps:
+        if not (li.get("Class") or "").endswith("CompProperties_MachineEffects") or li.findtext("animTexPath") is None:
+            continue
+        if lookup(td, "drawerType") != "MapMeshAndRealTime":
+            fail(f"{name}: has animation frames but drawerType isn't MapMeshAndRealTime, so they'd never play")
+        tex, frames = li.findtext("animTexPath"), int(li.findtext("animFrames") or 0)
+        base_tex = td.find("graphicData").findtext("texPath")
+        missing = 0
+        for i in range(frames):
+            for rot in FACING:
+                try:
+                    im = Image.open(f"Textures/{tex}{i}_{rot}.png")
+                except FileNotFoundError:
+                    missing += 1
+                    continue
+                base = Image.open(f"Textures/{base_tex}_{rot}.png")
+                if im.size != base.size:
+                    fail(f"{name}: {tex}{i}_{rot} is {im.size}, the building is {base.size}")
+        if missing or frames == 0:
+            fail(f"{name}: {missing} animation frames missing (of {frames} x 4)")
+        else:
+            print(f"ok   {name}: {frames} animation frames in four views")
+
 # 3. the C# outline colour matches the art
 cs = open("Source/TrashbrickBurning/CompHopperFeed.cs").read()
 m = re.search(r"IntakeColor = new UnityEngine.Color\(([\d.]+)f, ([\d.]+)f, ([\d.]+)f\)", cs)

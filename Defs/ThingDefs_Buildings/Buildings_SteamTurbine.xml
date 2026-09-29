@@ -252,6 +252,9 @@
 				<!-- The generator's cooling fan, spinning while it makes power. -->
 				<rotor><a>1.0</a><f>2.43</f><z>0.47</z></rotor>
 				<rotorSize>0.62</rotorSize>
+				<!-- The flywheel rim rolling and the belt drive to its salvaged dynamo, frame by frame. -->
+				<animTexPath>Things/Building/Power/STB_CobbledTurbine_Motion</animTexPath>
+				<animFrames>8</animFrames>
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_ExtraBreakdowns"/>
 			<li Class="CompProperties_Flickable"/>
@@ -335,6 +338,10 @@
 				<!-- The generator's cooling fan, spinning while it makes power. -->
 				<rotor><a>1.0</a><f>2.43</f><z>0.47</z></rotor>
 				<rotorSize>0.62</rotorSize>
+				<!-- The flyball governor, the shaft coupling and the blades past the inspection hatch,
+				     frame by frame. -->
+				<animTexPath>Things/Building/Power/STB_SteamTurbine_Motion</animTexPath>
+				<animFrames>8</animFrames>
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Breakdownable"/>

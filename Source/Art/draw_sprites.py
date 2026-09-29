@@ -1315,6 +1315,153 @@ def exhaust_port_wall(rot):
     c.save(f"{OUT}/Things/Building/Power/STB_ExhaustPortWall_{rot}.png")
 
 
+# ------------------------------------------------------------------ turbine moving parts (animation frames)
+MOTION_FRAMES = 8
+BRASS = (160, 142, 104)        # governor weights: a warm metal tone, not a second accent
+
+
+def _mpt(v, a, f, z):
+    """Machine point to canvas cells, lifted by its height."""
+    x, y = v.pt(a, f)
+    return x, y - z * LIFT
+
+
+def _mpoly(c, v, pts, col):
+    c.d.polygon([(c.px(x), c.px(y)) for x, y in (_mpt(v, a, f, z) for a, f, z in pts)], fill=col + (255,))
+
+
+def _mdisc(c, x, y, r, col, rim=None):
+    R, X, Y = c.px(r), c.px(x), c.px(y)
+    if rim:
+        c.d.ellipse([X - R, Y - R, X + R, Y + R], fill=rim + (255,))
+        R = int(R * 0.8)
+    c.d.ellipse([X - R, Y - R, X + R, Y + R], fill=col + (255,))
+
+
+def _governor(c, v, t, a, f, z):
+    """Flyball governor on a spindle: two weights whirling round it. Seen from above, a spinning
+    pair; the 8 frames turn it half a revolution, a full cycle for two identical weights."""
+    s0 = _mpt(v, a, f, z)
+    top = _mpt(v, a, f, z + 0.24)
+    th = t * math.pi
+    R = 0.13
+    balls = [(top[0] + math.cos(th + k) * R, top[1] + math.sin(th + k) * R * 0.55, math.sin(th + k))
+             for k in (0, math.pi)]
+    balls.sort(key=lambda b: b[2])                      # the far ball first, then the spindle
+    for i, (bx, by, depth) in enumerate(balls):
+        if i == 1:
+            c.d.line([(c.px(s0[0]), c.px(s0[1])), (c.px(top[0]), c.px(top[1]))],
+                     fill=shade(STEEL, 0.85) + (255,), width=c.px(0.035))
+        c.d.line([(c.px(top[0]), c.px(top[1])), (c.px(bx), c.px(by))], fill=shade(STEEL, 1.1) + (255,),
+                 width=c.px(0.02))
+        _mdisc(c, bx, by, 0.05, shade(BRASS, 1.0 + 0.15 * depth), rim=shade(BRASS, 0.6))
+    _mdisc(c, top[0], top[1], 0.035, shade(STEEL, 1.25), rim=shade(STEEL, 0.7))
+
+
+def _coupling(c, v, t, a0, a1, f0, f1, z):
+    """The shaft coupling: a flange lying along the shaft, its bolt heads rolling across it. Six
+    bolts; the 8 frames roll them one bolt spacing on, a seamless cycle."""
+    c.drum(a0, f0, a1, f1, 0.07, z - 0.07, shade(STEEL, 1.02), axis="f", radius=0.03, shadow=False)
+    c.flush()
+    mid, half = (a0 + a1) / 2, (a1 - a0) / 2
+    fm = (f0 + f1) / 2
+    for k in range(6):
+        th = (k + t) * 2 * math.pi / 6
+        if math.cos(th) <= 0.05:
+            continue                                    # round the back of the shaft
+        x, y = _mpt(v, mid + math.sin(th) * half * 0.8, fm, z)
+        _mdisc(c, x, y, 0.035 * (0.45 + 0.55 * math.cos(th)), shade(STEEL, 1.0 + 0.45 * math.cos(th)),
+               rim=shade(STEEL, 0.55))
+
+
+def _hatch(c, v, t, a0, a1, f0, f1, z):
+    """An inspection hatch in the casing top: a bolted frame round a dark window, the rotor's
+    blade rows streaming across it (across the shaft, which runs along f). The 8 frames move them
+    one blade pitch."""
+    rim = 0.04
+    _mpoly(c, v, [(a0 - rim, f0 - rim, z), (a1 + rim, f0 - rim, z), (a1 + rim, f1 + rim, z), (a0 - rim, f1 + rim, z)],
+           shade(STEEL, 0.9))
+    _mpoly(c, v, [(a0, f0, z), (a1, f0, z), (a1, f1, z), (a0, f1, z)], (28, 28, 30))
+    pitch = (a1 - a0) / 7
+    rows = ((f0 + 0.02, (f0 + f1) / 2 - 0.015, 0.0), ((f0 + f1) / 2 + 0.015, f1 - 0.02, 0.5))
+    for g0, g1, shift in rows:
+        for k in range(-2, 10):
+            b = a0 + (k + shift + t) * pitch
+            quad = [(b, g0), (b + pitch * 0.42, g0), (b + pitch * 0.22, g1), (b - pitch * 0.2, g1)]
+            quad = [(min(max(qa, a0), a1), qf) for qa, qf in quad]
+            if max(q[0] for q in quad) - min(q[0] for q in quad) < 0.004:
+                continue
+            _mpoly(c, v, [(qa, qf, z) for qa, qf in quad], shade(STEEL, 1.18))
+    for k in range(5):
+        for ff in (f0 - rim / 2, f1 + rim / 2):
+            x, y = _mpt(v, a0 + (a1 - a0) * k / 4, ff, z)
+            _mdisc(c, x, y, 0.014, shade(STEEL, 1.3))
+
+
+def _flywheel_rim(c, v, t, a0, a1, f0, f1, z):
+    """The cobbled flywheel's rim, from above: three balance weights rolling across it (it turns
+    about the shaft, along f), squashed as they go round the ends. The 8 frames: a third of a turn."""
+    _mpoly(c, v, [(a0, f0, z), (a1, f0, z), (a1, f1, z), (a0, f1, z)], (64, 62, 60))
+    g0, g1 = f0 + (f1 - f0) * 0.3, f0 + (f1 - f0) * 0.5
+    _mpoly(c, v, [(a0 + 0.03, g0, z), (a1 - 0.03, g0, z), (a1 - 0.03, g1, z), (a0 + 0.03, g1, z)], shade(STEEL, 0.95))
+    L = a1 - a0
+    for k in range(3):
+        centre = a0 + (((k + t) / 3) % 1.0) * L
+        edge = min(centre - a0, a1 - centre) / (L / 2)
+        w = 0.07 * (0.3 + 0.7 * min(1.0, edge * 2.2))
+        lo, hi = max(a0, centre - w / 2), min(a1, centre + w / 2)
+        if hi - lo < 0.005:
+            continue
+        _mpoly(c, v, [(lo, f0 + 0.01, z), (hi, f0 + 0.01, z), (hi, f1 - 0.01, z), (lo, f1 - 0.01, z)], (150, 112, 82))
+
+
+def _belt(c, v, t, p1, p2, half):
+    """A flat belt from a pulley on the flywheel's end to one on the salvaged dynamo: three laced
+    splices running round it, both pulleys turning. p1, p2 = (a, f, z, radius)."""
+    runs = []
+    for side in (-1, 1):
+        s = _mpt(v, p1[0] + side * half, p1[1], p1[2])
+        e = _mpt(v, p2[0] + side * half * 0.8, p2[1], p2[2])
+        runs.append((s, e) if side < 0 else (e, s))     # out along one run, back along the other
+    for pa in (p1, p2):
+        x, y = _mpt(v, pa[0], pa[1], pa[2])
+        _mdisc(c, x, y, pa[3], shade(STEEL, 0.78), rim=shade(STEEL, 0.5))
+    for s, e in runs:
+        c.d.line([(c.px(s[0]), c.px(s[1])), (c.px(e[0]), c.px(e[1]))], fill=(74, 62, 52, 255), width=c.px(0.035))
+    for k in range(3):
+        u = ((k + t) / 3) % 1.0
+        (s, e), w = (runs[0], u * 2) if u < 0.5 else (runs[1], (u - 0.5) * 2)
+        _mdisc(c, s[0] + (e[0] - s[0]) * w, s[1] + (e[1] - s[1]) * w, 0.02, shade(BRASS, 0.95))
+    for pa, turns in ((p1, 1.0), (p2, 2.0)):
+        x, y = _mpt(v, pa[0], pa[1], pa[2])
+        base = t * turns * 2 * math.pi / 3
+        for k in range(3):
+            th = base + k * 2 * math.pi / 3
+            c.d.line([(c.px(x), c.px(y)), (c.px(x + math.cos(th) * pa[3] * 0.75), c.px(y + math.sin(th) * pa[3] * 0.75))],
+                     fill=shade(STEEL, 1.2) + (255,), width=c.px(0.016))
+        _mdisc(c, x, y, pa[3] * 0.28, shade(STEEL, 1.1))
+
+
+def turbine_motion(rot):
+    """Animation frames for the turbines' moving parts, drawn over the sprite by CompMachineEffects:
+    the steam turbine's flyball governor, shaft coupling and blade hatch; the cobbled turbine's
+    flywheel rim and belt drive to a salvaged dynamo. Same canvas as the building, in all views."""
+    v = View(rot, 2, 3, MARGIN_2X2)
+    for i in range(MOTION_FRAMES):
+        t = i / MOTION_FRAMES
+        c = Canvas(v)
+        _hatch(c, v, t, 0.68, 1.32, 1.12, 1.38, 0.37)
+        _coupling(c, v, t, 0.8, 1.2, 1.97, 2.15, 0.34)
+        _governor(c, v, t, 0.38, 0.74, 0.43)
+        c.flush()
+        c.save(f"{OUT}/Things/Building/Power/STB_SteamTurbine_Motion{i}_{rot}.png", silhouette_px=3)
+        c = Canvas(v)
+        _flywheel_rim(c, v, t, 0.3, 1.7, 2.04, 2.14, 0.49)
+        _belt(c, v, t, (1.8, 2.09, 0.3, 0.09), (1.77, 1.62, 0.38, 0.07), 0.07)
+        c.flush()
+        c.save(f"{OUT}/Things/Building/Power/STB_CobbledTurbine_Motion{i}_{rot}.png", silhouette_px=3)
+
+
 if __name__ == "__main__":
     for r in ROTS:
         cobbled_stove(r)
@@ -1327,6 +1474,7 @@ if __name__ == "__main__":
         exhaust_port_wall(r)
         steam_turbine(r)
         cobbled_turbine(r)
+        turbine_motion(r)
     hot_water_pipe()
     exhaust_pipe()
     exhaust_port()

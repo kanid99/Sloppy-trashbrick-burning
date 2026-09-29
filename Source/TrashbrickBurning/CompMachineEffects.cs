@@ -38,6 +38,14 @@ namespace TrashbrickBurning
         /// <summary>Degrees a tick at full speed.</summary>
         public float rotorSpeed = 24f;
 
+        /// <summary>
+        /// Frame-by-frame moving parts: textures animTexPath0 .. animTexPath(N-1), each a Graphic_Multi
+        /// the size of the building, stepped through at animFramesPerTick at full speed.
+        /// </summary>
+        public string animTexPath;
+        public int animFrames;
+        public float animFramesPerTick = 0.4f;
+
         public CompProperties_MachineEffects()
         {
             compClass = typeof(CompMachineEffects);
@@ -147,18 +155,17 @@ namespace TrashbrickBurning
 
         private float rotorAngle;
         private float rotorSpeed;
+        private float animPhase;
         private int lastRotorTick = -1;
+        private List<Graphic> animGraphics;
 
         /// <summary>
-        /// The fan spins up while running and coasts down when it stops. Driven by game ticks, so it
-        /// freezes when paused; drawn every frame, so it needs drawerType MapMeshAndRealTime.
+        /// Spin-up: the moving parts come up to speed while running and coast down when it stops.
+        /// Driven by game ticks, so they freeze when paused; drawn every frame, so the building needs
+        /// drawerType MapMeshAndRealTime.
         /// </summary>
-        private void DrawRotor()
+        private void AdvanceSpin()
         {
-            if (Props.rotor == null)
-            {
-                return;
-            }
             int tick = Find.TickManager.TicksGame;
             if (lastRotorTick >= 0 && tick > lastRotorTick)
             {
@@ -166,8 +173,48 @@ namespace TrashbrickBurning
                 float target = Running ? 1f : 0f;
                 rotorSpeed = UnityEngine.Mathf.MoveTowards(rotorSpeed, target, dt / 90f);
                 rotorAngle = (rotorAngle + rotorSpeed * Props.rotorSpeed * dt) % 360f;
+                if (Props.animFrames > 0)
+                {
+                    animPhase = (animPhase + rotorSpeed * Props.animFramesPerTick * dt) % Props.animFrames;
+                }
             }
             lastRotorTick = tick;
+        }
+
+        /// <summary>
+        /// The frame-by-frame moving parts - a governor, a coupling, a flywheel, a belt: one overlay
+        /// the size of the building per frame (Source/Art/draw_sprites.py turbine_motion), in all
+        /// four views, stepped through at the spin-up speed. Always drawn, so the parts stay put
+        /// when it stops.
+        /// </summary>
+        private void DrawAnim()
+        {
+            if (Props.animTexPath.NullOrEmpty() || Props.animFrames <= 0)
+            {
+                return;
+            }
+            if (animGraphics == null)
+            {
+                animGraphics = new List<Graphic>();
+                for (int i = 0; i < Props.animFrames; i++)
+                {
+                    animGraphics.Add(GraphicDatabase.Get<Graphic_Multi>(Props.animTexPath + i, ShaderDatabase.Cutout,
+                        parent.def.graphicData.drawSize, Color.white));
+                }
+            }
+            int frame = Mathf.Clamp((int)animPhase, 0, Props.animFrames - 1);
+            Vector3 pos = parent.DrawPos;
+            // Over the building, under its loose parts (BuildingOnTop) and the fan.
+            pos.y = parent.def.Altitude + 0.03f;
+            animGraphics[frame].Draw(pos, parent.Rotation, parent);
+        }
+
+        private void DrawRotor()
+        {
+            if (Props.rotor == null)
+            {
+                return;
+            }
             Material mat = MaterialPool.MatFrom(Props.rotorTexPath, ShaderDatabase.Cutout);
             Vector3 pos = WorldPos(Props.rotor);
             pos.y = parent.def.Altitude + 0.06f;
@@ -179,6 +226,8 @@ namespace TrashbrickBurning
         public override void PostDraw()
         {
             base.PostDraw();
+            AdvanceSpin();
+            DrawAnim();
             DrawRotor();
             if (Props.glow == null || !Running)
             {

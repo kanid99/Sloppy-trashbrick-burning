@@ -63,7 +63,7 @@ Two tiers, both 2x3, with **three gears**. A higher gear turns more of the heat 
 | Most heat it takes | 4800W (3 cobbled on high) | 6000W (3 gasifiers on high) |
 | Breakdowns | twice as often | normal |
 
-One trash gasifier on normal (1500W) runs a turbine in medium gear. High gear takes two. Several turbines on one network fill one at a time. The turbine's readout says when it has stalled and which gear would turn; a **Steam turbine stalled** alert warns you too. Turbines spin a cooling fan and hum while they make power.
+One trash gasifier on normal (1500W) runs a turbine in medium gear. High gear takes two. Several turbines on one network fill one at a time. The turbine's readout says when it has stalled and which gear would turn; a **Steam turbine stalled** alert warns you too. While they make power, turbines show their moving parts, spinning up and coasting down: the steam turbine a **flyball governor** whirling on its steam chest, its **shaft coupling** rolling and its **blades** streaming past an inspection hatch; the cobbled turbine its **flywheel** rim rolling and a **flat belt** driving a salvaged dynamo. Both have a spinning cooling fan and their own running sound.
 
 - **Pipes:** our own network on Vanilla Expanded Framework's PipeSystem, the same system VE's chemfuel pipes use. That gives the usual overlay, plus a visible pipe, a **hidden pipe** and a **valve**, all at the Electricity tier. The visible and hidden pipe share **one architect button** (a dropdown). They sit in the Power tab, or in VE's **pipe networks** tab when a mod adds it (Vanilla Chemfuel Expanded). A building joins the network where a pipe runs under it.
 

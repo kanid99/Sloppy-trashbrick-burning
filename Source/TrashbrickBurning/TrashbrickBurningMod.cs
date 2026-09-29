@@ -9,7 +9,7 @@ namespace TrashbrickBurning
     /// Keep in step with modVersion in About/About.xml.</summary>
     public static class BuildInfo
     {
-        public const string Version = "0.8.4";
+        public const string Version = "0.8.5";
     }
 
     public class TrashbrickSettings : ModSettings

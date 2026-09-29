@@ -105,7 +105,10 @@ Add a **steam turbine** to the network.
   alert fires. The heat is wasted: the tank doesn't charge from it.
 - [ ] Two gasifiers on normal in high gear: about **2400W**.
 - [ ] The turbine's **cooling fan spins** while it makes power, spins down when it stops, and freezes
-  when you pause. The steam turbine has a **whine** running loop.
+  when you pause.
+- [ ] **Moving parts:** the steam turbine's governor weights whirl, the coupling's bolts roll and the
+  blades stream past the hatch; the cobbled turbine's flywheel weights roll and its belt runs to the
+  side dynamo. All of it speeds up and coasts down with the fan, and looks right in all four facings. The steam turbine has a **whine** running loop.
 - [ ] Reserve steam: with a charged tank, switch the burners off. The tank tops the turbine up to its
   gear's minimum (*Kept turning by the Overpressure Tank*) until it runs dry.
 - [ ] The **cobbled steam turbine** is one step worse (50 / 60 / 70%), takes up to 4800W, rattles,
