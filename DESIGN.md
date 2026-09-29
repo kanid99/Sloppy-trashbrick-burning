@@ -23,30 +23,31 @@ defNames stay as they are so existing saves keep their buildings; only labels ch
 
 ## Baseline: Trash Gasifier
 
+Goal (decided): **eco** is the most fuel-efficient mode but makes much less heat. It's for
+heating plus a little Stirling power, not for running turbines. **Normal** is the baseline:
+1500W on 75 a day. **High** makes the most heat and is the least efficient.
+
+Reconciled numbers (proposed, keeping 1500W on 75 a day as normal):
+
 | | Eco | Normal | High |
 |---|---|---|---|
-| Fuel use (decided: -33% / 0 / +50% on 75 a day) | 50 / day | **75 / day** | 112.5 / day |
-| Heat (decided: -50% / 0 / +33% on 1500W) | 750W | **1500W** | 2000W |
-| Heat per fuel a day | 15W | 20W | 17.8W |
-| Stirling power (decided: 100 / 250 / 500W) | 100W | 250W | 500W |
-| Heat the Stirling uses (decided: 3x its output) | 300W | 750W | 1500W |
+| Fuel use | 30 / day (-60%) | **75 / day** | 112.5 / day (+50%) |
+| Heat | 750W (-50%) | **1500W** | 2000W (+33%) |
+| Heat per brick a day | **25W** (best) | 20W | 17.8W (worst) |
+| Stirling power | 100W | 250W | 500W |
+| Heat the Stirling uses (3x its output) | 300W | 750W | 1500W |
 | Heat left over in Stirling mode | 450W | 750W | 500W |
-| Water use with DBH | scales with heat (decided); baseline **open** | | |
+| Water use with DBH | scales with heat; baseline **open** | | |
+
+What changed from your notes: eco's fuel cut goes from -33% to -60%, so eco really is the
+thrifty mode. The Stirling leftover becomes 450 / 750 / 500W, not 450 / 250 / 0W: that needed
+high to be 1500W, which would have made normal 1000W. Every mode leaves heat over, which fits
+"an Overpressure Tank is needed even in Stirling mode".
+
+The numbers also line up with the turbine gears: one burner on eco (750W) runs low gear, one on
+normal (1500W) runs medium gear, and two on normal (3000W) run high gear.
 
 Effects (decided): smoke and steam effects, steam engine sound.
-
-**Open 1: eco is the least efficient mode.** With these percentages, eco gets 15W of heat per
-brick a day, normal 20W and high 17.8W. So "eco" burns the most fuel per watt, not the least.
-Two fixes that keep normal at 75 a day and 1500W:
-- **(a)** Eco: -50% fuel, -33% heat → 37.5 a day for 1000W (26.7W per brick). High stays
-  +50% / +33%.
-- **(b)** Keep the fuel change at -33% but make eco's heat -20% → 50 a day for 1200W (24W per brick).
-
-**Open 2: the Stirling leftover numbers don't match the heat numbers.** Your notes say 450W,
-250W and 0W left over. Those only work out if the heat per mode is **750 / 1000 / 1500W**
-(750-300, 1000-750, 1500-1500). With 750 / 1500 / 2000W the leftover is 450 / 750 / 500W.
-Which set is right? If it's 750 / 1000 / 1500W, the modes are -50% / -33% / 0 on 1500W, and
-"normal" is really the middle mode, not the 1500W one.
 
 Decided: Stirling mode turns off when a turbine is on the network. An Overpressure Tank is still
 needed in Stirling mode, to take the leftover heat.
@@ -61,7 +62,7 @@ guesses, to be tuned in playtesting.
 | Fuel, normal | 100 / day | 75 / day |
 | Heat, normal | 1200W | 1500W |
 | Heat per brick a day | 12W | 20W |
-| Eco / Normal / High | same percentages as the baseline | |
+| Eco / Normal / High | same percentages: 600W on 40 / 1200W on 100 / 1600W on 150 | 750W on 30 / 1500W on 75 / 2000W on 112.5 |
 | Stirling power | 75 / 150 / 300W (3x that in heat, as the baseline) | 100 / 250 / 500W |
 | Room heat leak | about 25% of its heat | low, since it's insulated |
 | Pressure safety | no safety valve: at 100% it bursts and breaks down | safety valve vents |
@@ -77,15 +78,22 @@ CompBreakdownable's mean time between breakdowns.
 
 ## Overpressure Tank (the heat accumulator, renamed)
 
-- Decided: takes heat the turbines don't need. The more it holds, the higher the risk of a burst
-  or explosion. Pawns have to release steam now and then. This is how the accumulator works now:
-  the risk grows with fill and wear, and a pawn bleeds it with a job.
-- Decided: an **auto-release** setting keeps it safe, but vents a lot of heat into the room if
-  it's indoors. Proposed: it vents above a threshold you set (like the 25/50/75/100% reserve
-  levels), pushing the vented heat into its room.
-- Decided: our radiators, and DBH radiators when DBH is installed, can also draw pressure down.
-- Open: keep the reserve and buffer modes, or does the tank simply take what the turbines don't
-  use?
+One mode, no reserve or buffer setting (decided). In order of purpose:
+
+1. **Relieve pressure.** It takes whatever heat the turbines don't use, so the burners don't
+   build pressure.
+2. **Heat radiators.** Our radiators, and DBH radiators when DBH is installed, draw from what it
+   holds, which also draws its pressure down.
+3. **Reserve steam.** When the burners fall short (one breaks down, runs out of fuel or is
+   switched off), it feeds the turbines from what it holds.
+
+Hazards (decided): the fuller it is, the higher the risk of a burst or explosion. Pawns have to
+bleed it now and then (the current bleed job). Wear since the last bleed and a cobbled burner on
+the network raise the risk (as now).
+
+**Auto-release** (decided; threshold proposed): above a fill level you set (25/50/75/100%), it
+vents steam on its own, so it stays safe without pawns. The vented heat goes into its room, which
+gets hot fast indoors.
 
 ## Turbines
 
@@ -100,9 +108,13 @@ but needs more heat just to run:
 
 So one Trash Gasifier on Normal (1500W) runs a turbine in medium gear, and high gear takes two.
 
-**Open 3:** is there still a maximum heat per turbine, like today's 1500W? For example 3000W for
-low and medium and 6000W for high, or no cap? And below the gear's minimum, does the turbine
-stall at 0W (heat then goes on to the tank), or run at reduced efficiency?
+**Maximum heat** (decided): a turbine takes up to the heat of 3 burners on high. The steam turbine
+takes up to **6000W** (3 x 2000W) and the cobbled turbine up to **4800W** (3 x 1600W cobbled).
+Heat over the maximum goes on to radiators and the Overpressure Tank.
+
+**Below the gear's minimum** (proposed): the turbine stalls and makes nothing, and the heat goes
+on to the tank and radiators. That makes the gear a real choice: high gear is best, but only if
+you can keep 3000W flowing. Its readout says when it has stalled and which gear would run.
 
 **Cobbled Steam Turbine** (decided): one step worse in every gear, with the same minimum heat:
 
