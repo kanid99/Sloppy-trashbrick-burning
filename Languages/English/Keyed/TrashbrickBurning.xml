@@ -133,4 +133,6 @@
 	<STB_AlertToxicExhaust>Burner venting toxic exhaust</STB_AlertToxicExhaust>
 	<STB_AlertToxicExhaustDesc>These burners have no exhaust pipe to an open exhaust port, so they're letting their exhaust out around themselves as toxic gas.\n\nRun an exhaust pipe from under them to an exhaust port built outdoors.</STB_AlertToxicExhaustDesc>
 	<STB_FuelMix>Fuel mix burns dirty: x{0} ground pollution, x{1} toxic gas (against trashbricks)</STB_FuelMix>
+	<STB_AcceptWastepacks>Accept wastepacks</STB_AcceptWastepacks>
+	<STB_AcceptWastepacksDesc>If on, colonists and hoppers may feed this burner toxic wastepacks - worth half a trashbrick each, with eight times the toxic gas. Turn off to keep wastepacks out of it: it takes other fuel instead. Wastepacks already in it still burn.</STB_AcceptWastepacksDesc>
 </LanguageData>

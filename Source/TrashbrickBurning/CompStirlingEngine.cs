@@ -190,6 +190,11 @@ namespace TrashbrickBurning
         public float mixPollution = 1f;
         public float mixToxGas = 1f;
 
+        /// <summary>Whether colonists and hoppers may feed this burner toxic wastepacks.</summary>
+        public bool acceptWastepacks = true;
+
+        public const string WastepackDefName = "Wastepack";
+
         private bool venting;
 
         public CompProperties_StirlingEngine Props => (CompProperties_StirlingEngine)props;
@@ -282,6 +287,7 @@ namespace TrashbrickBurning
             Scribe_Values.Look(ref waterFlowing, "waterFlowing", false);
             Scribe_Values.Look(ref mixPollution, "mixPollution", 1f);
             Scribe_Values.Look(ref mixToxGas, "mixToxGas", 1f);
+            Scribe_Values.Look(ref acceptWastepacks, "acceptWastepacks", true);
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -403,6 +409,19 @@ namespace TrashbrickBurning
             }
         }
 
+        /// <summary>The burner's own say on a fuel, on top of its def's fuel filter.</summary>
+        public bool Accepts(ThingDef def) => acceptWastepacks || def == null || def.defName != WastepackDefName;
+
+        private bool FilterAllowsWastepacks
+        {
+            get
+            {
+                ThingDef wastepack = DefDatabase<ThingDef>.GetNamedSilentFail(WastepackDefName);
+                CompRefuelable fuel = parent.GetComp<CompRefuelable>();
+                return wastepack != null && fuel != null && fuel.Props.fuelFilter.Allows(wastepack);
+            }
+        }
+
         /// <summary>Blends fuel going in into the mix, weighted by fuel units.</summary>
         public void AddToMix(ThingDef def, float units)
         {
@@ -427,6 +446,17 @@ namespace TrashbrickBurning
             if (parent.Faction != Faction.OfPlayer)
             {
                 yield break;
+            }
+            if (FilterAllowsWastepacks)
+            {
+                yield return new Command_Toggle
+                {
+                    defaultLabel = "STB_AcceptWastepacks".Translate(),
+                    defaultDesc = "STB_AcceptWastepacksDesc".Translate(),
+                    icon = DefDatabase<ThingDef>.GetNamedSilentFail(WastepackDefName)?.uiIcon ?? TexCommand.ForbidOff,
+                    isActive = () => acceptWastepacks,
+                    toggleAction = () => acceptWastepacks = !acceptWastepacks
+                };
             }
             if (Advanced && DbhActive)
             {

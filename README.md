@@ -100,7 +100,7 @@ They always take the **dirty fuels**, which burn with **more toxic gas and less 
 | Loose trash (VRE) | 1.5 | x0.5 | x3 |
 | Toxic wastepack | 0.5 | x0.25 | x8 |
 
-Cleaning about 6 polluted cells makes one wastepack; burning it puts back a tiny fraction of a cell (about 0.008 in a cobbled gasifier) and a burst of toxic gas, so burning cleaned-up pollution can't loop. The fuel in a burner is a mix: its readout says how dirty the current mix burns. The fuel hopper takes them too.
+Cleaning about 6 polluted cells makes one wastepack; burning it puts back a tiny fraction of a cell (about 0.008 in a cobbled gasifier) and a burst of toxic gas, so burning cleaned-up pollution can't loop. The fuel in a burner is a mix: its readout says how dirty the current mix burns. The fuel hopper takes them too. Each burner has an **Accept wastepacks** toggle: off, colonists and hoppers bring it other fuel instead.
 
 ### Polish
 - **Effects:** smoke from the cobbled flue and the gasifier's stack, a flickering firebox glow, steam wisps from turbines, the gasifier's safety valve visibly venting, and a spinning cooling fan on each turbine while it makes power.

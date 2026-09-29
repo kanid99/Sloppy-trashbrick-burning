@@ -89,7 +89,8 @@ namespace TrashbrickBurning
                         return;
                     }
                     Thing thing = things[i];
-                    if (thing.def.category != ThingCategory.Item || !fuel.Props.fuelFilter.Allows(thing))
+                    if (thing.def.category != ThingCategory.Item || !fuel.Props.fuelFilter.Allows(thing)
+                        || !(parent.GetComp<CompStirlingEngine>()?.Accepts(thing.def) ?? true))
                     {
                         continue;
                     }

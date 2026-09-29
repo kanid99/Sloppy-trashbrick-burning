@@ -3,6 +3,7 @@ using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 
 namespace TrashbrickBurning
 {
@@ -37,6 +38,10 @@ namespace TrashbrickBurning
             {
                 Thing thing = fuelThings[fuelThings.Count - 1];
                 fuelThings.RemoveAt(fuelThings.Count - 1);
+                if (!engine.Accepts(thing.def))
+                {
+                    continue;
+                }
                 float value = Mathf.Max(0.01f, engine.Props.FuelValueOf(thing.def));
                 int count = Mathf.Min(thing.stackCount, Mathf.Max(1, Mathf.CeilToInt(room / value)));
                 engine.AddToMix(thing.def, count * value);
@@ -45,6 +50,43 @@ namespace TrashbrickBurning
                 room -= count * value;
             }
             return false;
+        }
+    }
+
+    /// <summary>
+    /// A burner set to refuse wastepacks: colonists look for other fuel instead. Vanilla's fuel
+    /// search only knows the def's filter, so a wastepack it picks is swapped for the nearest fuel
+    /// the burner does accept.
+    /// </summary>
+    [HarmonyPatch(typeof(RefuelWorkGiverUtility), "FindBestFuel")]
+    public static class Patch_RefuelWorkGiverUtility_FindBestFuel
+    {
+        public static void Postfix(Pawn pawn, Thing refuelable, ref Thing __result)
+        {
+            CompStirlingEngine engine = (refuelable as ThingWithComps)?.GetComp<CompStirlingEngine>();
+            CompRefuelable fuel = (refuelable as ThingWithComps)?.GetComp<CompRefuelable>();
+            if (engine == null || fuel == null || __result == null || engine.Accepts(__result.def))
+            {
+                return;
+            }
+            ThingFilter filter = fuel.Props.fuelFilter;
+            __result = GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, filter.BestThingRequest,
+                PathEndMode.ClosestTouch, TraverseParms.For(pawn), 9999f,
+                t => !t.IsForbidden(pawn) && pawn.CanReserve(t) && filter.Allows(t) && engine.Accepts(t.def));
+        }
+    }
+
+    /// <summary>The same, for the fuel list a multi-item refuel gathers.</summary>
+    [HarmonyPatch(typeof(RefuelWorkGiverUtility), "FindAllFuel")]
+    public static class Patch_RefuelWorkGiverUtility_FindAllFuel
+    {
+        public static void Postfix(Thing refuelable, ref List<Thing> __result)
+        {
+            CompStirlingEngine engine = (refuelable as ThingWithComps)?.GetComp<CompStirlingEngine>();
+            if (engine != null && __result != null)
+            {
+                __result.RemoveAll(t => !engine.Accepts(t.def));
+            }
         }
     }
 }

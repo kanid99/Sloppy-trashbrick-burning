@@ -58,6 +58,8 @@ God mode on, then build a **cobbled trash gasifier**. Give it trashbricks (debug
   *Fuel mix burns dirty: x0.5 ground pollution, x3 toxic gas* (trash) or x0.25 / x8 (wastepacks),
   and an unpiped burner gasses its room much faster. Refuelling with bricks brings the mix back
   toward x1. The fuel hopper accepts both.
+- [ ] **Accept wastepacks** off: with wastepacks and bricks both lying around, colonists refuel it
+  with bricks only, and a hopper full of wastepacks doesn't feed it. Back on, they use wastepacks again.
 - [ ] **Wall exhaust port:** replaces a wall cell like a cooler; an orange outline shows the cell it
   faces. Facing outdoors, that cell slowly pollutes and puffs smoke. Facing a room, it gasses the room.
 - [ ] **Shared cells:** lay exhaust pipe along the same cells as pressurised hot water pipe. Both
