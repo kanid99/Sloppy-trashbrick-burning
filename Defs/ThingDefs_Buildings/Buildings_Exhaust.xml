@@ -174,49 +174,54 @@
 		</researchPrerequisites>
 	</ThingDef>
 
-	<!-- The wall-mounted port: built into a wall like a cooler, it blows the exhaust out of its front. -->
+	<!--
+		The wall-mounted port: hung on a wall like a wall lamp or an over-the-wall unit, it lets the
+		exhaust out on the side it's hung on. Hang it on the outside of a wall and run the exhaust
+		pipe through under the wall to it.
+	-->
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_ExhaustPortWall</defName>
 		<label>wall exhaust port</label>
-		<description>An exhaust port built into a wall, like a cooler. It blows the fumes of burning trash out of its front face: the cell it faces slowly fills with pollution. Face it outdoors: facing a room, it fills that room with toxic gas. With several ports on one network, the exhaust is split between them. Its damper closes it. Run an exhaust pipe under the wall to connect it.</description>
+		<description>An exhaust duct hung on a wall. It blows the fumes of burning trash out on the side of the wall it's hung on: toxic gas, a little heat, and pollution slowly spreading over the ground below it. Hang it on the outside of a wall - on the inside it fills the room with toxic gas. With several ports on one network, the exhaust is split between them. Its damper closes it. Run an exhaust pipe to the cell it hangs over - pipe can go under the wall.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_ExhaustPortWall</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
 			<drawSize>(1.3,1.3)</drawSize>
+			<!-- Nudged onto the face of the wall it hangs on, as DBH's wall radiators are. -->
+			<drawOffsetNorth>(0,0,0.3)</drawOffsetNorth>
+			<drawOffsetSouth>(0,0,-0.3)</drawOffsetSouth>
+			<drawOffsetEast>(0.3,0,0)</drawOffsetEast>
+			<drawOffsetWest>(-0.3,0,0)</drawOffsetWest>
 		</graphicData>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<blockLight>true</blockLight>
-		<fillPercent>1</fillPercent>
-		<coversFloor>true</coversFloor>
-		<holdsRoof>true</holdsRoof>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-		<castEdgeShadows>true</castEdgeShadows>
-		<canOverlapZones>false</canOverlapZones>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
+		<passability>Standable</passability>
+		<fillPercent>0</fillPercent>
+		<castEdgeShadows>false</castEdgeShadows>
 		<rotatable>true</rotatable>
 		<size>(1,1)</size>
 		<tickerType>Rare</tickerType>
+		<clearBuildingArea>false</clearBuildingArea>
 		<statBases>
-			<MaxHitPoints>200</MaxHitPoints>
-			<WorkToBuild>800</WorkToBuild>
+			<MaxHitPoints>120</MaxHitPoints>
+			<WorkToBuild>600</WorkToBuild>
 			<Flammability>0</Flammability>
 			<Beauty>-5</Beauty>
 		</statBases>
 		<costList>
-			<Steel>40</Steel>
+			<Steel>35</Steel>
 		</costList>
 		<building>
-			<!-- Replaces a wall cell, like a cooler. -->
-			<canPlaceOverWall>true</canPlaceOverWall>
+			<!-- Hangs on the wall it faces, and comes down with it. -->
+			<isAttachment>true</isAttachment>
+			<isEdifice>false</isEdifice>
 		</building>
 		<comps>
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_ExhaustNet</pipeNet>
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_ExhaustPort">
-				<outletInFront>true</outletInFront>
+				<outletAtSelf>true</outletAtSelf>
 			</li>
 			<li Class="CompProperties_Flickable">
 				<commandTexture>Things/Building/Linked/STB_HotWaterValve</commandTexture>
@@ -227,10 +232,9 @@
 			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
 		</comps>
 		<placeWorkers>
-			<!-- Outlines the outlet cell it faces. -->
-			<li>TrashbrickBurning.PlaceWorker_SteamVent</li>
+			<li>Placeworker_AttachedToWall</li>
 		</placeWorkers>
-		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
 		<designationCategory>Power</designationCategory>
 		<constructEffect>ConstructMetal</constructEffect>
 		<researchPrerequisites>

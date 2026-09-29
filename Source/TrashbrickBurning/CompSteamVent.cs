@@ -11,8 +11,8 @@ namespace TrashbrickBurning
         /// <summary>The most heat it vents.</summary>
         public float maxWatts = 3000f;
 
-        /// <summary>Heat pushed into the plume cell per second for each watt vented. Radiators give 0.06.</summary>
-        public float heatPerWattSecond = 0.05f;
+        /// <summary>Heat pushed into the plume cell per second for each watt vented: a vanilla heater's rate, twice a radiator's.</summary>
+        public float heatPerWattSecond = 0.12f;
 
         /// <summary>Venting at least this much scalds anyone standing in the plume (hazards on).</summary>
         public float scaldAboveWatts = 500f;

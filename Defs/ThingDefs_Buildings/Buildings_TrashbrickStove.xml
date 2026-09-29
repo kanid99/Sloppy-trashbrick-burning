@@ -125,13 +125,14 @@
 			</li>
 			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
 			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
-			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. -->
+			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. Heat: the exhaust
+			     mildly warms wherever it comes out. -->
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_ExhaustNet</pipeNet>
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_Exhaust">
 				<pollutionPerFuel>0.06</pollutionPerFuel>
-				<toxGasPerFuel>60</toxGasPerFuel>
+				<toxGasPerFuel>300</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -262,13 +263,14 @@
 			</li>
 			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
 			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
-			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. -->
+			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. Heat: the exhaust
+			     mildly warms wherever it comes out. -->
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_ExhaustNet</pipeNet>
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_Exhaust">
 				<pollutionPerFuel>0.02</pollutionPerFuel>
-				<toxGasPerFuel>15</toxGasPerFuel>
+				<toxGasPerFuel>100</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -367,9 +369,9 @@
 				<cooledPowerFactor>1.2</cooledPowerFactor>
 				<heatRecoveryPowerFactor>0.5</heatRecoveryPowerFactor>
 				<heatLevels>
-					<li><key>Eco</key><watts>750</watts><fuelPerDay>22</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>20</waterPerDay></li>
-					<li><key>Normal</key><watts>1000</watts><fuelPerDay>31</fuelPerDay><roomHeatPerSecond>17</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>27</waterPerDay></li>
-					<li><key>High</key><watts>1500</watts><fuelPerDay>54</fuelPerDay><roomHeatPerSecond>30</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>40</waterPerDay></li>
+					<li><key>Eco</key><watts>750</watts><fuelPerDay>22</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>48</waterPerDay></li>
+					<li><key>Normal</key><watts>1000</watts><fuelPerDay>31</fuelPerDay><roomHeatPerSecond>17</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>96</waterPerDay></li>
+					<li><key>High</key><watts>1500</watts><fuelPerDay>54</fuelPerDay><roomHeatPerSecond>30</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>129</waterPerDay></li>
 				</heatLevels>
 				<!-- Jerry-rigged: no working safety valve. At full pressure it bursts. -->
 				<safetyValve>false</safetyValve>
@@ -405,13 +407,14 @@
 			</li>
 			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
 			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
-			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. -->
+			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. Heat: the exhaust
+			     mildly warms wherever it comes out. -->
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_ExhaustNet</pipeNet>
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_Exhaust">
 				<pollutionPerFuel>0.06</pollutionPerFuel>
-				<toxGasPerFuel>60</toxGasPerFuel>
+				<toxGasPerFuel>300</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -502,9 +505,9 @@
 				<cooledPowerFactor>1.2</cooledPowerFactor>
 				<heatRecoveryPowerFactor>0.6</heatRecoveryPowerFactor>
 				<heatLevels>
-					<li><key>Eco</key><watts>750</watts><fuelPerDay>11</fuelPerDay><roomHeatPerSecond>4.5</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>20</waterPerDay></li>
-					<li><key>Normal</key><watts>1000</watts><fuelPerDay>15</fuelPerDay><roomHeatPerSecond>7</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>27</waterPerDay></li>
-					<li><key>High</key><watts>1500</watts><fuelPerDay>24</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>40</waterPerDay></li>
+					<li><key>Eco</key><watts>750</watts><fuelPerDay>11</fuelPerDay><roomHeatPerSecond>4.5</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>60</waterPerDay></li>
+					<li><key>Normal</key><watts>1000</watts><fuelPerDay>15</fuelPerDay><roomHeatPerSecond>7</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>120</waterPerDay></li>
+					<li><key>High</key><watts>1500</watts><fuelPerDay>24</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>159</waterPerDay></li>
 				</heatLevels>
 				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
 				<safetyValve>true</safetyValve>
@@ -529,13 +532,14 @@
 			</li>
 			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
 			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
-			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. -->
+			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. Heat: the exhaust
+			     mildly warms wherever it comes out. -->
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_ExhaustNet</pipeNet>
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_Exhaust">
 				<pollutionPerFuel>0.02</pollutionPerFuel>
-				<toxGasPerFuel>15</toxGasPerFuel>
+				<toxGasPerFuel>100</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -630,9 +634,9 @@
 				<cooledPowerFactor>1.2</cooledPowerFactor>
 				<heatRecoveryPowerFactor>0.6</heatRecoveryPowerFactor>
 				<heatLevels>
-					<li><key>Eco</key><watts>1500</watts><fuelPerDay>20</fuelPerDay><roomHeatPerSecond>8</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>40</waterPerDay></li>
-					<li><key>Normal</key><watts>2250</watts><fuelPerDay>33</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>60</waterPerDay></li>
-					<li><key>High</key><watts>3000</watts><fuelPerDay>46</fuelPerDay><roomHeatPerSecond>20</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>80</waterPerDay></li>
+					<li><key>Eco</key><watts>1500</watts><fuelPerDay>20</fuelPerDay><roomHeatPerSecond>8</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>90</waterPerDay></li>
+					<li><key>Normal</key><watts>2250</watts><fuelPerDay>33</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>180</waterPerDay></li>
+					<li><key>High</key><watts>3000</watts><fuelPerDay>46</fuelPerDay><roomHeatPerSecond>20</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>240</waterPerDay></li>
 				</heatLevels>
 				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
 				<safetyValve>true</safetyValve>
@@ -657,13 +661,14 @@
 			</li>
 			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
 			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
-			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. -->
+			<!-- Exhaust: piped to an exhaust port, or let out around it as toxic gas. Heat: the exhaust
+			     mildly warms wherever it comes out. -->
 			<li Class="PipeSystem.CompProperties_Resource">
 				<pipeNet>STB_ExhaustNet</pipeNet>
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_Exhaust">
 				<pollutionPerFuel>0.02</pollutionPerFuel>
-				<toxGasPerFuel>15</toxGasPerFuel>
+				<toxGasPerFuel>100</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>

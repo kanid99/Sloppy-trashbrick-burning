@@ -60,8 +60,9 @@ God mode on, then build a **cobbled trash gasifier**. Give it trashbricks (debug
   toward x1. The fuel hopper accepts both.
 - [ ] **Accept wastepacks** off: with wastepacks and bricks both lying around, colonists refuel it
   with bricks only, and a hopper full of wastepacks doesn't feed it. Back on, they use wastepacks again.
-- [ ] **Wall exhaust port:** replaces a wall cell like a cooler; an orange outline shows the cell it
-  faces. Facing outdoors, that cell slowly pollutes and puffs smoke. Facing a room, it gasses the room.
+- [ ] **Wall exhaust port:** hangs on a wall (it won't place away from one) without replacing it,
+  drawn on the wall's face. Hung outside, gas drifts off and the ground below slowly pollutes. Hung
+  inside a closed room, toxic gas builds up quickly and the room warms a little.
 - [ ] **Shared cells:** lay exhaust pipe along the same cells as pressurised hot water pipe. Both
   build, and each links only to its own kind.
 - [ ] It (and the cobbled turbine and radiator) breaks down noticeably more often than vanilla

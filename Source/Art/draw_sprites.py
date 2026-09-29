@@ -1287,30 +1287,27 @@ def exhaust_port():
 
 
 def exhaust_port_wall(rot):
-    """1x1, built into a wall like the steam vent: the same heavy block, with a round soot-black
-    flue mouth on the face it blows out of (the front) and the exhaust line in at the back. No
-    accent - soot is the exhaust network's colour."""
+    """1x1, hung on a wall: the wall is on the front edge (f = 0, the side it faces, as vanilla's
+    wall-attachment placeworker wants), and the def nudges the sprite onto the wall's face. A
+    backing plate bolted to the wall, a squat duct standing off it, and a soot-black hooded mouth
+    blowing away from the wall. No accent - soot is the exhaust network's colour."""
     v = View(rot, 1, 1, 0.15)
     c = Canvas(v)
-    body = (112, 110, 108)
+    plate = (104, 102, 100)
+    duct = (118, 116, 112)
 
-    def top(box, lift):
-        c.dots([(p[0], p[1] - lift) for p in (v.pt(0.1, 0.55), v.pt(0.9, 0.55), v.pt(0.1, 0.9), v.pt(0.9, 0.9))],
-               0.02, shade(body, 1.22))
-        # Soot fanning back over the top from the mouth: tone steps, not outlines.
-        x0, y0, x1, y1 = v.rect(0.2, 0.04, 0.8, 0.5)
-        c.d.rectangle(c.box_px(x0, y0 - lift, x1, y1 - lift), fill=shade(body, 0.82) + (255,))
+    def plate_top(box, lift):
+        c.dots([(p[0], p[1] - lift) for p in (v.pt(0.14, 0.05), v.pt(0.86, 0.05))], 0.02, shade(plate, 1.25))
+    c.slab(0.06, 0.0, 0.94, 0.12, 0.0, 0.55, plate, radius=0.02, top_fn=plate_top)
 
-    c.slab(0.02, 0.02, 0.98, 0.98, 0.0, 0.25, body, chamfer=0.04, radius=0, top_fn=top)
-
-    def mouth(X, Y, R):
-        r = int(R * 0.7)
-        c.d.ellipse([X - r, Y - r - R // 10, X + r, Y + r - R // 10], fill=(30, 28, 26, 255))
-        r2 = int(R * 0.48)
-        c.d.ellipse([X - r2, Y - r2 - R // 14, X + r2, Y + r2 - R // 14], fill=(20, 19, 18, 255))
-    # The flue collar, standing proud of the block at the front.
-    c.cylinder(0.5, 0.26, 0.2, 0.25, 0.08, shade(STEEL, 0.95), wall=shade(SOOT, 1.2), rings=1, cap_fn=mouth)
-    c.pipe(0.5, 0.6, 0.5, 0.88, 0.25, 0.09, (88, 85, 82))
+    def duct_top(box, lift):
+        # Soot fanning from the mouth back over the top: tone steps, not outlines.
+        x0, y0, x1, y1 = v.rect(0.3, 0.36, 0.7, 0.6)
+        c.d.rectangle(c.box_px(x0, y0 - lift, x1, y1 - lift), fill=shade(duct, 0.8) + (255,))
+    c.slab(0.24, 0.1, 0.76, 0.62, 0.12, 0.34, duct, radius=0.04, chamfer=0.03, top_fn=duct_top)
+    # The hooded mouth on the far end of the duct: a dark slot under a lip.
+    c.slab(0.28, 0.58, 0.72, 0.7, 0.14, 0.26, (30, 28, 26), wall=(22, 21, 20), radius=0.02)
+    c.slab(0.22, 0.56, 0.78, 0.72, 0.4, 0.04, shade(duct, 1.1), radius=0.02)
     c.flush()
     c.save(f"{OUT}/Things/Building/Power/STB_ExhaustPortWall_{rot}.png")
 

@@ -77,8 +77,11 @@ namespace TrashbrickBurning
         /// <summary>Ground cells polluted per unit of fuel burnt (Biotech pollution).</summary>
         public float pollutionPerFuel = 0.05f;
 
-        /// <summary>Toxic gas released per unit of fuel burnt, wherever the exhaust ends up in a room.</summary>
-        public float toxGasPerFuel = 40f;
+        /// <summary>Toxic gas released per unit of fuel burnt, wherever the exhaust comes out.</summary>
+        public float toxGasPerFuel = 100f;
+
+        /// <summary>Heat the exhaust carries out of a port, per unit of fuel burnt: a mild warmth where it comes out.</summary>
+        public float heatPerFuel = 20f;
 
         public CompProperties_Exhaust()
         {
@@ -149,9 +152,10 @@ namespace TrashbrickBurning
             float gas = fuel * Props.toxGasPerFuel * mult * engine.mixToxGas;
             if (open.Count > 0)
             {
+                float heat = fuel * Props.heatPerFuel;
                 foreach (CompExhaustPort port in open)
                 {
-                    port.Receive(pollution / open.Count, gas / open.Count);
+                    port.Receive(pollution / open.Count, gas / open.Count, heat / open.Count);
                 }
                 return;
             }
@@ -163,11 +167,11 @@ namespace TrashbrickBurning
 
         /// <summary>Lets out whole units: ground pollution anywhere, toxic gas only under a roof or in a room.</summary>
         /// <summary>
-        /// Lets out whole units. With an outlet cell (a wall-mounted port), everything comes out
-        /// into that cell; otherwise around the thing itself. Ground pollution always; toxic gas
-        /// only indoors, unless alwaysGas (a burner gassing its own surroundings).
+        /// Lets out whole units. With an outlet cell (a wall-mounted port's own cell), everything
+        /// comes out there; otherwise into the cells around the thing. Ground pollution and toxic gas
+        /// wherever it is - outdoors the gas drifts off on its own, in a room it builds up.
         /// </summary>
-        public static void Emit(Thing at, IntVec3? outlet, ref float pollution, ref float gas, bool alwaysGas)
+        public static void Emit(Thing at, IntVec3? outlet, ref float pollution, ref float gas, bool alwaysGas = true)
         {
             Map map = at.Map;
             if (map == null)
@@ -227,8 +231,11 @@ namespace TrashbrickBurning
 
     public class CompProperties_ExhaustPort : CompProperties
     {
-        /// <summary>Wall-mounted: built into a wall, it lets the exhaust out into the cell it faces.</summary>
-        public bool outletInFront;
+        /// <summary>
+        /// Wall-mounted: hung on a wall, it lets the exhaust out into its own cell, on the side of the
+        /// wall it's hung on. Otherwise (the stack) into the cells around it.
+        /// </summary>
+        public bool outletAtSelf;
 
         public CompProperties_ExhaustPort()
         {
@@ -252,7 +259,7 @@ namespace TrashbrickBurning
         private CompProperties_ExhaustPort Props => (CompProperties_ExhaustPort)props;
 
         /// <summary>Where the exhaust comes out: the cell in front of a wall port, or null for around the stack.</summary>
-        public IntVec3? Outlet => Props.outletInFront ? parent.Position + parent.Rotation.FacingCell : (IntVec3?)null;
+        public IntVec3? Outlet => Props.outletAtSelf ? parent.Position : (IntVec3?)null;
 
         public bool Active => lastReceiveTick >= 0 && Find.TickManager.TicksGame - lastReceiveTick < GenTicks.TickRareInterval * 2;
 
@@ -263,13 +270,19 @@ namespace TrashbrickBurning
             Scribe_Values.Look(ref gasBuffer, "exhaustGas", 0f);
         }
 
-        public void Receive(float pollution, float gas)
+        /// <summary>Exhaust from the burners: pollution and gas out where it comes out, and a little heat.</summary>
+        public void Receive(float pollution, float gas, float heat)
         {
             pollutionBuffer += pollution;
             gasBuffer += gas;
             receivedToday = pollution * GenDate.TicksPerDay / GenTicks.TickRareInterval;
             lastReceiveTick = Find.TickManager.TicksGame;
-            CompExhaust.Emit(parent, Outlet, ref pollutionBuffer, ref gasBuffer, false);
+            IntVec3 cell = Outlet ?? parent.Position;
+            if (heat > 0f && cell.InBounds(parent.Map))
+            {
+                GenTemperature.PushHeat(cell, parent.Map, heat);
+            }
+            CompExhaust.Emit(parent, Outlet, ref pollutionBuffer, ref gasBuffer);
         }
 
         public override void PostDrawExtraSelectionOverlays()
