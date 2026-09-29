@@ -174,4 +174,69 @@
 		</researchPrerequisites>
 	</ThingDef>
 
+	<!-- The wall-mounted port: built into a wall like a cooler, it blows the exhaust out of its front. -->
+	<ThingDef ParentName="BuildingBase">
+		<defName>STB_ExhaustPortWall</defName>
+		<label>wall exhaust port</label>
+		<description>An exhaust port built into a wall, like a cooler. It blows the fumes of burning trash out of its front face: the cell it faces slowly fills with pollution. Face it outdoors: facing a room, it fills that room with toxic gas. With several ports on one network, the exhaust is split between them. Its damper closes it. Run an exhaust pipe under the wall to connect it.</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Power/STB_ExhaustPortWall</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<drawSize>(1.3,1.3)</drawSize>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<blockLight>true</blockLight>
+		<fillPercent>1</fillPercent>
+		<coversFloor>true</coversFloor>
+		<holdsRoof>true</holdsRoof>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<castEdgeShadows>true</castEdgeShadows>
+		<canOverlapZones>false</canOverlapZones>
+		<rotatable>true</rotatable>
+		<size>(1,1)</size>
+		<tickerType>Rare</tickerType>
+		<statBases>
+			<MaxHitPoints>200</MaxHitPoints>
+			<WorkToBuild>800</WorkToBuild>
+			<Flammability>0</Flammability>
+			<Beauty>-5</Beauty>
+		</statBases>
+		<costList>
+			<Steel>40</Steel>
+		</costList>
+		<building>
+			<!-- Replaces a wall cell, like a cooler. -->
+			<canPlaceOverWall>true</canPlaceOverWall>
+		</building>
+		<comps>
+			<li Class="PipeSystem.CompProperties_Resource">
+				<pipeNet>STB_ExhaustNet</pipeNet>
+			</li>
+			<li Class="TrashbrickBurning.CompProperties_ExhaustPort">
+				<outletInFront>true</outletInFront>
+			</li>
+			<li Class="CompProperties_Flickable">
+				<commandTexture>Things/Building/Linked/STB_HotWaterValve</commandTexture>
+				<commandLabelKey>STB_DamperLabel</commandLabelKey>
+				<commandDescKey>STB_DamperDesc</commandDescKey>
+			</li>
+			<!-- Build buttons for every other building in the mod (CompBuildShortcuts). -->
+			<li Class="TrashbrickBurning.CompProperties_BuildShortcuts"/>
+		</comps>
+		<placeWorkers>
+			<!-- Outlines the outlet cell it faces. -->
+			<li>TrashbrickBurning.PlaceWorker_SteamVent</li>
+		</placeWorkers>
+		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+		<designationCategory>Power</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<researchPrerequisites>
+			<li>Electricity</li>
+			<li>VRecyclingE_ComplexRecycling</li>
+		</researchPrerequisites>
+	</ThingDef>
+
 </Defs>

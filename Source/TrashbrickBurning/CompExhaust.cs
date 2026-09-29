@@ -156,14 +156,24 @@ namespace TrashbrickBurning
             ventingLocally = true;
             pollutionBuffer += pollution;
             gasBuffer += gas;
-            Emit(parent, ref pollutionBuffer, ref gasBuffer, true);
+            Emit(parent, null, ref pollutionBuffer, ref gasBuffer, true);
         }
 
         /// <summary>Lets out whole units: ground pollution anywhere, toxic gas only under a roof or in a room.</summary>
-        public static void Emit(Thing at, ref float pollution, ref float gas, bool alwaysGas)
+        /// <summary>
+        /// Lets out whole units. With an outlet cell (a wall-mounted port), everything comes out
+        /// into that cell; otherwise around the thing itself. Ground pollution always; toxic gas
+        /// only indoors, unless alwaysGas (a burner gassing its own surroundings).
+        /// </summary>
+        public static void Emit(Thing at, IntVec3? outlet, ref float pollution, ref float gas, bool alwaysGas)
         {
             Map map = at.Map;
             if (map == null)
+            {
+                return;
+            }
+            IntVec3 cell = outlet ?? at.Position;
+            if (!cell.InBounds(map))
             {
                 return;
             }
@@ -171,22 +181,30 @@ namespace TrashbrickBurning
             {
                 int cells = (int)pollution;
                 pollution -= cells;
-                PollutionUtility.GrowPollutionAt(at.Position, map, cells);
+                PollutionUtility.GrowPollutionAt(cell, map, cells);
             }
             if (gas >= 1f)
             {
                 int amount = (int)gas;
                 gas -= amount;
-                Room room = at.GetRoom();
+                Room room = outlet.HasValue ? cell.GetRoom(map) : at.GetRoom();
                 bool indoors = room != null && !room.PsychologicallyOutdoors;
                 if (alwaysGas || indoors)
                 {
-                    ExhaustNetwork.ReleaseToxGas(at, amount);
+                    if (outlet.HasValue && !cell.Impassable(map))
+                    {
+                        GasUtility.AddGas(cell, map, GasType.ToxGas, amount);
+                    }
+                    else
+                    {
+                        ExhaustNetwork.ReleaseToxGas(at, amount);
+                    }
                 }
             }
             if (Rand.Chance(0.7f))
             {
-                FleckMaker.ThrowSmoke(at.TrueCenter(), map, Rand.Range(0.8f, 1.4f));
+                Vector3 smoke = outlet.HasValue ? cell.ToVector3Shifted() : at.TrueCenter();
+                FleckMaker.ThrowSmoke(smoke, map, Rand.Range(0.8f, 1.4f));
             }
         }
 
@@ -207,6 +225,9 @@ namespace TrashbrickBurning
 
     public class CompProperties_ExhaustPort : CompProperties
     {
+        /// <summary>Wall-mounted: built into a wall, it lets the exhaust out into the cell it faces.</summary>
+        public bool outletInFront;
+
         public CompProperties_ExhaustPort()
         {
             compClass = typeof(CompExhaustPort);
@@ -226,6 +247,11 @@ namespace TrashbrickBurning
 
         public bool Open => parent.Spawned && FlickUtility.WantsToBeOn(parent);
 
+        private CompProperties_ExhaustPort Props => (CompProperties_ExhaustPort)props;
+
+        /// <summary>Where the exhaust comes out: the cell in front of a wall port, or null for around the stack.</summary>
+        public IntVec3? Outlet => Props.outletInFront ? parent.Position + parent.Rotation.FacingCell : (IntVec3?)null;
+
         public bool Active => lastReceiveTick >= 0 && Find.TickManager.TicksGame - lastReceiveTick < GenTicks.TickRareInterval * 2;
 
         public override void PostExposeData()
@@ -241,7 +267,16 @@ namespace TrashbrickBurning
             gasBuffer += gas;
             receivedToday = pollution * GenDate.TicksPerDay / GenTicks.TickRareInterval;
             lastReceiveTick = Find.TickManager.TicksGame;
-            CompExhaust.Emit(parent, ref pollutionBuffer, ref gasBuffer, false);
+            CompExhaust.Emit(parent, Outlet, ref pollutionBuffer, ref gasBuffer, false);
+        }
+
+        public override void PostDrawExtraSelectionOverlays()
+        {
+            base.PostDrawExtraSelectionOverlays();
+            if (Outlet.HasValue)
+            {
+                GenDraw.DrawFieldEdges(new List<IntVec3> { Outlet.Value }, PlaceWorker_SteamVent.PlumeColor);
+            }
         }
 
         public override string CompInspectStringExtra()
@@ -250,7 +285,7 @@ namespace TrashbrickBurning
             {
                 return "STB_PortIdle".Translate();
             }
-            Room room = parent.GetRoom();
+            Room room = Outlet.HasValue ? Outlet.Value.GetRoom(parent.Map) : parent.GetRoom();
             string s = "STB_PortActive".Translate(receivedToday.ToString("0.#"));
             if (room != null && !room.PsychologicallyOutdoors)
             {

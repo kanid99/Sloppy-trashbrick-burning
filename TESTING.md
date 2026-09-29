@@ -54,6 +54,10 @@ God mode on, then build a **cobbled trash gasifier**. Give it trashbricks (debug
 - [ ] An exhaust port built **indoors** gasses its room instead, and says so. Its **damper** closes it:
   with no other open port, the exhaust goes back to gassing the burner's room.
 - [ ] A trash gasifier makes noticeably less gas and pollution than the cobbled one.
+- [ ] **Wall exhaust port:** replaces a wall cell like a cooler; an orange outline shows the cell it
+  faces. Facing outdoors, that cell slowly pollutes and puffs smoke. Facing a room, it gasses the room.
+- [ ] **Shared cells:** lay exhaust pipe along the same cells as pressurised hot water pipe. Both
+  build, and each links only to its own kind.
 - [ ] It (and the cobbled turbine and radiator) breaks down noticeably more often than vanilla
   machines.
 

@@ -1286,6 +1286,35 @@ def exhaust_port():
     c.save(f"{OUT}/Things/Building/Power/STB_ExhaustPort.png")
 
 
+def exhaust_port_wall(rot):
+    """1x1, built into a wall like the steam vent: the same heavy block, with a round soot-black
+    flue mouth on the face it blows out of (the front) and the exhaust line in at the back. No
+    accent - soot is the exhaust network's colour."""
+    v = View(rot, 1, 1, 0.15)
+    c = Canvas(v)
+    body = (112, 110, 108)
+
+    def top(box, lift):
+        c.dots([(p[0], p[1] - lift) for p in (v.pt(0.1, 0.55), v.pt(0.9, 0.55), v.pt(0.1, 0.9), v.pt(0.9, 0.9))],
+               0.02, shade(body, 1.22))
+        # Soot fanning back over the top from the mouth: tone steps, not outlines.
+        x0, y0, x1, y1 = v.rect(0.2, 0.04, 0.8, 0.5)
+        c.d.rectangle(c.box_px(x0, y0 - lift, x1, y1 - lift), fill=shade(body, 0.82) + (255,))
+
+    c.slab(0.02, 0.02, 0.98, 0.98, 0.0, 0.25, body, chamfer=0.04, radius=0, top_fn=top)
+
+    def mouth(X, Y, R):
+        r = int(R * 0.7)
+        c.d.ellipse([X - r, Y - r - R // 10, X + r, Y + r - R // 10], fill=(30, 28, 26, 255))
+        r2 = int(R * 0.48)
+        c.d.ellipse([X - r2, Y - r2 - R // 14, X + r2, Y + r2 - R // 14], fill=(20, 19, 18, 255))
+    # The flue collar, standing proud of the block at the front.
+    c.cylinder(0.5, 0.26, 0.2, 0.25, 0.08, shade(STEEL, 0.95), wall=shade(SOOT, 1.2), rings=1, cap_fn=mouth)
+    c.pipe(0.5, 0.6, 0.5, 0.88, 0.25, 0.09, (88, 85, 82))
+    c.flush()
+    c.save(f"{OUT}/Things/Building/Power/STB_ExhaustPortWall_{rot}.png")
+
+
 if __name__ == "__main__":
     for r in ROTS:
         cobbled_stove(r)
@@ -1295,6 +1324,7 @@ if __name__ == "__main__":
         industrial_gasifier(r)
         fuel_hopper(r)
         steam_vent(r)
+        exhaust_port_wall(r)
         steam_turbine(r)
         cobbled_turbine(r)
     hot_water_pipe()

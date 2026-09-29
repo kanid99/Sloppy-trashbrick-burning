@@ -85,7 +85,7 @@ A burner's heat goes, in order:
 
 ### Exhaust and pollution
 Burning trash makes exhaust, in both play modes. It has to go somewhere:
-- **Exhaust pipe** (visible and hidden, one architect button) carries it to an **exhaust port**: a 1x1 soot-black stack (Electricity: 30 steel). Build the port outdoors; the ground around it slowly fills with pollution (Biotech's pollution). A port indoors gasses its room. Several ports on one network share the exhaust; a port's **damper** closes it.
+- **Exhaust pipe** (visible and hidden, one architect button) carries it to an **exhaust port**: a 1x1 soot-black stack (Electricity: 30 steel). Build the port outdoors; the ground around it slowly fills with pollution (Biotech's pollution). A port indoors gasses its room. Several ports on one network share the exhaust; a port's **damper** closes it. A **wall exhaust port** (40 steel) is built into a wall like a cooler and blows the exhaust out of its front face instead: face it outdoors. Exhaust pipe and pressurised hot water pipe are separate networks and can share a cell.
 - **No exhaust pipe to an open port:** the burner lets its exhaust out around itself - **toxic gas** into the cells around it, and pollution on the ground there. Its readout says *EXHAUST* in capitals and a **Burner venting toxic exhaust** alert fires.
 - **How much:** by fuel burnt. The cobbled gasifier is dirty (0.06 polluted cells and 60 units of toxic gas per brick - about 6 cells a day on normal); the trash gasifier's filters cut that to a third of the pollution and a quarter of the gas. The large and industrial burners follow their tier. A settings slider scales it.
 

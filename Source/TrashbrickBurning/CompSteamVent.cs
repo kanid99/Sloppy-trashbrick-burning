@@ -23,7 +23,7 @@ namespace TrashbrickBurning
         }
     }
 
-    /// <summary>Shows the plume cell - the one the vent faces - while placing it.</summary>
+    /// <summary>Shows the plume cell - the one a steam vent or wall exhaust port faces - while placing it.</summary>
     public class PlaceWorker_SteamVent : PlaceWorker
     {
         public static readonly Color PlumeColor = new Color(0.9f, 0.45f, 0.3f);

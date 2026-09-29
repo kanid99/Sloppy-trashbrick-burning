@@ -30,7 +30,7 @@ namespace TrashbrickBurning
             "STB_FuelHopper",
             "STB_TrashbrickPelletStove", "STB_TrashbrickGasifier",
             "STB_LargeCobbledStove", "STB_LargeGasifier", "STB_IndustrialGasifier",
-            "STB_ExhaustPipe", "STB_ExhaustPipeHidden", "STB_ExhaustPort",
+            "STB_ExhaustPipe", "STB_ExhaustPipeHidden", "STB_ExhaustPort", "STB_ExhaustPortWall",
             "STB_HotWaterPipe", "STB_HotWaterPipeHidden", "STB_HotWaterValve",
             "STB_CobbledTurbine", "STB_SteamTurbine",
             "STB_HeatAccumulator", "STB_SteamVent",
