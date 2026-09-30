@@ -9,7 +9,7 @@ namespace TrashbrickBurning
     /// Keep in step with modVersion in About/About.xml.</summary>
     public static class BuildInfo
     {
-        public const string Version = "0.9.1";
+        public const string Version = "0.9.2";
     }
 
     public class TrashbrickSettings : ModSettings
@@ -173,7 +173,7 @@ namespace TrashbrickBurning
             ThingDef hopper = DefDatabase<ThingDef>.GetNamedSilentFail("STB_FuelHopper");
             if (hopper?.building != null)
             {
-                foreach (string name in new[] { "WoodLog", "Chemfuel", "Hay", "Cloth", "Bioferrite" })
+                foreach (string name in new[] { "WoodLog", "Chemfuel", "Hay", "Cloth", "Bioferrite", "VCHE_Deepchem" })
                 {
                     ThingDef other = DefDatabase<ThingDef>.GetNamedSilentFail(name);
                     if (other != null)

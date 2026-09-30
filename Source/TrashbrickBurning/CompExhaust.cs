@@ -53,16 +53,20 @@ namespace TrashbrickBurning
         /// overflow everything past that is thrown away, so a steady stream into one cell never built
         /// up. With it, the excess floods out into the cells around, as a real leak would.
         /// </summary>
-        public static void AddToxGas(IntVec3 cell, Map map, int amount)
+        public static void AddToxGas(IntVec3 cell, Map map, int amount) => AddGas(cell, map, GasType.ToxGas, amount);
+
+        public static void AddGas(IntVec3 cell, Map map, GasType type, int amount)
         {
             if (amount > 0 && cell.InBounds(map))
             {
-                map.gasGrid.AddGas(cell, GasType.ToxGas, amount, true);
+                map.gasGrid.AddGas(cell, type, amount, true);
             }
         }
 
-        /// <summary>Toxic gas into a cell next to the source that gas can occupy.</summary>
-        public static void ReleaseToxGas(Thing source, int amount)
+        public static void ReleaseToxGas(Thing source, int amount) => ReleaseGas(source, GasType.ToxGas, amount);
+
+        /// <summary>Gas into a cell next to the source that gas can occupy.</summary>
+        public static void ReleaseGas(Thing source, GasType type, int amount)
         {
             Map map = source.Map;
             if (map == null || amount <= 0)
@@ -81,7 +85,7 @@ namespace TrashbrickBurning
             {
                 return;
             }
-            AddToxGas(cells.RandomElement(), map, amount);
+            AddGas(cells.RandomElement(), map, type, amount);
         }
     }
 
@@ -113,6 +117,7 @@ namespace TrashbrickBurning
 
         private float pollutionBuffer;
         private float gasBuffer;
+        private float rotBuffer;
         private int ports;
         private bool ventingLocally;
 
@@ -131,6 +136,7 @@ namespace TrashbrickBurning
             base.PostExposeData();
             Scribe_Values.Look(ref pollutionBuffer, "exhaustPollution", 0f);
             Scribe_Values.Look(ref gasBuffer, "exhaustGas", 0f);
+            Scribe_Values.Look(ref rotBuffer, "exhaustRot", 0f);
         }
 
         public override void CompTick()
@@ -163,28 +169,30 @@ namespace TrashbrickBurning
             // Dirtier fuel mixes (wastepacks, loose trash) make more gas and less ground pollution.
             float pollution = fuel * Props.pollutionPerFuel * mult * engine.mixPollution;
             float gas = fuel * Props.toxGasPerFuel * mult * engine.mixToxGas;
+            // Burnt corpses: rot stink, scaled off the same toxic gas figure.
+            float rot = fuel * Props.toxGasPerFuel * mult * engine.mixRotStink;
             if (open.Count > 0)
             {
                 float heat = fuel * Props.heatPerFuel;
                 foreach (CompExhaustPort port in open)
                 {
-                    port.Receive(pollution / open.Count, gas / open.Count, heat / open.Count);
+                    port.Receive(pollution / open.Count, gas / open.Count, heat / open.Count, rot / open.Count);
                 }
                 return;
             }
             ventingLocally = true;
             pollutionBuffer += pollution;
             gasBuffer += gas;
-            Emit(parent, null, ref pollutionBuffer, ref gasBuffer, true);
+            rotBuffer += rot;
+            Emit(parent, null, ref pollutionBuffer, ref gasBuffer, ref rotBuffer, true);
         }
 
-        /// <summary>Lets out whole units: ground pollution anywhere, toxic gas only under a roof or in a room.</summary>
         /// <summary>
         /// Lets out whole units. With an outlet cell (a wall-mounted port's own cell), everything
-        /// comes out there; otherwise into the cells around the thing. Ground pollution and toxic gas
+        /// comes out there; otherwise into the cells around the thing. Ground pollution, toxic gas and rot stink
         /// wherever it is - outdoors the gas drifts off on its own, in a room it builds up.
         /// </summary>
-        public static void Emit(Thing at, IntVec3? outlet, ref float pollution, ref float gas, bool alwaysGas = true)
+        public static void Emit(Thing at, IntVec3? outlet, ref float pollution, ref float gas, ref float rot, bool alwaysGas = true)
         {
             Map map = at.Map;
             if (map == null)
@@ -202,28 +210,36 @@ namespace TrashbrickBurning
                 pollution -= cells;
                 PollutionUtility.GrowPollutionAt(cell, map, cells);
             }
-            if (gas >= 1f)
-            {
-                int amount = (int)gas;
-                gas -= amount;
-                Room room = outlet.HasValue ? cell.GetRoom(map) : at.GetRoom();
-                bool indoors = room != null && !room.PsychologicallyOutdoors;
-                if (alwaysGas || indoors)
-                {
-                    if (outlet.HasValue && !cell.Impassable(map))
-                    {
-                        ExhaustNetwork.AddToxGas(cell, map, amount);
-                    }
-                    else
-                    {
-                        ExhaustNetwork.ReleaseToxGas(at, amount);
-                    }
-                }
-            }
+            EmitGas(at, outlet, cell, map, GasType.ToxGas, ref gas, alwaysGas);
+            EmitGas(at, outlet, cell, map, GasType.RotStink, ref rot, alwaysGas);
             if (Rand.Chance(0.7f))
             {
                 Vector3 smoke = outlet.HasValue ? cell.ToVector3Shifted() : at.TrueCenter();
                 FleckMaker.ThrowSmoke(smoke, map, Rand.Range(0.8f, 1.4f));
+            }
+        }
+
+        private static void EmitGas(Thing at, IntVec3? outlet, IntVec3 cell, Map map, GasType type, ref float gas, bool alwaysGas)
+        {
+            if (gas < 1f)
+            {
+                return;
+            }
+            int amount = (int)gas;
+            gas -= amount;
+            Room room = outlet.HasValue ? cell.GetRoom(map) : at.GetRoom();
+            bool indoors = room != null && !room.PsychologicallyOutdoors;
+            if (!alwaysGas && !indoors)
+            {
+                return;
+            }
+            if (outlet.HasValue && !cell.Impassable(map))
+            {
+                ExhaustNetwork.AddGas(cell, map, type, amount);
+            }
+            else
+            {
+                ExhaustNetwork.ReleaseGas(at, type, amount);
             }
         }
 
@@ -264,6 +280,7 @@ namespace TrashbrickBurning
     {
         private float pollutionBuffer;
         private float gasBuffer;
+        private float rotBuffer;
         private float receivedToday;
         private int lastReceiveTick = -1;
 
@@ -296,13 +313,15 @@ namespace TrashbrickBurning
             base.PostExposeData();
             Scribe_Values.Look(ref pollutionBuffer, "exhaustPollution", 0f);
             Scribe_Values.Look(ref gasBuffer, "exhaustGas", 0f);
+            Scribe_Values.Look(ref rotBuffer, "exhaustRot", 0f);
         }
 
-        /// <summary>Exhaust from the burners: pollution and gas out where it comes out, and a little heat.</summary>
-        public void Receive(float pollution, float gas, float heat)
+        /// <summary>Exhaust from the burners: pollution, gas and rot stink out where it comes out, and a little heat.</summary>
+        public void Receive(float pollution, float gas, float heat, float rot = 0f)
         {
             pollutionBuffer += pollution;
             gasBuffer += gas;
+            rotBuffer += rot;
             receivedToday = pollution * GenDate.TicksPerDay / GenTicks.TickRareInterval;
             lastReceiveTick = Find.TickManager.TicksGame;
             IntVec3 cell = Outlet ?? parent.Position;
@@ -310,7 +329,7 @@ namespace TrashbrickBurning
             {
                 GenTemperature.PushHeat(cell, parent.Map, heat);
             }
-            CompExhaust.Emit(parent, Outlet, ref pollutionBuffer, ref gasBuffer);
+            CompExhaust.Emit(parent, Outlet, ref pollutionBuffer, ref gasBuffer, ref rotBuffer);
         }
 
         public override void PostDrawExtraSelectionOverlays()

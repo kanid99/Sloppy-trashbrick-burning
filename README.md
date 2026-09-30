@@ -116,10 +116,15 @@ Burners take more than trashbricks. Each fuel is counted at its own value (a Har
 | Hay | 0.15 | x0.2 | x0.4 | refuse it |
 | Cloth | 0.25 | x0.5 | x1.5 | refuse it |
 | Bioferrite (Anomaly) | 4 | x1 | x2 | refuse it |
+| Deepchem (Vanilla Chemfuel Expanded) | 3 | x4 | x5 | refuse it |
+| Humanlike corpses | 1.5 per body size | x0.3 | x0.3, plus **rot stink x6** | refuse them |
+| Animal and insect corpses | 1.5 per body size | x0.3 | x0.3, plus **rot stink x6** | refuse them |
 | Sludge pellets (with DBH) | 1 | x1 | x1 | take it |
 
-- **Fuels menu:** every burner has a **Fuels** button listing what it can burn, with each fuel's worth and exhaust. Click a fuel to switch it on or off: colonists and hoppers only bring it what's on. At the top, **Anything** switches every fuel on and **Trashbricks only** switches the rest off. Hay, cloth and bioferrite start off, so nobody burns your fodder, tailoring stock or bioferrite unasked. **Sync burners** copies the choices.
-- **Setting:** *Burners also take wood, chemfuel, hay, cloth and bioferrite* (on by default, restart to apply) removes those from every burner. Loose trash and wastepacks always burn.
+- **Fuels menu:** every burner has a **Fuels** button listing what it can burn, with each fuel's worth and exhaust. Click a fuel to switch it on or off: colonists and hoppers only bring it what's on. At the top, **Anything** switches every fuel on and **Trashbricks only** switches the rest off. Hay, cloth, bioferrite, deepchem and corpses start off, so nobody burns your fodder, tailoring stock, bioferrite, refinery feedstock or dead unasked. Fuels added by a later version, or by a mod you switch on later, start off on burners you've already built too. **Sync burners** copies the choices.
+- **Deepchem** refines 1:2 into chemfuel (5 bricks' worth), so burning it raw wastes some - and it's the filthiest fuel there is.
+- **Corpses** are stripped as they go in (clothes, weapon and inventory drop at the burner) and burn with a huge cloud of **rot stink** on top of a little toxic gas: about 9,000 rot stink per human in a cobbled gasifier, more in the big burners. It goes down the exhaust like the rest, so pipe it to a port somewhere downwind. Mechanoid corpses don't burn.
+- **Setting:** *Burners also take wood, chemfuel, deepchem, hay, cloth and bioferrite* (on by default, restart to apply) removes those from every burner. Loose trash and wastepacks always burn.
 - The fuel hopper holds all of them; hay, cloth and bioferrite are off in a new hopper's storage settings.
 
 Cleaning about 6 polluted cells makes one wastepack; burning it puts back a tiny fraction of a cell (about 0.008 in a cobbled gasifier) and a burst of toxic gas, so burning cleaned-up pollution can't loop. The fuel in a burner is a mix: its readout says how dirty the current mix burns. The fuel hopper takes them too.

@@ -57,11 +57,18 @@
 						<li>Hay</li>
 						<li>Cloth</li>
 						<li MayRequire="Ludeon.RimWorld.Anomaly">Bioferrite</li>
+						<li MayRequire="VanillaExpanded.VChemfuelE">VCHE_Deepchem</li>
 						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
 						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
 						<li>VRecyclingE_Trash</li>
 						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
+					<!-- Corpses: off on every burner until allowed on its Fuels menu. Mechanoids don't burn. -->
+					<categories>
+						<li>CorpsesHumanlike</li>
+						<li>CorpsesAnimal</li>
+						<li>CorpsesInsect</li>
+					</categories>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 				<!-- CompStirlingEngine burns the fuel, at a rate that depends on the play mode and burn rate. -->
@@ -105,12 +112,19 @@
 					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<!-- Vanilla Chemfuel Expanded's raw deepchem: refines 1:2 into chemfuel (5 bricks' worth), so
+					     burning it raw wastes some and is filthy. -->
+					<li MayRequire="VanillaExpanded.VChemfuelE"><thing>VCHE_Deepchem</thing><value>3</value><pollutionFactor>4</pollutionFactor><toxGasFactor>5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
 					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
 					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
 					     ground pollution, and a lot of toxic gas. -->
 					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
+				<!-- Corpses (per unit of body size - a human is 1): little heat, little toxic gas, and a
+				     great deal of rot stink. Humanlike and animal corpses are separate on the Fuels menu,
+				     both refused until allowed. -->
+				<corpseFuel><value>1.5</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
 			</li>
 			<!-- Smoke from the flue, a flickering fire window, and the rattle. Points are in the art's
 			     own machine coordinates (a across the front, f front to back, z up). -->
@@ -216,11 +230,18 @@
 						<li>Hay</li>
 						<li>Cloth</li>
 						<li MayRequire="Ludeon.RimWorld.Anomaly">Bioferrite</li>
+						<li MayRequire="VanillaExpanded.VChemfuelE">VCHE_Deepchem</li>
 						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
 						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
 						<li>VRecyclingE_Trash</li>
 						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
+					<!-- Corpses: off on every burner until allowed on its Fuels menu. Mechanoids don't burn. -->
+					<categories>
+						<li>CorpsesHumanlike</li>
+						<li>CorpsesAnimal</li>
+						<li>CorpsesInsect</li>
+					</categories>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 				<!-- CompStirlingEngine burns the fuel, at a rate that depends on the play mode and burn rate. -->
@@ -261,12 +282,19 @@
 					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<!-- Vanilla Chemfuel Expanded's raw deepchem: refines 1:2 into chemfuel (5 bricks' worth), so
+					     burning it raw wastes some and is filthy. -->
+					<li MayRequire="VanillaExpanded.VChemfuelE"><thing>VCHE_Deepchem</thing><value>3</value><pollutionFactor>4</pollutionFactor><toxGasFactor>5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
 					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
 					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
 					     ground pollution, and a lot of toxic gas. -->
 					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
+				<!-- Corpses (per unit of body size - a human is 1): little heat, little toxic gas, and a
+				     great deal of rot stink. Humanlike and animal corpses are separate on the Fuels menu,
+				     both refused until allowed. -->
+				<corpseFuel><value>1.5</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
 			</li>
 			<!-- Steam wisps from the exhaust stack, where the safety valve vents too. -->
 			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
@@ -357,11 +385,18 @@
 						<li>Hay</li>
 						<li>Cloth</li>
 						<li MayRequire="Ludeon.RimWorld.Anomaly">Bioferrite</li>
+						<li MayRequire="VanillaExpanded.VChemfuelE">VCHE_Deepchem</li>
 						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
 						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
 						<li>VRecyclingE_Trash</li>
 						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
+					<!-- Corpses: off on every burner until allowed on its Fuels menu. Mechanoids don't burn. -->
+					<categories>
+						<li>CorpsesHumanlike</li>
+						<li>CorpsesAnimal</li>
+						<li>CorpsesInsect</li>
+					</categories>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 				<!-- CompStirlingEngine burns the fuel, at a rate that depends on the play mode and burn rate. -->
@@ -405,12 +440,19 @@
 					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<!-- Vanilla Chemfuel Expanded's raw deepchem: refines 1:2 into chemfuel (5 bricks' worth), so
+					     burning it raw wastes some and is filthy. -->
+					<li MayRequire="VanillaExpanded.VChemfuelE"><thing>VCHE_Deepchem</thing><value>3</value><pollutionFactor>4</pollutionFactor><toxGasFactor>5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
 					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
 					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
 					     ground pollution, and a lot of toxic gas. -->
 					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
+				<!-- Corpses (per unit of body size - a human is 1): little heat, little toxic gas, and a
+				     great deal of rot stink. Humanlike and animal corpses are separate on the Fuels menu,
+				     both refused until allowed. -->
+				<corpseFuel><value>1.5</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
 			</li>
 			<!-- Smoke from the flue, a flickering fire window, and the rattle. Points are in the art's
 			     own machine coordinates (a across the front, f front to back, z up). -->
@@ -504,11 +546,18 @@
 						<li>Hay</li>
 						<li>Cloth</li>
 						<li MayRequire="Ludeon.RimWorld.Anomaly">Bioferrite</li>
+						<li MayRequire="VanillaExpanded.VChemfuelE">VCHE_Deepchem</li>
 						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
 						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
 						<li>VRecyclingE_Trash</li>
 						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
+					<!-- Corpses: off on every burner until allowed on its Fuels menu. Mechanoids don't burn. -->
+					<categories>
+						<li>CorpsesHumanlike</li>
+						<li>CorpsesAnimal</li>
+						<li>CorpsesInsect</li>
+					</categories>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 				<!-- CompStirlingEngine burns the fuel, at a rate that depends on the play mode and burn rate. -->
@@ -550,12 +599,19 @@
 					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<!-- Vanilla Chemfuel Expanded's raw deepchem: refines 1:2 into chemfuel (5 bricks' worth), so
+					     burning it raw wastes some and is filthy. -->
+					<li MayRequire="VanillaExpanded.VChemfuelE"><thing>VCHE_Deepchem</thing><value>3</value><pollutionFactor>4</pollutionFactor><toxGasFactor>5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
 					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
 					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
 					     ground pollution, and a lot of toxic gas. -->
 					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
+				<!-- Corpses (per unit of body size - a human is 1): little heat, little toxic gas, and a
+				     great deal of rot stink. Humanlike and animal corpses are separate on the Fuels menu,
+				     both refused until allowed. -->
+				<corpseFuel><value>1.5</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
 			</li>
 			<!-- Steam wisps from the exhaust stack, where the safety valve vents too. -->
 			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
@@ -642,11 +698,18 @@
 						<li>Hay</li>
 						<li>Cloth</li>
 						<li MayRequire="Ludeon.RimWorld.Anomaly">Bioferrite</li>
+						<li MayRequire="VanillaExpanded.VChemfuelE">VCHE_Deepchem</li>
 						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
 						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
 						<li>VRecyclingE_Trash</li>
 						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
+					<!-- Corpses: off on every burner until allowed on its Fuels menu. Mechanoids don't burn. -->
+					<categories>
+						<li>CorpsesHumanlike</li>
+						<li>CorpsesAnimal</li>
+						<li>CorpsesInsect</li>
+					</categories>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 				<!-- CompStirlingEngine burns the fuel, at a rate that depends on the play mode and burn rate. -->
@@ -688,12 +751,19 @@
 					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<!-- Vanilla Chemfuel Expanded's raw deepchem: refines 1:2 into chemfuel (5 bricks' worth), so
+					     burning it raw wastes some and is filthy. -->
+					<li MayRequire="VanillaExpanded.VChemfuelE"><thing>VCHE_Deepchem</thing><value>3</value><pollutionFactor>4</pollutionFactor><toxGasFactor>5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
 					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
 					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
 					     ground pollution, and a lot of toxic gas. -->
 					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
+				<!-- Corpses (per unit of body size - a human is 1): little heat, little toxic gas, and a
+				     great deal of rot stink. Humanlike and animal corpses are separate on the Fuels menu,
+				     both refused until allowed. -->
+				<corpseFuel><value>1.5</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
 			</li>
 			<!-- Steam wisps from the exhaust stack, where the safety valve vents too. -->
 			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
@@ -789,6 +859,7 @@
 						<li>Hay</li>
 						<li>Cloth</li>
 						<li MayRequire="Ludeon.RimWorld.Anomaly">Bioferrite</li>
+						<li MayRequire="VanillaExpanded.VChemfuelE">VCHE_Deepchem</li>
 						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
 				</filter>

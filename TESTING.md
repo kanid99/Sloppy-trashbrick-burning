@@ -67,11 +67,20 @@ God mode on, then build a **cobbled trash gasifier**. Give it trashbricks (debug
   *Fuel mix: x0.5 ground pollution, x3 toxic gas* (trash) or x0.25 / x8 (wastepacks),
   and an unpiped burner gasses its room much faster. Refuelling with bricks brings the mix back
   toward x1. The fuel hopper accepts both.
-- [ ] **Fuels menu:** a new burner's **Fuels** button reads *Fuels: 5 of 8* (with Biotech and Anomaly;
+- [ ] **Fuels menu:** a new burner's **Fuels** button reads *Fuels: 5 of 10* (with Biotech and Anomaly;
   hay, cloth and bioferrite off). The menu lists each fuel with its worth, gas and pollution. Switch
   wastepacks off: with wastepacks and bricks both lying around, colonists refuel it with bricks only,
   and a hopper full of wastepacks doesn't feed it. Switch hay on and it gets fed hay.
-- [ ] Fuels menu **Anything**: the button reads *Fuels: 8 of 8*. **Trashbricks only**: *1 of 8*,
+- [ ] **Corpses:** switch *Humanlike corpses* on. A colonist hauls a raider corpse to the burner; its
+  clothes and weapon drop beside it, the fuel goes up about 1.5, and the readout adds *Burning corpses:
+  rot stink x...*. Unpiped, the room fills with rot stink (colonists get the stench thought); piped,
+  it comes out of the port. A muffalo corpse (body size 2.4) adds about 3.6. Mechanoid corpses aren't
+  hauled.
+- [ ] **Deepchem** (with Vanilla Chemfuel Expanded): listed and off by default; on, a unit adds 3 fuel
+  and the mix reads x4 pollution, x5 toxic gas.
+- [ ] A burner built in 0.9.1 and loaded now shows corpses (and deepchem) off, and keeps whatever
+  it had for hay, cloth and bioferrite.
+- [ ] Fuels menu **Anything**: the button reads *Fuels: 10 of 10*. **Trashbricks only**: *1 of 10*,
   and colonists bring nothing but bricks.
 - [ ] Refuel with **wood** only: the readout shows *Fuel mix: x0.3 ground pollution, x0.5 toxic gas*.
   With **chemfuel**: x1.5 / x0.6.

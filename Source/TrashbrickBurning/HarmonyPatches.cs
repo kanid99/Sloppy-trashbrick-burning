@@ -44,6 +44,11 @@ namespace TrashbrickBurning
                 {
                     continue;
                 }
+                // A corpse goes in bare: its clothes, weapon and inventory drop where it's fed in.
+                if (thing is Corpse corpse && corpse.AnythingToStrip())
+                {
+                    corpse.Strip();
+                }
                 float value = Mathf.Max(0.01f, engine.Props.FuelValueOf(thing.def));
                 int count = Mathf.Min(thing.stackCount, Mathf.Max(1, Mathf.CeilToInt(room / value)));
                 engine.AddToMix(thing.def, count * value);

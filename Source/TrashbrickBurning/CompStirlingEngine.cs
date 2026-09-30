@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
@@ -51,6 +52,9 @@ namespace TrashbrickBurning
         public float pollutionFactor = 1f;
         public float toxGasFactor = 1f;
 
+        /// <summary>Rot stink, per fuel unit, against a trashbrick's toxic gas: corpses.</summary>
+        public float rotStinkFactor;
+
         /// <summary>Wood, chemfuel and the rest: switched off by the "other fuels" setting. Trash always burns.</summary>
         public bool optional = true;
 
@@ -78,6 +82,12 @@ namespace TrashbrickBurning
         /// <summary>Other fuels the burner takes, and what each is worth. Only while the setting allows them.</summary>
         public List<FuelValue> otherFuels = new List<FuelValue>();
 
+        /// <summary>
+        /// Corpses, if the fuel filter takes them: value is per unit of body size (a human is 1), and
+        /// they're two entries on the Fuels menu, humanlike and animal.
+        /// </summary>
+        public FuelValue corpseFuel;
+
         public CompProperties_StirlingEngine()
         {
             compClass = typeof(CompStirlingEngine);
@@ -85,6 +95,10 @@ namespace TrashbrickBurning
 
         public FuelValue FuelOf(ThingDef def)
         {
+            if (def != null && def.IsCorpse)
+            {
+                return corpseFuel;
+            }
             if (otherFuels != null)
             {
                 for (int i = 0; i < otherFuels.Count; i++)
@@ -100,6 +114,10 @@ namespace TrashbrickBurning
 
         public float FuelValueOf(ThingDef def)
         {
+            if (def != null && def.IsCorpse && corpseFuel != null)
+            {
+                return corpseFuel.value * (def.ingestible?.sourceDef?.race?.baseBodySize ?? 1f);
+            }
             if (otherFuels != null)
             {
                 for (int i = 0; i < otherFuels.Count; i++)
@@ -193,11 +211,35 @@ namespace TrashbrickBurning
         public float mixPollution = 1f;
         public float mixToxGas = 1f;
 
+        /// <summary>Rot stink in the mix, against a trashbrick's toxic gas: 0 unless corpses went in.</summary>
+        public float mixRotStink;
+
         /// <summary>
-        /// Fuels (by defName) colonists and hoppers may not feed this burner, on top of its def's fuel
-        /// filter. Set with the Fuels menu (Command_BurnerFuels).
+        /// Fuels (by FuelKey: a defName, or a corpse group) colonists and hoppers may not feed this
+        /// burner, on top of its def's fuel filter. Set with the Fuels menu (Command_BurnerFuels).
         /// </summary>
         public List<string> refusedFuels;
+
+        /// <summary>
+        /// Fuels this burner has already had its default for. A fuel refused by default that a later
+        /// version adds (or a mod that's switched on) starts refused on existing burners too, once.
+        /// </summary>
+        public List<string> knownFuels;
+
+        private bool legacyWastepackSetting;
+
+        public const string HumanlikeCorpses = "STB_CorpsesHumanlike";
+        public const string AnimalCorpses = "STB_CorpsesAnimal";
+
+        /// <summary>What the Fuels menu and refusedFuels call a fuel: its defName, or its corpse group.</summary>
+        public static string FuelKey(ThingDef def)
+        {
+            if (def.IsCorpse)
+            {
+                return def.ingestible?.sourceDef?.race?.Humanlike == true ? HumanlikeCorpses : AnimalCorpses;
+            }
+            return def.defName;
+        }
 
         private bool venting;
 
@@ -291,80 +333,133 @@ namespace TrashbrickBurning
             Scribe_Values.Look(ref waterFlowing, "waterFlowing", false);
             Scribe_Values.Look(ref mixPollution, "mixPollution", 1f);
             Scribe_Values.Look(ref mixToxGas, "mixToxGas", 1f);
+            Scribe_Values.Look(ref mixRotStink, "mixRotStink", 0f);
             Scribe_Collections.Look(ref refusedFuels, "refusedFuels", LookMode.Value);
-            if (Scribe.mode == LoadSaveMode.PostLoadInit && refusedFuels == null)
-            {
-                // A save from before the Fuels menu: the defaults, and its old wastepack toggle.
-                refusedFuels = DefaultRefused();
-            }
+            Scribe_Collections.Look(ref knownFuels, "knownFuels", LookMode.Value);
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
+                // Before the Fuels menu, a burner had one toggle: Accept wastepacks.
                 bool acceptWastepacks = true;
                 Scribe_Values.Look(ref acceptWastepacks, "acceptWastepacks", true);
-                if (!acceptWastepacks)
+                if (!acceptWastepacks && refusedFuels == null)
                 {
-                    refusedFuels = refusedFuels ?? DefaultRefused();
-                    if (!refusedFuels.Contains("Wastepack"))
-                    {
-                        refusedFuels.Add("Wastepack");
-                    }
+                    refusedFuels = new List<string> { "Wastepack" };
+                    legacyWastepackSetting = true;
                 }
+            }
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                if (knownFuels == null)
+                {
+                    // 0.9.0 saved refusedFuels but not knownFuels: it had already applied the defaults
+                    // for hay, cloth and bioferrite, and the player may have switched them since.
+                    knownFuels = refusedFuels != null && !legacyWastepackSetting
+                        ? new List<string> { "Hay", "Cloth", "Bioferrite" }
+                        : new List<string>();
+                }
+                refusedFuels = refusedFuels ?? new List<string>();
+                ApplyNewDefaults();
             }
         }
 
         public override void PostPostMake()
         {
             base.PostPostMake();
-            refusedFuels = DefaultRefused();
+            refusedFuels = new List<string>();
+            knownFuels = new List<string>();
+            ApplyNewDefaults();
         }
 
-        private List<string> DefaultRefused()
+        /// <summary>Refuses each refused-by-default fuel this burner hasn't had the default for yet.</summary>
+        private void ApplyNewDefaults()
         {
-            List<string> list = new List<string>();
-            foreach (FuelValue fv in Props.otherFuels)
+            foreach (FuelChoice choice in FuelChoices())
             {
-                if (fv.refusedByDefault && fv.thing != null)
+                if (knownFuels.Contains(choice.key))
                 {
-                    list.Add(fv.thing.defName);
+                    continue;
+                }
+                knownFuels.Add(choice.key);
+                if (choice.fuel != null && choice.fuel.refusedByDefault && !refusedFuels.Contains(choice.key))
+                {
+                    refusedFuels.Add(choice.key);
                 }
             }
-            return list;
         }
 
-        /// <summary>Every fuel this burner's def can take, trashbricks first, in the def's order.</summary>
-        public IEnumerable<ThingDef> FuelChoices()
+        /// <summary>One line on the Fuels menu: a fuel, or a whole group of corpses.</summary>
+        public class FuelChoice
+        {
+            public string key;
+            public string label;
+            public ThingDef icon;
+            public FuelValue fuel;
+            public bool perBodySize;
+        }
+
+        /// <summary>Every fuel this burner's def can take: trashbricks first, then the def's other fuels, then corpses.</summary>
+        public IEnumerable<FuelChoice> FuelChoices()
         {
             ThingFilter filter = parent.GetComp<CompRefuelable>()?.Props.fuelFilter;
             if (filter == null)
             {
                 yield break;
             }
-            HashSet<ThingDef> listed = new HashSet<ThingDef>();
+            HashSet<string> listed = new HashSet<string>();
+            bool humanlike = false, animal = false;
             foreach (ThingDef def in filter.AllowedThingDefs)
             {
-                if (Props.FuelOf(def) == null && listed.Add(def))
+                if (def.IsCorpse)
                 {
-                    yield return def;
+                    humanlike |= FuelKey(def) == HumanlikeCorpses;
+                    animal |= FuelKey(def) == AnimalCorpses;
+                    continue;
+                }
+                if (Props.FuelOf(def) == null && listed.Add(def.defName))
+                {
+                    yield return new FuelChoice { key = def.defName, label = def.LabelCap, icon = def };
                 }
             }
             foreach (FuelValue fv in Props.otherFuels)
             {
-                if (fv.thing != null && filter.Allows(fv.thing) && listed.Add(fv.thing))
+                if (fv.thing != null && filter.Allows(fv.thing) && listed.Add(fv.thing.defName))
                 {
-                    yield return fv.thing;
+                    yield return new FuelChoice { key = fv.thing.defName, label = fv.thing.LabelCap, icon = fv.thing, fuel = fv };
                 }
+            }
+            if (Props.corpseFuel == null)
+            {
+                yield break;
+            }
+            if (humanlike)
+            {
+                yield return new FuelChoice
+                {
+                    key = HumanlikeCorpses, label = "STB_CorpsesHumanlike".Translate(), fuel = Props.corpseFuel,
+                    icon = ThingDefOf.Human.race?.corpseDef, perBodySize = true
+                };
+            }
+            if (animal)
+            {
+                yield return new FuelChoice
+                {
+                    key = AnimalCorpses, label = "STB_CorpsesAnimal".Translate(), fuel = Props.corpseFuel,
+                    icon = DefDatabase<ThingDef>.GetNamedSilentFail("Muffalo")?.race?.corpseDef, perBodySize = true
+                };
             }
         }
 
-        public void SetAccepts(ThingDef def, bool accept)
+        public void SetAccepts(string key, bool accept)
         {
             refusedFuels = refusedFuels ?? new List<string>();
-            refusedFuels.Remove(def.defName);
+            refusedFuels.Remove(key);
             if (!accept)
             {
-                refusedFuels.Add(def.defName);
+                refusedFuels.Add(key);
             }
         }
+
+        public bool Accepts(string key) => refusedFuels == null || !refusedFuels.Contains(key);
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
@@ -486,7 +581,7 @@ namespace TrashbrickBurning
         }
 
         /// <summary>The burner's own say on a fuel, on top of its def's fuel filter.</summary>
-        public bool Accepts(ThingDef def) => def == null || refusedFuels == null || !refusedFuels.Contains(def.defName);
+        public bool Accepts(ThingDef def) => def == null || Accepts(FuelKey(def));
 
         /// <summary>Blends fuel going in into the mix, weighted by fuel units.</summary>
         public void AddToMix(ThingDef def, float units)
@@ -501,6 +596,7 @@ namespace TrashbrickBurning
             }
             mixPollution = (mixPollution * have + p * units) / (have + units);
             mixToxGas = (mixToxGas * have + g * units) / (have + units);
+            mixRotStink = (mixRotStink * have + (fv?.rotStinkFactor ?? 0f) * units) / (have + units);
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
@@ -648,6 +744,10 @@ namespace TrashbrickBurning
             {
                 lines.Add("STB_FuelMix".Translate(mixPollution.ToString("0.##"), mixToxGas.ToString("0.##")));
             }
+            if (mixRotStink > 0.05f)
+            {
+                lines.Add("STB_FuelMixRot".Translate(mixRotStink.ToString("0.##")));
+            }
             return string.Join("\n", lines);
         }
     }
@@ -701,10 +801,10 @@ namespace TrashbrickBurning
         {
             this.engine = engine;
             int total = 0, taken = 0;
-            foreach (ThingDef def in engine.FuelChoices())
+            foreach (CompStirlingEngine.FuelChoice choice in engine.FuelChoices())
             {
                 total++;
-                if (engine.Accepts(def))
+                if (engine.Accepts(choice.key))
                 {
                     taken++;
                 }
@@ -727,25 +827,28 @@ namespace TrashbrickBurning
             ThingDef brick = DefDatabase<ThingDef>.GetNamedSilentFail("VRecyclingE_TrashBrick");
             options.Add(new FloatMenuOption("STB_FuelBricksOnly".Translate(), () =>
             {
-                foreach (ThingDef def in engine.FuelChoices())
+                foreach (CompStirlingEngine.FuelChoice choice in engine.FuelChoices())
                 {
-                    engine.SetAccepts(def, def == brick);
+                    engine.SetAccepts(choice.key, choice.icon != null && choice.icon == brick);
                 }
                 OpenMenu();
             }, brick));
-            foreach (ThingDef def in engine.FuelChoices())
+            foreach (CompStirlingEngine.FuelChoice c in engine.FuelChoices())
             {
-                ThingDef fuel = def;
-                bool on = engine.Accepts(fuel);
-                FuelValue fv = engine.Props.FuelOf(fuel);
-                string label = "STB_FuelLine".Translate(on ? "STB_FuelOn".Translate() : "STB_FuelOff".Translate(),
-                    fuel.LabelCap, (fv?.value ?? 1f).ToString("0.##"),
-                    (fv?.toxGasFactor ?? 1f).ToString("0.##"), (fv?.pollutionFactor ?? 1f).ToString("0.##"));
-                options.Add(new FloatMenuOption(label, () =>
+                CompStirlingEngine.FuelChoice choice = c;
+                bool on = engine.Accepts(choice.key);
+                FuelValue fv = choice.fuel;
+                string label = (choice.perBodySize ? "STB_FuelLineCorpse" : "STB_FuelLine").Translate(
+                    on ? "STB_FuelOn".Translate() : "STB_FuelOff".Translate(),
+                    choice.label, (fv?.value ?? 1f).ToString("0.##"),
+                    (fv?.toxGasFactor ?? 1f).ToString("0.##"), (fv?.pollutionFactor ?? 1f).ToString("0.##"),
+                    (fv?.rotStinkFactor ?? 0f).ToString("0.##"));
+                Action toggle = () =>
                 {
-                    engine.SetAccepts(fuel, !on);
+                    engine.SetAccepts(choice.key, !on);
                     OpenMenu();
-                }, fuel));
+                };
+                options.Add(choice.icon != null ? new FloatMenuOption(label, toggle, choice.icon) : new FloatMenuOption(label, toggle));
             }
             Find.WindowStack.Add(new FloatMenu(options));
         }
@@ -817,6 +920,7 @@ namespace TrashbrickBurning
                 e.heatLevel = best >= 0 ? best : Mathf.Clamp(source.heatLevel, 0, e.Props.heatLevels.Count - 1);
                 e.hotWaterShare = source.hotWaterShare;
                 e.refusedFuels = source.refusedFuels == null ? null : new List<string>(source.refusedFuels);
+                e.knownFuels = source.knownFuels == null ? null : new List<string>(source.knownFuels);
                 e.Apply();
                 count++;
             }

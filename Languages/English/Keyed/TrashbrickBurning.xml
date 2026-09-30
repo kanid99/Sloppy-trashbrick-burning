@@ -23,8 +23,8 @@
 	<STB_SimpleStatus>Burning {0} fuel a day</STB_SimpleStatus>
 	<STB_SettingHazards>Hazards: steam bursts and leaks</STB_SettingHazards>
 	<STB_SettingHazardsDesc>Off: burners without a safety valve vent instead of bursting, and pipes never leak.</STB_SettingHazardsDesc>
-	<STB_SettingOtherFuels>Burners also take wood, chemfuel, hay, cloth and bioferrite</STB_SettingOtherFuels>
-	<STB_SettingOtherFuelsDesc>A wood log is worth 0.4 of a trashbrick, a unit of chemfuel 2.5, hay 0.15, cloth 0.25 and bioferrite 4. Each burner picks which it takes on its Fuels menu. Loose trash and wastepacks always burn. Takes effect after a restart.</STB_SettingOtherFuelsDesc>
+	<STB_SettingOtherFuels>Burners also take wood, chemfuel, deepchem, hay, cloth and bioferrite</STB_SettingOtherFuels>
+	<STB_SettingOtherFuelsDesc>A wood log is worth 0.4 of a trashbrick, a unit of chemfuel 2.5, hay 0.15, cloth 0.25, bioferrite 4 and deepchem 3. Each burner picks which it takes on its Fuels menu. Loose trash, wastepacks and corpses are always on the menu. Takes effect after a restart.</STB_SettingOtherFuelsDesc>
 	<STB_SettingFuelUse>Fuel use: {0}</STB_SettingFuelUse>
 	<STB_SettingPower>Power output: {0}</STB_SettingPower>
 	<STB_SettingLeaks>Steam leak frequency: {0}</STB_SettingLeaks>
@@ -137,10 +137,14 @@
 	<STB_SourceNoPort>Exhaust: no open, powered exhaust port on its exhaust pipe - the toxic gas comes out here</STB_SourceNoPort>
 	<STB_FuelMix>Fuel mix: x{0} ground pollution, x{1} toxic gas (against trashbricks)</STB_FuelMix>
 	<STB_Fuels>Fuels: {0} of {1}</STB_Fuels>
-	<STB_FuelsDesc>Choose what colonists and hoppers may feed this burner. Each fuel shows what one item is worth in trashbricks, and how dirty it burns against a trashbrick: toxic gas out of the exhaust, and ground pollution.\n\nWood burns clean but is worth little; chemfuel is worth a lot and soaks the ground; loose trash and wastepacks are cheap and foul. Hay, cloth and bioferrite start refused - allow them here. Fuel already in the burner still burns.</STB_FuelsDesc>
+	<STB_FuelsDesc>Choose what colonists and hoppers may feed this burner. Each fuel shows what one item is worth in trashbricks, and how dirty it burns against a trashbrick: toxic gas out of the exhaust, and ground pollution.\n\nWood burns clean but is worth little; chemfuel is worth a lot and soaks the ground; loose trash and wastepacks are cheap and foul. Hay, cloth, bioferrite, deepchem and corpses start refused - allow them here. Corpses are stripped as they go in, and burn with a huge cloud of rot stink. Fuel already in the burner still burns.</STB_FuelsDesc>
 	<STB_FuelLine>{0} {1}: worth {2} bricks, gas x{3}, pollution x{4}</STB_FuelLine>
 	<STB_FuelAll>Anything: burn every fuel on this list</STB_FuelAll>
 	<STB_FuelBricksOnly>Trashbricks only</STB_FuelBricksOnly>
+	<STB_FuelLineCorpse>{0} {1}: worth {2} bricks per body size, gas x{3}, rot stink x{5}, pollution x{4}</STB_FuelLineCorpse>
+	<STB_CorpsesHumanlike>Humanlike corpses</STB_CorpsesHumanlike>
+	<STB_CorpsesAnimal>Animal and insect corpses</STB_CorpsesAnimal>
+	<STB_FuelMixRot>Burning corpses: rot stink x{0} (against trashbricks' toxic gas)</STB_FuelMixRot>
 	<STB_FuelOn>[on]</STB_FuelOn>
 	<STB_FuelOff>[off]</STB_FuelOff>
 </LanguageData>
