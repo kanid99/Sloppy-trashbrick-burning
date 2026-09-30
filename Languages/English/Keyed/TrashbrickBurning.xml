@@ -139,6 +139,8 @@
 	<STB_Fuels>Fuels: {0} of {1}</STB_Fuels>
 	<STB_FuelsDesc>Choose what colonists and hoppers may feed this burner. Each fuel shows what one item is worth in trashbricks, and how dirty it burns against a trashbrick: toxic gas out of the exhaust, and ground pollution.\n\nWood burns clean but is worth little; chemfuel is worth a lot and soaks the ground; loose trash and wastepacks are cheap and foul. Hay, cloth and bioferrite start refused - allow them here. Fuel already in the burner still burns.</STB_FuelsDesc>
 	<STB_FuelLine>{0} {1}: worth {2} bricks, gas x{3}, pollution x{4}</STB_FuelLine>
+	<STB_FuelAll>Anything: burn every fuel on this list</STB_FuelAll>
+	<STB_FuelBricksOnly>Trashbricks only</STB_FuelBricksOnly>
 	<STB_FuelOn>[on]</STB_FuelOn>
 	<STB_FuelOff>[off]</STB_FuelOff>
 </LanguageData>

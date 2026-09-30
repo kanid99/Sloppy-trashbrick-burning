@@ -118,7 +118,7 @@ Burners take more than trashbricks. Each fuel is counted at its own value (a Har
 | Bioferrite (Anomaly) | 4 | x1 | x2 | refuse it |
 | Sludge pellets (with DBH) | 1 | x1 | x1 | take it |
 
-- **Fuels menu:** every burner has a **Fuels** button listing what it can burn, with each fuel's worth and exhaust. Click a fuel to switch it on or off: colonists and hoppers only bring it what's on. Hay, cloth and bioferrite start off, so nobody burns your fodder, tailoring stock or bioferrite unasked. **Sync burners** copies the choices.
+- **Fuels menu:** every burner has a **Fuels** button listing what it can burn, with each fuel's worth and exhaust. Click a fuel to switch it on or off: colonists and hoppers only bring it what's on. At the top, **Anything** switches every fuel on and **Trashbricks only** switches the rest off. Hay, cloth and bioferrite start off, so nobody burns your fodder, tailoring stock or bioferrite unasked. **Sync burners** copies the choices.
 - **Setting:** *Burners also take wood, chemfuel, hay, cloth and bioferrite* (on by default, restart to apply) removes those from every burner. Loose trash and wastepacks always burn.
 - The fuel hopper holds all of them; hay, cloth and bioferrite are off in a new hopper's storage settings.
 

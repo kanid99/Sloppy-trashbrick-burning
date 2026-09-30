@@ -71,6 +71,8 @@ God mode on, then build a **cobbled trash gasifier**. Give it trashbricks (debug
   hay, cloth and bioferrite off). The menu lists each fuel with its worth, gas and pollution. Switch
   wastepacks off: with wastepacks and bricks both lying around, colonists refuel it with bricks only,
   and a hopper full of wastepacks doesn't feed it. Switch hay on and it gets fed hay.
+- [ ] Fuels menu **Anything**: the button reads *Fuels: 8 of 8*. **Trashbricks only**: *1 of 8*,
+  and colonists bring nothing but bricks.
 - [ ] Refuel with **wood** only: the readout shows *Fuel mix: x0.3 ground pollution, x0.5 toxic gas*.
   With **chemfuel**: x1.5 / x0.6.
 - [ ] **Sync burners** copies the fuel choices. An old save whose burner had *Accept wastepacks* off

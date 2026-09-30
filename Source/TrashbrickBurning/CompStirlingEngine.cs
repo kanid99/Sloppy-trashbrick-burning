@@ -718,6 +718,21 @@ namespace TrashbrickBurning
         private void OpenMenu()
         {
             List<FloatMenuOption> options = new List<FloatMenuOption>();
+            // Anything it can burn, or nothing but trashbricks, in one click.
+            options.Add(new FloatMenuOption("STB_FuelAll".Translate(), () =>
+            {
+                engine.refusedFuels = new List<string>();
+                OpenMenu();
+            }));
+            ThingDef brick = DefDatabase<ThingDef>.GetNamedSilentFail("VRecyclingE_TrashBrick");
+            options.Add(new FloatMenuOption("STB_FuelBricksOnly".Translate(), () =>
+            {
+                foreach (ThingDef def in engine.FuelChoices())
+                {
+                    engine.SetAccepts(def, def == brick);
+                }
+                OpenMenu();
+            }, brick));
             foreach (ThingDef def in engine.FuelChoices())
             {
                 ThingDef fuel = def;
