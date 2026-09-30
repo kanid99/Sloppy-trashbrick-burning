@@ -55,7 +55,7 @@
 	<STB_HotWaterShare>Hot water: {0}</STB_HotWaterShare>
 	<STB_HotWaterShareDesc>The share of this burner's heat offered to Dubs Bad Hygiene's hot water tanks and radiators FIRST, before the steam turbines. Left-click to step it up, right-click to pick.\n\nWhatever the plumbing doesn't actually draw of it goes on to the turbines, so a high share only costs power when the tanks and radiators really want the heat. At 0% the plumbing only gets what the network leaves over.</STB_HotWaterShareDesc>
 	<STB_HotWaterShareStatus>Hot water share: {0} ({1}W offered first), drawn: {2}W</STB_HotWaterShareStatus>
-	<STB_SettingVersion>Build {0}</STB_SettingVersion>
+	<STB_SettingVersion>Build {0} (#{1})</STB_SettingVersion>
 	<STB_AccIdleNoPipe>Not connected to a pressurised hot water pipe.</STB_AccIdleNoPipe>
 	<STB_AccIdleNoHeat>No burners are sending heat.</STB_AccIdleNoHeat>
 	<STB_AccIdleFull>Full.</STB_AccIdleFull>

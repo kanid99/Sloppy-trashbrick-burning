@@ -5,11 +5,12 @@ using Verse;
 
 namespace TrashbrickBurning
 {
-    /// <summary>Shown at the top of the mod settings so a test build can be told apart at a glance.
-    /// Keep in step with modVersion in About/About.xml.</summary>
+    /// <summary>Shown at the top of the mod settings so a test build can be told apart at a glance,
+    /// with the build number Source/build.sh stamps (BuildStamp). Keep in step with modVersion in
+    /// About/About.xml.</summary>
     public static class BuildInfo
     {
-        public const string Version = "0.9.3";
+        public const string Version = "0.9.4";
     }
 
     public class TrashbrickSettings : ModSettings
@@ -71,7 +72,7 @@ namespace TrashbrickBurning
             TrashbrickSettings s = S;
             Listing_Standard list = new Listing_Standard();
             list.Begin(inRect);
-            list.Label("STB_SettingVersion".Translate(BuildInfo.Version));
+            list.Label("STB_SettingVersion".Translate(BuildInfo.Version, BuildStamp.Number));
             list.GapLine();
             list.CheckboxLabeled("STB_SettingAdvanced".Translate(), ref s.advanced, "STB_SettingAdvancedDesc".Translate());
             list.Label(s.advanced ? "STB_SettingAdvancedExplain".Translate() : "STB_SettingSimpleExplain".Translate());
