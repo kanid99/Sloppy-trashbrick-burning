@@ -124,14 +124,17 @@
 	<STB_SettingPollution>Pollution: {0}</STB_SettingPollution>
 	<STB_ExhaustPiped>Exhaust: piped to {0} exhaust ports</STB_ExhaustPiped>
 	<STB_ExhaustToPorts>Exhaust: piped to {0} exhaust ports, polluting {1} cells a day there</STB_ExhaustToPorts>
-	<STB_ExhaustLocal>EXHAUST: no exhaust pipe to an exhaust port - venting toxic gas around it and polluting {0} cells a day here</STB_ExhaustLocal>
+	<STB_ExhaustLocal>EXHAUST: no exhaust pipe to an open, powered exhaust port - venting toxic gas around it and polluting {0} cells a day here</STB_ExhaustLocal>
 	<STB_PortIdle>No exhaust coming through.</STB_PortIdle>
 	<STB_PortActive>Letting out exhaust: polluting about {0} cells a day around it</STB_PortActive>
 	<STB_PortIndoors>Indoors: filling this room with toxic gas. Move it outside.</STB_PortIndoors>
 	<STB_DamperLabel>Toggle damper</STB_DamperLabel>
-	<STB_DamperDesc>Open or close this exhaust port. Closed, exhaust goes to the other ports on the network - or, with none open, back out of the burners as toxic gas.</STB_DamperDesc>
+	<STB_DamperDesc>Open or close this exhaust port. Closed - or without power - exhaust goes to the other ports on the network, or, with none open, back out of the burners as toxic gas.</STB_DamperDesc>
 	<STB_AlertToxicExhaust>Burner venting toxic exhaust</STB_AlertToxicExhaust>
-	<STB_AlertToxicExhaustDesc>These burners have no exhaust pipe to an open exhaust port, so they're letting their exhaust out around themselves as toxic gas.\n\nRun an exhaust pipe from under them to an exhaust port built outdoors.</STB_AlertToxicExhaustDesc>
+	<STB_AlertToxicExhaustDesc>These burners have no exhaust pipe to an open, powered exhaust port, so their exhaust is backing up and coming out around them as toxic gas.\n\nRun an exhaust pipe from under them to an exhaust port built outdoors, and make sure the port's draught fan has power.</STB_AlertToxicExhaustDesc>
+	<STB_PortNoPower>NO POWER: the draught fan has stopped. Exhaust is backing up into the burners.</STB_PortNoPower>
+	<STB_SourceToPorts>Exhaust: its toxic gas goes down the exhaust pipe to {0} exhaust ports</STB_SourceToPorts>
+	<STB_SourceNoPort>Exhaust: no open, powered exhaust port on its exhaust pipe - the toxic gas comes out here</STB_SourceNoPort>
 	<STB_FuelMix>Fuel mix burns dirty: x{0} ground pollution, x{1} toxic gas (against trashbricks)</STB_FuelMix>
 	<STB_AcceptWastepacks>Accept wastepacks</STB_AcceptWastepacks>
 	<STB_AcceptWastepacksDesc>If on, colonists and hoppers may feed this burner toxic wastepacks - worth half a trashbrick each, with eight times the toxic gas. Turn off to keep wastepacks out of it: it takes other fuel instead. Wastepacks already in it still burn.</STB_AcceptWastepacksDesc>

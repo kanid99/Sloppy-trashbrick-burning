@@ -22,7 +22,7 @@ The whole system is **trash gasification**. The **cobbled trash gasifier** is th
 | Research | Electricity + VRE complex recycling | Microelectronics + VRE complex recycling |
 | Cost | 120 steel, 2 components | 150 steel, 25 plasteel, 4 components |
 | Pressure safety | **no safety valve**: at full pressure it bursts | safety valve vents |
-| Exhaust | heavy: 0.06 polluted cells and 600 toxic gas per brick | light: 0.02 and 200 per brick |
+| Exhaust | heavy: 0.06 polluted cells and 1000 toxic gas per brick | filtered: 0.02 and 1200 per brick (it burns fewer) |
 | Breakdowns | twice as often | normal |
 
 **Advanced mode:** each burner has a **mode** button: eco, normal or high. Eco gets the most heat from each brick but makes the least; high makes the most, wastes the most fuel and heats the room most.
@@ -86,9 +86,22 @@ A burner's heat goes, in order:
 ### Exhaust and pollution
 Burning trash makes exhaust, in both play modes. It has to go somewhere:
 - **Exhaust pipe** (visible and hidden, one architect button) carries it to an **exhaust port**: a 1x1 soot-black stack (Electricity: 30 steel). Build the port outdoors; the ground around it slowly fills with pollution (Biotech's pollution). A port indoors gasses its room. Several ports on one network share the exhaust; a port's **damper** closes it. The stack and a **wall exhaust port** share one architect button. The wall port (35 steel) hangs on a wall like a wall lamp or an over-the-wall unit and blows the exhaust out on the side it hangs on: hang it on the outside of a wall and pipe to it under the wall. Exhaust pipe and pressurised hot water pipe are separate networks and can share a cell.
+- **Ports need power:** each port's draught fan draws 80W. Without power (or with its damper shut) a port is closed, and with no open port the exhaust **backs up into the burners** and comes out around them.
+- **Garbage compactor:** Vanilla Recycling Expanded's garbage compactor joins the exhaust network too. Run exhaust pipe under it to a powered port and the toxic gas it makes while compacting (300 every 10 seconds, about 30,000 a day) goes out of the port instead of around its work spot. Unpiped, it gasses its surroundings as usual.
 - **At the port:** exhaust comes out as toxic gas (it drifts off outdoors, and builds up fast in a closed room), a little heat, and ground pollution.
 - **No exhaust pipe to an open port:** the burner lets its exhaust out around itself - **toxic gas** into the cells around it, and pollution on the ground there. Its readout says *EXHAUST* in capitals and a **Burner venting toxic exhaust** alert fires.
-- **How much:** by fuel burnt. The cobbled gasifier is dirty (0.06 polluted cells and 600 units of toxic gas per brick - about 6 cells a day on normal); the trash gasifier's filters cut that to a third of the pollution and a third of the gas. The large and industrial burners follow their tier. A settings slider scales it.
+- **How much:** by fuel burnt. Every burner, on every mode, makes more toxic gas than a working garbage compactor - burning trash is dirtier than crushing it. The trash gasifier's filters cut the ground pollution to a third; the gas only a little. A settings slider scales it.
+
+| Burner | Pollution per brick | Toxic gas per brick | Toxic gas a day (eco / normal / high) |
+|---|---|---|---|
+| Cobbled trash gasifier | 0.06 | 1000 | 40,000 / 100,000 / 150,000 |
+| Trash gasifier | 0.02 | 1200 | 36,000 / 90,000 / 135,000 |
+| Large cobbled trash gasifier | 0.06 | 2000 | 44,000 / 62,000 / 108,000 |
+| Large trash gasifier | 0.02 | 3600 | 39,600 / 54,000 / 86,400 |
+| Industrial trash gasifier | 0.02 | 2000 | 40,000 / 66,000 / 92,000 |
+| *(VRE garbage compactor)* | - | - | *about 30,000 while working* |
+
+On trashbricks; loose trash and wastepacks multiply the gas (below).
 
 ### Other fuels
 Burners also take **wood** (a log is worth 0.4 of a trashbrick) and **chemfuel** (a unit is worth 2.5); switch those off in settings. A Harmony patch makes refuelling count each fuel at its own value.

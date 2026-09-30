@@ -128,7 +128,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_ExhaustPort</defName>
 		<label>exhaust port</label>
-		<description>A soot-blackened stack where the exhaust network lets out the fumes of burning trash. The ground around it slowly fills with pollution. Build it outdoors: indoors, it fills the room with toxic gas instead. With several ports on one network, the exhaust is split between them. Its damper closes it. Run an exhaust pipe under it to connect it.</description>
+		<description>A soot-blackened stack where the exhaust network lets out the fumes of burning trash. The ground around it slowly fills with pollution. Build it outdoors: indoors, it fills the room with toxic gas instead. With several ports on one network, the exhaust is split between them. Its damper closes it. Its draught fan needs power (80W): unpowered, it can't draw the exhaust and the fumes back up and come out around the burners. Run an exhaust pipe under it to connect it. A garbage compactor on the same exhaust network sends its fumes here too.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_ExhaustPort</texPath>
@@ -157,6 +157,11 @@
 				<pipeNet>STB_ExhaustNet</pipeNet>
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_ExhaustPort"/>
+			<!-- The draught fan: unpowered, the port shuts and the exhaust backs up into the burners. -->
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>80</basePowerConsumption>
+			</li>
 			<li Class="CompProperties_Flickable">
 				<commandTexture>Things/Building/Linked/STB_HotWaterValve</commandTexture>
 				<commandLabelKey>STB_DamperLabel</commandLabelKey>
@@ -184,7 +189,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_ExhaustPortWall</defName>
 		<label>wall exhaust port</label>
-		<description>An exhaust duct hung on a wall. It blows the fumes of burning trash out on the side of the wall it's hung on: toxic gas, a little heat, and pollution slowly spreading over the ground below it. Hang it on the outside of a wall - on the inside it fills the room with toxic gas. With several ports on one network, the exhaust is split between them. Its damper closes it. Run an exhaust pipe to the cell it hangs over - pipe can go under the wall.</description>
+		<description>An exhaust duct hung on a wall. It blows the fumes of burning trash out on the side of the wall it's hung on: toxic gas, a little heat, and pollution slowly spreading over the ground below it. Hang it on the outside of a wall - on the inside it fills the room with toxic gas. With several ports on one network, the exhaust is split between them. Its damper closes it. Its draught fan needs power (80W): unpowered, it can't draw the exhaust and the fumes back up and come out around the burners. Run an exhaust pipe to the cell it hangs over - pipe can go under the wall. A garbage compactor on the same exhaust network sends its fumes here too.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_ExhaustPortWall</texPath>
@@ -224,6 +229,11 @@
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_ExhaustPort">
 				<outletAtSelf>true</outletAtSelf>
+			</li>
+			<!-- The draught fan: unpowered, the port shuts and the exhaust backs up into the burners. -->
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>80</basePowerConsumption>
 			</li>
 			<li Class="CompProperties_Flickable">
 				<commandTexture>Things/Building/Linked/STB_HotWaterValve</commandTexture>

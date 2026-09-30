@@ -53,7 +53,16 @@ God mode on, then build a **cobbled trash gasifier**. Give it trashbricks (debug
   exhaust ports*, the port puffs smoke and the ground around it slowly turns polluted.
 - [ ] An exhaust port built **indoors** gasses its room instead, and says so. Its **damper** closes it:
   with no other open port, the exhaust goes back to gassing the burner's room.
-- [ ] A trash gasifier makes noticeably less gas and pollution than the cobbled one.
+- [ ] A trash gasifier makes noticeably less pollution than the cobbled one, and a little less gas.
+- [ ] **Port power:** an exhaust port needs 80W for its draught fan. Cut its power (or leave it
+  unconnected) and it reads *NO POWER*, the burner reads *EXHAUST: no exhaust pipe to an open, powered
+  exhaust port*, and the gas backs up around the burner. Power it again and the gas goes back out the port.
+- [ ] **Garbage compactor:** run exhaust pipe under a Vanilla Recycling Expanded garbage compactor
+  to a powered port. While it compacts it reads *its toxic gas goes down the exhaust pipe to 1 exhaust
+  ports*, and the gas comes out at the port instead of at its work spot. Without a port it reads *no
+  open, powered exhaust port* and gasses its work spot as before.
+- [ ] **Burners are dirtier than the compactor:** a lit burner of any size, even on eco, gasses a
+  closed room faster than a working compactor does.
 - [ ] **Dirty fuels:** refuel with **loose trash** or **toxic wastepacks**. The burner's readout shows
   *Fuel mix burns dirty: x0.5 ground pollution, x3 toxic gas* (trash) or x0.25 / x8 (wastepacks),
   and an unpiped burner gasses its room much faster. Refuelling with bricks brings the mix back

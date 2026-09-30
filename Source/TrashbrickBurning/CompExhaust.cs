@@ -267,7 +267,22 @@ namespace TrashbrickBurning
         private float receivedToday;
         private int lastReceiveTick = -1;
 
-        public bool Open => parent.Spawned && FlickUtility.WantsToBeOn(parent);
+        /// <summary>
+        /// Its fan has to run to draw the exhaust: switched on and powered. With no open port, the
+        /// exhaust backs up and comes out of the burners (and compactors) that make it.
+        /// </summary>
+        public bool Open
+        {
+            get
+            {
+                if (!parent.Spawned || !FlickUtility.WantsToBeOn(parent))
+                {
+                    return false;
+                }
+                CompPowerTrader power = parent.GetComp<CompPowerTrader>();
+                return power == null || power.PowerOn;
+            }
+        }
 
         private CompProperties_ExhaustPort Props => (CompProperties_ExhaustPort)props;
 
@@ -309,6 +324,11 @@ namespace TrashbrickBurning
 
         public override string CompInspectStringExtra()
         {
+            CompPowerTrader power = parent.GetComp<CompPowerTrader>();
+            if (power != null && !power.PowerOn && FlickUtility.WantsToBeOn(parent))
+            {
+                return "STB_PortNoPower".Translate();
+            }
             if (!Active)
             {
                 return "STB_PortIdle".Translate();
@@ -320,6 +340,47 @@ namespace TrashbrickBurning
                 s += "\n" + "STB_PortIndoors".Translate();
             }
             return s;
+        }
+    }
+
+    public class CompProperties_ExhaustSource : CompProperties
+    {
+        public CompProperties_ExhaustSource()
+        {
+            compClass = typeof(CompExhaustSource);
+        }
+    }
+
+    /// <summary>
+    /// On something else that makes toxic gas - Vanilla Recycling Expanded's garbage compactor. Piped
+    /// to a powered exhaust port, the gas it would let out goes down the exhaust instead
+    /// (Patch_CompactorExhaust); otherwise it comes out as usual.
+    /// </summary>
+    public class CompExhaustSource : ThingComp
+    {
+        /// <summary>Takes the gas if it can: true if it went down the exhaust.</summary>
+        public bool TryRoute(int amount)
+        {
+            List<CompExhaustPort> open = ExhaustNetwork.Ports(ExhaustNetwork.NetOf(parent));
+            if (open.Count == 0)
+            {
+                return false;
+            }
+            foreach (CompExhaustPort port in open)
+            {
+                port.Receive(0f, (float)amount / open.Count, 0f);
+            }
+            return true;
+        }
+
+        public override string CompInspectStringExtra()
+        {
+            int ports = ExhaustNetwork.Ports(ExhaustNetwork.NetOf(parent)).Count;
+            if (ports > 0)
+            {
+                return "STB_SourceToPorts".Translate(ports);
+            }
+            return ExhaustNetwork.NetOf(parent) != null ? "STB_SourceNoPort".Translate().Resolve() : null;
         }
     }
 }

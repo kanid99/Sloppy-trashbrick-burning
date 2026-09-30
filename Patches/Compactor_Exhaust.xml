@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+	<!--
+		Vanilla Recycling Expanded's garbage compactor on the exhaust network. Pipe it to an open,
+		powered exhaust port and the toxic gas it makes while compacting goes down the exhaust and out
+		of the port instead of around the compactor (Patch_CompactorExhaust). Unpiped, or with no port
+		open, it gasses its surroundings as usual.
+	-->
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/ThingDef[defName="VRecyclingE_GarbageCompactor"]/comps</xpath>
+		<match Class="PatchOperationAdd">
+			<xpath>Defs/ThingDef[defName="VRecyclingE_GarbageCompactor"]/comps</xpath>
+			<value>
+				<li Class="PipeSystem.CompProperties_Resource">
+					<pipeNet>STB_ExhaustNet</pipeNet>
+				</li>
+				<li Class="TrashbrickBurning.CompProperties_ExhaustSource"/>
+			</value>
+		</match>
+	</Operation>
+
+</Patch>

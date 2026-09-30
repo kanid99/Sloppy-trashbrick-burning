@@ -12,7 +12,9 @@ namespace TrashbrickBurning
     {
         static HarmonyInit()
         {
-            new Harmony("kanid99.SloppyTrashbrickBurning").PatchAll();
+            Harmony harmony = new Harmony("kanid99.SloppyTrashbrickBurning");
+            harmony.PatchAll();
+            Patch_CompactorExhaust.Apply(harmony);
         }
     }
 
@@ -87,6 +89,53 @@ namespace TrashbrickBurning
             {
                 __result.RemoveAll(t => !engine.Accepts(t.def));
             }
+        }
+    }
+
+    /// <summary>
+    /// Vanilla Recycling Expanded's garbage compactor lets out toxic gas at its interaction spot while
+    /// it works (Building_Compactor.Tick calls GasUtility.AddGas). While a compactor is ticking, any
+    /// toxic gas it adds is offered to its exhaust network; if a powered port takes it, it isn't
+    /// let out at the compactor. Patched by name, so nothing here depends on VRE's assembly.
+    /// </summary>
+    public static class Patch_CompactorExhaust
+    {
+        [System.ThreadStatic]
+        private static CompExhaustSource ticking;
+
+        public static void Apply(Harmony harmony)
+        {
+            System.Type compactor = AccessTools.TypeByName("VanillaRecyclingExpanded.Building_Compactor");
+            System.Reflection.MethodInfo tick = compactor == null ? null : AccessTools.Method(compactor, "Tick");
+            System.Reflection.MethodInfo addGas = AccessTools.Method(typeof(GasUtility), nameof(GasUtility.AddGas),
+                new[] { typeof(IntVec3), typeof(Map), typeof(GasType), typeof(int) });
+            if (tick == null || addGas == null)
+            {
+                return;
+            }
+            harmony.Patch(tick, new HarmonyMethod(typeof(Patch_CompactorExhaust), nameof(TickPrefix)),
+                finalizer: new HarmonyMethod(typeof(Patch_CompactorExhaust), nameof(TickFinalizer)));
+            harmony.Patch(addGas, new HarmonyMethod(typeof(Patch_CompactorExhaust), nameof(AddGasPrefix)));
+        }
+
+        public static void TickPrefix(Thing __instance)
+        {
+            ticking = (__instance as ThingWithComps)?.GetComp<CompExhaustSource>();
+        }
+
+        public static System.Exception TickFinalizer(System.Exception __exception)
+        {
+            ticking = null;
+            return __exception;
+        }
+
+        public static bool AddGasPrefix(GasType gasType, int amount)
+        {
+            if (ticking == null || gasType != GasType.ToxGas)
+            {
+                return true;
+            }
+            return !ticking.TryRoute(amount);
         }
     }
 }
