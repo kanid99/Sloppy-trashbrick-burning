@@ -34,7 +34,7 @@ The whole system is **trash gasification**. The **cobbled trash gasifier** is th
 | High | 1600W on 150 (10.7W) | 2000W on 112.5 (17.8W) | 300W / 500W | 43 / 53 a day |
 
 - **Stirling engine:** with **no steam turbine on its network**, a burner's own Stirling engine makes a little power, using **three times its output in heat**. The rest of the heat still goes out on the pipe, so even in Stirling mode a burner needs an Overpressure Tank or radiators, or its pressure builds. As soon as a turbine is on the network, the Stirling engines stand down.
-- **Sync burners** copies a burner's mode, hot water share and Accept wastepacks setting to the other burners on its network, or on the map.
+- **Sync burners** copies a burner's mode, hot water share and fuel choices to the other burners on its network, or on the map.
 
 **Simple mode:** the cobbled gasifier makes **1000W** on 20 bricks a day; the trash gasifier makes **1200W** on 12.
 
@@ -104,17 +104,25 @@ Burning trash makes exhaust, in both play modes. It has to go somewhere:
 On trashbricks; loose trash and wastepacks multiply the gas (below).
 
 ### Other fuels
-Burners also take **wood** (a log is worth 0.4 of a trashbrick) and **chemfuel** (a unit is worth 2.5); switch those off in settings. A Harmony patch makes refuelling count each fuel at its own value.
+Burners take more than trashbricks. Each fuel is counted at its own value (a Harmony patch on refuelling) and burns with its own exhaust, against a trashbrick:
 
-They always take the **dirty fuels**, which burn with **more toxic gas and less ground pollution** than trashbricks:
+| Fuel | Worth (bricks) | Ground pollution | Toxic gas | New burners |
+|---|---|---|---|---|
+| Trashbrick | 1 | x1 | x1 | take it |
+| Wood log | 0.4 | x0.3 | x0.5 | take it |
+| Chemfuel | 2.5 | x1.5 | x0.6 | take it |
+| Loose trash (VRE) | 1.5 | x0.5 | x3 | take it |
+| Toxic wastepack (Biotech) | 0.5 | x0.25 | x8 | take it |
+| Hay | 0.15 | x0.2 | x0.4 | refuse it |
+| Cloth | 0.25 | x0.5 | x1.5 | refuse it |
+| Bioferrite (Anomaly) | 4 | x1 | x2 | refuse it |
+| Sludge pellets (with DBH) | 1 | x1 | x1 | take it |
 
-| Fuel | Worth (bricks) | Ground pollution | Toxic gas |
-|---|---|---|---|
-| Trashbrick | 1 | x1 | x1 |
-| Loose trash (VRE) | 1.5 | x0.5 | x3 |
-| Toxic wastepack | 0.5 | x0.25 | x8 |
+- **Fuels menu:** every burner has a **Fuels** button listing what it can burn, with each fuel's worth and exhaust. Click a fuel to switch it on or off: colonists and hoppers only bring it what's on. Hay, cloth and bioferrite start off, so nobody burns your fodder, tailoring stock or bioferrite unasked. **Sync burners** copies the choices.
+- **Setting:** *Burners also take wood, chemfuel, hay, cloth and bioferrite* (on by default, restart to apply) removes those from every burner. Loose trash and wastepacks always burn.
+- The fuel hopper holds all of them; hay, cloth and bioferrite are off in a new hopper's storage settings.
 
-Cleaning about 6 polluted cells makes one wastepack; burning it puts back a tiny fraction of a cell (about 0.008 in a cobbled gasifier) and a burst of toxic gas, so burning cleaned-up pollution can't loop. The fuel in a burner is a mix: its readout says how dirty the current mix burns. The fuel hopper takes them too. Each burner has an **Accept wastepacks** toggle: off, colonists and hoppers bring it other fuel instead.
+Cleaning about 6 polluted cells makes one wastepack; burning it puts back a tiny fraction of a cell (about 0.008 in a cobbled gasifier) and a burst of toxic gas, so burning cleaned-up pollution can't loop. The fuel in a burner is a mix: its readout says how dirty the current mix burns. The fuel hopper takes them too.
 
 ### Polish
 - **Effects:** smoke from the cobbled flue and the gasifier's stack, a flickering firebox glow, steam wisps from turbines, the gasifier's safety valve visibly venting, and a spinning cooling fan on each turbine while it makes power.

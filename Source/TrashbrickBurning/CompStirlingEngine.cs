@@ -51,8 +51,11 @@ namespace TrashbrickBurning
         public float pollutionFactor = 1f;
         public float toxGasFactor = 1f;
 
-        /// <summary>Wood and chemfuel: switched off by the "other fuels" setting. Trash always burns.</summary>
+        /// <summary>Wood, chemfuel and the rest: switched off by the "other fuels" setting. Trash always burns.</summary>
         public bool optional = true;
+
+        /// <summary>Valuable or awkward fuels (cloth, hay, bioferrite): a new burner refuses them until allowed.</summary>
+        public bool refusedByDefault;
     }
 
     public class CompProperties_StirlingEngine : CompProperties
@@ -190,10 +193,11 @@ namespace TrashbrickBurning
         public float mixPollution = 1f;
         public float mixToxGas = 1f;
 
-        /// <summary>Whether colonists and hoppers may feed this burner toxic wastepacks.</summary>
-        public bool acceptWastepacks = true;
-
-        public const string WastepackDefName = "Wastepack";
+        /// <summary>
+        /// Fuels (by defName) colonists and hoppers may not feed this burner, on top of its def's fuel
+        /// filter. Set with the Fuels menu (Command_BurnerFuels).
+        /// </summary>
+        public List<string> refusedFuels;
 
         private bool venting;
 
@@ -287,7 +291,79 @@ namespace TrashbrickBurning
             Scribe_Values.Look(ref waterFlowing, "waterFlowing", false);
             Scribe_Values.Look(ref mixPollution, "mixPollution", 1f);
             Scribe_Values.Look(ref mixToxGas, "mixToxGas", 1f);
-            Scribe_Values.Look(ref acceptWastepacks, "acceptWastepacks", true);
+            Scribe_Collections.Look(ref refusedFuels, "refusedFuels", LookMode.Value);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && refusedFuels == null)
+            {
+                // A save from before the Fuels menu: the defaults, and its old wastepack toggle.
+                refusedFuels = DefaultRefused();
+            }
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                bool acceptWastepacks = true;
+                Scribe_Values.Look(ref acceptWastepacks, "acceptWastepacks", true);
+                if (!acceptWastepacks)
+                {
+                    refusedFuels = refusedFuels ?? DefaultRefused();
+                    if (!refusedFuels.Contains("Wastepack"))
+                    {
+                        refusedFuels.Add("Wastepack");
+                    }
+                }
+            }
+        }
+
+        public override void PostPostMake()
+        {
+            base.PostPostMake();
+            refusedFuels = DefaultRefused();
+        }
+
+        private List<string> DefaultRefused()
+        {
+            List<string> list = new List<string>();
+            foreach (FuelValue fv in Props.otherFuels)
+            {
+                if (fv.refusedByDefault && fv.thing != null)
+                {
+                    list.Add(fv.thing.defName);
+                }
+            }
+            return list;
+        }
+
+        /// <summary>Every fuel this burner's def can take, trashbricks first, in the def's order.</summary>
+        public IEnumerable<ThingDef> FuelChoices()
+        {
+            ThingFilter filter = parent.GetComp<CompRefuelable>()?.Props.fuelFilter;
+            if (filter == null)
+            {
+                yield break;
+            }
+            HashSet<ThingDef> listed = new HashSet<ThingDef>();
+            foreach (ThingDef def in filter.AllowedThingDefs)
+            {
+                if (Props.FuelOf(def) == null && listed.Add(def))
+                {
+                    yield return def;
+                }
+            }
+            foreach (FuelValue fv in Props.otherFuels)
+            {
+                if (fv.thing != null && filter.Allows(fv.thing) && listed.Add(fv.thing))
+                {
+                    yield return fv.thing;
+                }
+            }
+        }
+
+        public void SetAccepts(ThingDef def, bool accept)
+        {
+            refusedFuels = refusedFuels ?? new List<string>();
+            refusedFuels.Remove(def.defName);
+            if (!accept)
+            {
+                refusedFuels.Add(def.defName);
+            }
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -410,17 +486,7 @@ namespace TrashbrickBurning
         }
 
         /// <summary>The burner's own say on a fuel, on top of its def's fuel filter.</summary>
-        public bool Accepts(ThingDef def) => acceptWastepacks || def == null || def.defName != WastepackDefName;
-
-        private bool FilterAllowsWastepacks
-        {
-            get
-            {
-                ThingDef wastepack = DefDatabase<ThingDef>.GetNamedSilentFail(WastepackDefName);
-                CompRefuelable fuel = parent.GetComp<CompRefuelable>();
-                return wastepack != null && fuel != null && fuel.Props.fuelFilter.Allows(wastepack);
-            }
-        }
+        public bool Accepts(ThingDef def) => def == null || refusedFuels == null || !refusedFuels.Contains(def.defName);
 
         /// <summary>Blends fuel going in into the mix, weighted by fuel units.</summary>
         public void AddToMix(ThingDef def, float units)
@@ -447,17 +513,7 @@ namespace TrashbrickBurning
             {
                 yield break;
             }
-            if (FilterAllowsWastepacks)
-            {
-                yield return new Command_Toggle
-                {
-                    defaultLabel = "STB_AcceptWastepacks".Translate(),
-                    defaultDesc = "STB_AcceptWastepacksDesc".Translate(),
-                    icon = DefDatabase<ThingDef>.GetNamedSilentFail(WastepackDefName)?.uiIcon ?? TexCommand.ForbidOff,
-                    isActive = () => acceptWastepacks,
-                    toggleAction = () => acceptWastepacks = !acceptWastepacks
-                };
-            }
+            yield return new Command_BurnerFuels(this);
             if (Advanced && DbhActive)
             {
                 yield return new Command_HotWaterShare(this);
@@ -633,7 +689,55 @@ namespace TrashbrickBurning
     }
 
     /// <summary>
-    /// Copies this burner's mode, hot water share and wastepack setting to other burners, so a row of them doesn't
+    /// Which fuels this burner takes. Left-click opens a menu of every fuel its def can take, each with
+    /// what it's worth and how dirty it burns; picking one switches it. The menu reopens so several
+    /// can be switched in a row.
+    /// </summary>
+    public class Command_BurnerFuels : Command_Action
+    {
+        private readonly CompStirlingEngine engine;
+
+        public Command_BurnerFuels(CompStirlingEngine engine)
+        {
+            this.engine = engine;
+            int total = 0, taken = 0;
+            foreach (ThingDef def in engine.FuelChoices())
+            {
+                total++;
+                if (engine.Accepts(def))
+                {
+                    taken++;
+                }
+            }
+            defaultLabel = "STB_Fuels".Translate(taken, total);
+            defaultDesc = "STB_FuelsDesc".Translate();
+            icon = DefDatabase<ThingDef>.GetNamedSilentFail("VRecyclingE_TrashBrick")?.uiIcon ?? TexCommand.ForbidOff;
+            action = OpenMenu;
+        }
+
+        private void OpenMenu()
+        {
+            List<FloatMenuOption> options = new List<FloatMenuOption>();
+            foreach (ThingDef def in engine.FuelChoices())
+            {
+                ThingDef fuel = def;
+                bool on = engine.Accepts(fuel);
+                FuelValue fv = engine.Props.FuelOf(fuel);
+                string label = "STB_FuelLine".Translate(on ? "STB_FuelOn".Translate() : "STB_FuelOff".Translate(),
+                    fuel.LabelCap, (fv?.value ?? 1f).ToString("0.##"),
+                    (fv?.toxGasFactor ?? 1f).ToString("0.##"), (fv?.pollutionFactor ?? 1f).ToString("0.##"));
+                options.Add(new FloatMenuOption(label, () =>
+                {
+                    engine.SetAccepts(fuel, !on);
+                    OpenMenu();
+                }, fuel));
+            }
+            Find.WindowStack.Add(new FloatMenu(options));
+        }
+    }
+
+    /// <summary>
+    /// Copies this burner's mode, hot water share and fuel choices to other burners, so a row of them doesn't
     /// need setting one by one. Left-click: every burner on this burner's pressurised hot water
     /// network, or every burner on the map if it isn't piped to anything. Right-click: pick which.
     /// Burners are matched by mode (eco, normal, high), so cobbled and proper burners sync together.
@@ -697,7 +801,7 @@ namespace TrashbrickBurning
                 int best = e.Props.heatLevels.FindIndex(l => l.key == source.Level.key);
                 e.heatLevel = best >= 0 ? best : Mathf.Clamp(source.heatLevel, 0, e.Props.heatLevels.Count - 1);
                 e.hotWaterShare = source.hotWaterShare;
-                e.acceptWastepacks = source.acceptWastepacks;
+                e.refusedFuels = source.refusedFuels == null ? null : new List<string>(source.refusedFuels);
                 e.Apply();
                 count++;
             }

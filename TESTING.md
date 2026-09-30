@@ -64,11 +64,17 @@ God mode on, then build a **cobbled trash gasifier**. Give it trashbricks (debug
 - [ ] **Burners are dirtier than the compactor:** a lit burner of any size, even on eco, gasses a
   closed room faster than a working compactor does.
 - [ ] **Dirty fuels:** refuel with **loose trash** or **toxic wastepacks**. The burner's readout shows
-  *Fuel mix burns dirty: x0.5 ground pollution, x3 toxic gas* (trash) or x0.25 / x8 (wastepacks),
+  *Fuel mix: x0.5 ground pollution, x3 toxic gas* (trash) or x0.25 / x8 (wastepacks),
   and an unpiped burner gasses its room much faster. Refuelling with bricks brings the mix back
   toward x1. The fuel hopper accepts both.
-- [ ] **Accept wastepacks** off: with wastepacks and bricks both lying around, colonists refuel it
-  with bricks only, and a hopper full of wastepacks doesn't feed it. Back on, they use wastepacks again.
+- [ ] **Fuels menu:** a new burner's **Fuels** button reads *Fuels: 5 of 8* (with Biotech and Anomaly;
+  hay, cloth and bioferrite off). The menu lists each fuel with its worth, gas and pollution. Switch
+  wastepacks off: with wastepacks and bricks both lying around, colonists refuel it with bricks only,
+  and a hopper full of wastepacks doesn't feed it. Switch hay on and it gets fed hay.
+- [ ] Refuel with **wood** only: the readout shows *Fuel mix: x0.3 ground pollution, x0.5 toxic gas*.
+  With **chemfuel**: x1.5 / x0.6.
+- [ ] **Sync burners** copies the fuel choices. An old save whose burner had *Accept wastepacks* off
+  loads with wastepacks switched off in its Fuels menu.
 - [ ] **Wall exhaust port:** hangs on a wall (it won't place away from one) without replacing it,
   drawn on the wall's face. Hung outside, gas drifts off and the ground below slowly pollutes. Hung
   inside a closed room, toxic gas builds up quickly and the room warms a little.

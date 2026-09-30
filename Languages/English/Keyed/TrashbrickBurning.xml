@@ -23,8 +23,8 @@
 	<STB_SimpleStatus>Burning {0} fuel a day</STB_SimpleStatus>
 	<STB_SettingHazards>Hazards: steam bursts and leaks</STB_SettingHazards>
 	<STB_SettingHazardsDesc>Off: burners without a safety valve vent instead of bursting, and pipes never leak.</STB_SettingHazardsDesc>
-	<STB_SettingOtherFuels>Burners also take wood and chemfuel</STB_SettingOtherFuels>
-	<STB_SettingOtherFuelsDesc>A wood log is worth 0.4 of a trashbrick, a unit of chemfuel 2.5. Takes effect after a restart.</STB_SettingOtherFuelsDesc>
+	<STB_SettingOtherFuels>Burners also take wood, chemfuel, hay, cloth and bioferrite</STB_SettingOtherFuels>
+	<STB_SettingOtherFuelsDesc>A wood log is worth 0.4 of a trashbrick, a unit of chemfuel 2.5, hay 0.15, cloth 0.25 and bioferrite 4. Each burner picks which it takes on its Fuels menu. Loose trash and wastepacks always burn. Takes effect after a restart.</STB_SettingOtherFuelsDesc>
 	<STB_SettingFuelUse>Fuel use: {0}</STB_SettingFuelUse>
 	<STB_SettingPower>Power output: {0}</STB_SettingPower>
 	<STB_SettingLeaks>Steam leak frequency: {0}</STB_SettingLeaks>
@@ -61,7 +61,7 @@
 	<STB_AccIdleFull>Full.</STB_AccIdleFull>
 	<STB_AccIdleTurbinesTakeAll>Idle: the turbines and radiators are using all the heat.</STB_AccIdleTurbinesTakeAll>
 	<STB_SyncBurners>Sync burners</STB_SyncBurners>
-	<STB_SyncBurnersDesc>Copy this burner's mode (eco, normal or high), hot water share and Accept wastepacks setting to other burners.\n\nLeft-click: every burner on this burner's hot water network (or the whole map, if it isn't piped to anything). Right-click to choose.</STB_SyncBurnersDesc>
+	<STB_SyncBurnersDesc>Copy this burner's mode (eco, normal or high), hot water share and fuel choices to other burners.\n\nLeft-click: every burner on this burner's hot water network (or the whole map, if it isn't piped to anything). Right-click to choose.</STB_SyncBurnersDesc>
 	<STB_SyncNetwork>Burners on this hot water network</STB_SyncNetwork>
 	<STB_SyncMap>All burners on the map</STB_SyncMap>
 	<STB_SyncedBurners>Synced {0} other burners.</STB_SyncedBurners>
@@ -135,7 +135,10 @@
 	<STB_PortNoPower>NO POWER: the draught fan has stopped. Exhaust is backing up into the burners.</STB_PortNoPower>
 	<STB_SourceToPorts>Exhaust: its toxic gas goes down the exhaust pipe to {0} exhaust ports</STB_SourceToPorts>
 	<STB_SourceNoPort>Exhaust: no open, powered exhaust port on its exhaust pipe - the toxic gas comes out here</STB_SourceNoPort>
-	<STB_FuelMix>Fuel mix burns dirty: x{0} ground pollution, x{1} toxic gas (against trashbricks)</STB_FuelMix>
-	<STB_AcceptWastepacks>Accept wastepacks</STB_AcceptWastepacks>
-	<STB_AcceptWastepacksDesc>If on, colonists and hoppers may feed this burner toxic wastepacks - worth half a trashbrick each, with eight times the toxic gas. Turn off to keep wastepacks out of it: it takes other fuel instead. Wastepacks already in it still burn.</STB_AcceptWastepacksDesc>
+	<STB_FuelMix>Fuel mix: x{0} ground pollution, x{1} toxic gas (against trashbricks)</STB_FuelMix>
+	<STB_Fuels>Fuels: {0} of {1}</STB_Fuels>
+	<STB_FuelsDesc>Choose what colonists and hoppers may feed this burner. Each fuel shows what one item is worth in trashbricks, and how dirty it burns against a trashbrick: toxic gas out of the exhaust, and ground pollution.\n\nWood burns clean but is worth little; chemfuel is worth a lot and soaks the ground; loose trash and wastepacks are cheap and foul. Hay, cloth and bioferrite start refused - allow them here. Fuel already in the burner still burns.</STB_FuelsDesc>
+	<STB_FuelLine>{0} {1}: worth {2} bricks, gas x{3}, pollution x{4}</STB_FuelLine>
+	<STB_FuelOn>[on]</STB_FuelOn>
+	<STB_FuelOff>[off]</STB_FuelOff>
 </LanguageData>

@@ -54,6 +54,9 @@
 						     startup if the setting is off. -->
 						<li>WoodLog</li>
 						<li>Chemfuel</li>
+						<li>Hay</li>
+						<li>Cloth</li>
+						<li MayRequire="Ludeon.RimWorld.Anomaly">Bioferrite</li>
 						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
 						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
 						<li>VRecyclingE_Trash</li>
@@ -94,8 +97,14 @@
 				<!-- Jerry-rigged: no working safety valve. At full pressure it bursts. -->
 				<safetyValve>false</safetyValve>
 				<otherFuels>
-					<li><thing>WoodLog</thing><value>0.4</value></li>
-					<li><thing>Chemfuel</thing><value>2.5</value></li>
+					<!-- Wood burns clean: little gas, and ash rather than ground pollution. -->
+					<li><thing>WoodLog</thing><value>0.4</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.5</toxGasFactor></li>
+					<!-- Chemfuel burns hot and fairly clean in the air, but drips and soaks into the ground. -->
+					<li><thing>Chemfuel</thing><value>2.5</value><pollutionFactor>1.5</pollutionFactor><toxGasFactor>0.6</toxGasFactor></li>
+					<!-- Refused until allowed on each burner's Fuels menu: fodder, cloth, and Anomaly's bioferrite. -->
+					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
 					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
 					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
@@ -204,6 +213,9 @@
 						     startup if the setting is off. -->
 						<li>WoodLog</li>
 						<li>Chemfuel</li>
+						<li>Hay</li>
+						<li>Cloth</li>
+						<li MayRequire="Ludeon.RimWorld.Anomaly">Bioferrite</li>
 						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
 						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
 						<li>VRecyclingE_Trash</li>
@@ -241,8 +253,14 @@
 				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
 				<safetyValve>true</safetyValve>
 				<otherFuels>
-					<li><thing>WoodLog</thing><value>0.4</value></li>
-					<li><thing>Chemfuel</thing><value>2.5</value></li>
+					<!-- Wood burns clean: little gas, and ash rather than ground pollution. -->
+					<li><thing>WoodLog</thing><value>0.4</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.5</toxGasFactor></li>
+					<!-- Chemfuel burns hot and fairly clean in the air, but drips and soaks into the ground. -->
+					<li><thing>Chemfuel</thing><value>2.5</value><pollutionFactor>1.5</pollutionFactor><toxGasFactor>0.6</toxGasFactor></li>
+					<!-- Refused until allowed on each burner's Fuels menu: fodder, cloth, and Anomaly's bioferrite. -->
+					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
 					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
 					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
@@ -336,6 +354,9 @@
 						     startup if the setting is off. -->
 						<li>WoodLog</li>
 						<li>Chemfuel</li>
+						<li>Hay</li>
+						<li>Cloth</li>
+						<li MayRequire="Ludeon.RimWorld.Anomaly">Bioferrite</li>
 						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
 						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
 						<li>VRecyclingE_Trash</li>
@@ -376,8 +397,14 @@
 				<!-- Jerry-rigged: no working safety valve. At full pressure it bursts. -->
 				<safetyValve>false</safetyValve>
 				<otherFuels>
-					<li><thing>WoodLog</thing><value>0.4</value></li>
-					<li><thing>Chemfuel</thing><value>2.5</value></li>
+					<!-- Wood burns clean: little gas, and ash rather than ground pollution. -->
+					<li><thing>WoodLog</thing><value>0.4</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.5</toxGasFactor></li>
+					<!-- Chemfuel burns hot and fairly clean in the air, but drips and soaks into the ground. -->
+					<li><thing>Chemfuel</thing><value>2.5</value><pollutionFactor>1.5</pollutionFactor><toxGasFactor>0.6</toxGasFactor></li>
+					<!-- Refused until allowed on each burner's Fuels menu: fodder, cloth, and Anomaly's bioferrite. -->
+					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
 					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
 					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
@@ -474,6 +501,9 @@
 						     startup if the setting is off. -->
 						<li>WoodLog</li>
 						<li>Chemfuel</li>
+						<li>Hay</li>
+						<li>Cloth</li>
+						<li MayRequire="Ludeon.RimWorld.Anomaly">Bioferrite</li>
 						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
 						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
 						<li>VRecyclingE_Trash</li>
@@ -512,8 +542,14 @@
 				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
 				<safetyValve>true</safetyValve>
 				<otherFuels>
-					<li><thing>WoodLog</thing><value>0.4</value></li>
-					<li><thing>Chemfuel</thing><value>2.5</value></li>
+					<!-- Wood burns clean: little gas, and ash rather than ground pollution. -->
+					<li><thing>WoodLog</thing><value>0.4</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.5</toxGasFactor></li>
+					<!-- Chemfuel burns hot and fairly clean in the air, but drips and soaks into the ground. -->
+					<li><thing>Chemfuel</thing><value>2.5</value><pollutionFactor>1.5</pollutionFactor><toxGasFactor>0.6</toxGasFactor></li>
+					<!-- Refused until allowed on each burner's Fuels menu: fodder, cloth, and Anomaly's bioferrite. -->
+					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
 					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
 					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
@@ -603,6 +639,9 @@
 						     startup if the setting is off. -->
 						<li>WoodLog</li>
 						<li>Chemfuel</li>
+						<li>Hay</li>
+						<li>Cloth</li>
+						<li MayRequire="Ludeon.RimWorld.Anomaly">Bioferrite</li>
 						<!-- Dirty fuels: always allowed. They burn with more toxic gas and less ground
 						     pollution than trashbricks, so burning cleaned-up pollution can't loop. -->
 						<li>VRecyclingE_Trash</li>
@@ -641,8 +680,14 @@
 				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
 				<safetyValve>true</safetyValve>
 				<otherFuels>
-					<li><thing>WoodLog</thing><value>0.4</value></li>
-					<li><thing>Chemfuel</thing><value>2.5</value></li>
+					<!-- Wood burns clean: little gas, and ash rather than ground pollution. -->
+					<li><thing>WoodLog</thing><value>0.4</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.5</toxGasFactor></li>
+					<!-- Chemfuel burns hot and fairly clean in the air, but drips and soaks into the ground. -->
+					<li><thing>Chemfuel</thing><value>2.5</value><pollutionFactor>1.5</pollutionFactor><toxGasFactor>0.6</toxGasFactor></li>
+					<!-- Refused until allowed on each burner's Fuels menu: fodder, cloth, and Anomaly's bioferrite. -->
+					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
+					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<!-- 10 trash compacts into 25 bricks; burnt loose it's worth less, and dirtier. -->
 					<li><thing>VRecyclingE_Trash</thing><value>1.5</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>3</toxGasFactor><optional>false</optional></li>
 					<!-- About 6 cleaned cells make one wastepack; burning one puts back a sliver of that as
@@ -741,6 +786,9 @@
 						<li>WoodLog</li>
 						<li>Chemfuel</li>
 						<li>VRecyclingE_Trash</li>
+						<li>Hay</li>
+						<li>Cloth</li>
+						<li MayRequire="Ludeon.RimWorld.Anomaly">Bioferrite</li>
 						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
 				</filter>
