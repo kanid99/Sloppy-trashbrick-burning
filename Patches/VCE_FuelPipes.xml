@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+	<!--
+		Vanilla Chemfuel Expanded: burners join its chemfuel and deepchem pipe networks and fill up
+		from them, like VCE's own generators. Each unit counts at the fuel's own value (chemfuel 2.5
+		bricks, deepchem 3) and goes into the fuel mix; a fuel switched off on the burner's Fuels
+		menu isn't drawn (Patch_RefillWithPipes). Deepchem starts switched off.
+	-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Vanilla Chemfuel Expanded</li>
+		</mods>
+		<match Class="PatchOperationAdd">
+			<xpath>Defs/ThingDef[defName="STB_TrashbrickPelletStove" or defName="STB_TrashbrickGasifier" or defName="STB_LargeCobbledStove" or defName="STB_LargeGasifier" or defName="STB_IndustrialGasifier"]/comps</xpath>
+			<value>
+				<li Class="PipeSystem.CompProperties_RefillWithPipes">
+					<pipeNet>VCHE_ChemfuelNet</pipeNet>
+					<thing>Chemfuel</thing>
+				</li>
+				<li Class="PipeSystem.CompProperties_RefillWithPipes">
+					<pipeNet>VCHE_DeepchemNet</pipeNet>
+					<thing>VCHE_Deepchem</thing>
+				</li>
+			</value>
+		</match>
+	</Operation>
+
+</Patch>

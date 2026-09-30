@@ -19,6 +19,47 @@ namespace TrashbrickBurning
     }
 
     /// <summary>
+    /// Vanilla Chemfuel Expanded's chemfuel and deepchem pipes feed a burner through VEF's
+    /// CompRefillWithPipes, which counts each pipe unit as one fuel unit and ignores the Fuels menu.
+    /// On our burners the burner does the refill instead (CompStirlingEngine.RefillFromPipe).
+    /// </summary>
+    [HarmonyPatch(typeof(PipeSystem.CompRefillWithPipes), nameof(PipeSystem.CompRefillWithPipes.Refill))]
+    public static class Patch_RefillWithPipes
+    {
+        public static bool Prefix(PipeSystem.CompRefillWithPipes __instance, float __0, ref float __result)
+        {
+            CompStirlingEngine engine = __instance.parent.GetComp<CompStirlingEngine>();
+            if (engine == null)
+            {
+                return true;
+            }
+            PipeSystem.CompProperties_RefillWithPipes props = __instance.Props;
+            __result = engine.RefillFromPipe(props.thing, props.ratio, __0);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// VEF only links the refuelable when its fuel filter allows the pipe's fuel, but the net reads
+    /// it unchecked when it sums demand. With the other-fuels setting off, chemfuel isn't in a
+    /// burner's filter, so link it anyway: RefillFromPipe still refuses what the filter doesn't allow.
+    /// </summary>
+    [HarmonyPatch(typeof(PipeSystem.CompRefillWithPipes), nameof(PipeSystem.CompRefillWithPipes.PostSpawnSetup))]
+    public static class Patch_RefillWithPipes_Spawn
+    {
+        private static readonly System.Reflection.FieldInfo Refuelable =
+            AccessTools.Field(typeof(PipeSystem.CompRefillWithPipes), "compRefuelable");
+
+        public static void Postfix(PipeSystem.CompRefillWithPipes __instance)
+        {
+            if (Refuelable != null && Refuelable.GetValue(__instance) == null && __instance.parent.GetComp<CompStirlingEngine>() != null)
+            {
+                Refuelable.SetValue(__instance, __instance.parent.GetComp<CompRefuelable>());
+            }
+        }
+    }
+
+    /// <summary>
     /// Burners count other fuels at their own values - a wood log is worth less than a trashbrick,
     /// a unit of chemfuel more. CompRefuelable counts every item as one unit, so for our burners
     /// only, this does its item-by-item refuel instead, taking just enough of each stack to fill up.

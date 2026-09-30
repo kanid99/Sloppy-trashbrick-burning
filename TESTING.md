@@ -80,6 +80,14 @@ God mode on, then build a **cobbled trash gasifier**. Give it trashbricks (debug
   and the mix reads x4 pollution, x5 toxic gas.
 - [ ] A burner built in 0.9.1 and loaded now shows corpses (and deepchem) off, and keeps whatever
   it had for hay, cloth and bioferrite.
+- [ ] **Chemfuel pipe** (Vanilla Chemfuel Expanded): run a chemfuel pipe from a tank with chemfuel
+  in it under an empty burner. It fills up to its target; the tank drops by about 1 for every 2.5
+  fuel it gains, and the mix readout moves toward x1.5 pollution / x0.6 gas. Switch chemfuel off on
+  its Fuels menu: it stops drawing.
+- [ ] **Deepchem pipe:** the same with a deepchem pipe and tank. Nothing is drawn until deepchem is
+  switched on in the Fuels menu; then 1 deepchem per 3 fuel, and a filthy mix (x4 / x5).
+- [ ] With the other-fuels setting off (restart), a burner on a chemfuel pipe draws nothing and
+  nothing errors.
 - [ ] Fuels menu **Anything**: the button reads *Fuels: 10 of 10*. **Trashbricks only**: *1 of 10*,
   and colonists bring nothing but bricks.
 - [ ] Refuel with **wood** only: the readout shows *Fuel mix: x0.3 ground pollution, x0.5 toxic gas*.

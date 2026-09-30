@@ -461,6 +461,31 @@ namespace TrashbrickBurning
 
         public bool Accepts(string key) => refusedFuels == null || !refusedFuels.Contains(key);
 
+        /// <summary>
+        /// Fuel straight off a Vanilla Chemfuel Expanded chemfuel or deepchem pipe
+        /// (Patch_RefillWithPipes): up to the refuel target, each item at its own value and into the
+        /// mix, and only if this burner takes that fuel. Returns the pipe units used (ratio per item).
+        /// </summary>
+        public float RefillFromPipe(ThingDef thing, float ratio, float available)
+        {
+            CompRefuelable fuel = parent.GetComp<CompRefuelable>();
+            if (fuel == null || thing == null || ratio <= 0f || available <= 0f
+                || !fuel.Props.fuelFilter.Allows(thing) || !Accepts(thing))
+            {
+                return 0f;
+            }
+            float need = (fuel.TargetFuelLevel - fuel.Fuel) / fuel.Props.FuelMultiplierCurrentDifficulty;
+            float value = Mathf.Max(0.01f, Props.FuelValueOf(thing));
+            float items = Mathf.Min(available / ratio, need / value);
+            if (items <= 0.0001f)
+            {
+                return 0f;
+            }
+            AddToMix(thing, items * value);
+            fuel.Refuel(items * value);
+            return items * ratio;
+        }
+
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
