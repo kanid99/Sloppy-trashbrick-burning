@@ -179,7 +179,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_TrashbrickGasifier</defName>
 		<label>trash gasifier</label>
-		<description>A sealed trash gasifier that bakes trashbricks into syngas and burns it cleanly: 1500W of heat on 75 bricks a day in normal mode, 750W on 30 in eco, 2000W on 112 in high. With no steam turbine on its pressurised hot water network, its Stirling engine makes some power (100-500W) from three times that in heat; the rest goes out on the pipe to an Overpressure Tank or radiators. A safety valve vents any pressure left over. It gets twice the power from each brick that a pellet stove does, and the catalytic filters catch the fumes, so it doesn't pollute. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
+		<description>A sealed trash gasifier that bakes trashbricks into syngas and burns it cleanly: 1500W of heat on 75 bricks a day in normal mode, 750W on 30 in eco, 2000W on 112 in high. With no steam turbine on its pressurised hot water network, its Stirling engine makes some power (100-500W) from three times that in heat; the rest goes out on the pipe to an Overpressure Tank or radiators. A safety valve vents any pressure left over. Its catalytic filters cut the ground pollution to a third of a cobbled burner's, though the exhaust still needs piping away. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_TrashbrickGasifier</texPath>
@@ -372,8 +372,8 @@
 		<comps>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
-				<fuelConsumptionRate>54.0</fuelConsumptionRate>
-				<fuelCapacity>150.0</fuelCapacity>
+				<fuelConsumptionRate>405</fuelConsumptionRate>
+				<fuelCapacity>450.0</fuelCapacity>
 				<fuelLabel>Trashbricks</fuelLabel>
 				<fuelFilter>
 					<thingDefs>
@@ -425,9 +425,9 @@
 				<cooledPowerFactor>1.2</cooledPowerFactor>
 				<heatRecoveryPowerFactor>0.5</heatRecoveryPowerFactor>
 				<heatLevels>
-					<li><key>Eco</key><watts>750</watts><fuelPerDay>22</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>48</waterPerDay></li>
-					<li><key>Normal</key><watts>1000</watts><fuelPerDay>31</fuelPerDay><roomHeatPerSecond>17</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>96</waterPerDay></li>
-					<li><key>High</key><watts>1500</watts><fuelPerDay>54</fuelPerDay><roomHeatPerSecond>30</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>129</waterPerDay></li>
+					<li><key>Eco</key><watts>1800</watts><fuelPerDay>108</fuelPerDay><roomHeatPerSecond>15</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>48</waterPerDay></li>
+					<li><key>Normal</key><watts>3600</watts><fuelPerDay>270</fuelPerDay><roomHeatPerSecond>30</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>96</waterPerDay></li>
+					<li><key>High</key><watts>4800</watts><fuelPerDay>405</fuelPerDay><roomHeatPerSecond>42</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>129</waterPerDay></li>
 				</heatLevels>
 				<!-- Jerry-rigged: no working safety valve. At full pressure it bursts. -->
 				<safetyValve>false</safetyValve>
@@ -483,7 +483,7 @@
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_Exhaust">
 				<pollutionPerFuel>0.06</pollutionPerFuel>
-				<toxGasPerFuel>2000</toxGasPerFuel>
+				<toxGasPerFuel>1000</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -502,7 +502,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_LargeGasifier</defName>
 		<label>large trash gasifier</label>
-		<description>A bigger sealed gasifier: one large chamber, a longer filter bank and its own generator. Three times the heat of a trash gasifier from a little less fuel per watt - at full burn, enough to run one steam turbine flat out. Like the small one it bakes trashbricks into syngas and burns it cleanly, but it has no engine of its own: pipe it to a steam turbine. It gets twice the power from each brick that a pellet stove does, and the catalytic filters catch the fumes, so it doesn't pollute. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
+		<description>A bigger sealed gasifier: one large chamber, a longer filter bank and its own generator. Three times the heat of a trash gasifier from a little less fuel per watt - at full burn, enough to run one steam turbine flat out. Like the small one it bakes trashbricks into syngas and burns it cleanly, but it has no engine of its own: pipe it to a steam turbine. Its catalytic filters cut the ground pollution to a third of a cobbled burner's, though the exhaust still needs piping away. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_LargeGasifier</texPath>
@@ -533,8 +533,8 @@
 		<comps>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
-				<fuelConsumptionRate>32.0</fuelConsumptionRate>
-				<fuelCapacity>180.0</fuelCapacity>
+				<fuelConsumptionRate>303.75</fuelConsumptionRate>
+				<fuelCapacity>300.0</fuelCapacity>
 				<fuelLabel>Trashbricks</fuelLabel>
 				<fuelFilter>
 					<thingDefs>
@@ -584,9 +584,9 @@
 				<cooledPowerFactor>1.2</cooledPowerFactor>
 				<heatRecoveryPowerFactor>0.6</heatRecoveryPowerFactor>
 				<heatLevels>
-					<li><key>Eco</key><watts>750</watts><fuelPerDay>11</fuelPerDay><roomHeatPerSecond>4.5</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>60</waterPerDay></li>
-					<li><key>Normal</key><watts>1000</watts><fuelPerDay>15</fuelPerDay><roomHeatPerSecond>7</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>120</waterPerDay></li>
-					<li><key>High</key><watts>1500</watts><fuelPerDay>24</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>159</waterPerDay></li>
+					<li><key>Eco</key><watts>2250</watts><fuelPerDay>81</fuelPerDay><roomHeatPerSecond>4.5</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>60</waterPerDay></li>
+					<li><key>Normal</key><watts>4500</watts><fuelPerDay>202.5</fuelPerDay><roomHeatPerSecond>9</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>120</waterPerDay></li>
+					<li><key>High</key><watts>6000</watts><fuelPerDay>303.75</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>159</waterPerDay></li>
 				</heatLevels>
 				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
 				<safetyValve>true</safetyValve>
@@ -631,7 +631,7 @@
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_Exhaust">
 				<pollutionPerFuel>0.02</pollutionPerFuel>
-				<toxGasPerFuel>3600</toxGasPerFuel>
+				<toxGasPerFuel>1200</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -654,7 +654,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>STB_IndustrialGasifier</defName>
 		<label>industrial trash gasifier</label>
-		<description>A plant-scale gasifier: two chambers in series, a double filter bank, twin exhaust stacks and a full-size generator on one long skid. Six times the heat of a trash gasifier and the most out of every brick - at full burn, enough to run two steam turbines flat out. Like the small one it burns clean. It has no engine of its own: pipe it to steam turbines. It gets twice the power from each brick that a pellet stove does, and the catalytic filters catch the fumes, so it doesn't pollute. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
+		<description>A plant-scale gasifier: two chambers in series, a double filter bank, twin exhaust stacks and a full-size generator on one long skid. Six times the heat of a trash gasifier and the most out of every brick - a fifth less fuel per watt - at full burn, enough to run two steam turbines flat out. Like the small one it burns clean. It has no engine of its own: pipe it to steam turbines. Its catalytic filters cut the ground pollution to a third of a cobbled burner's, though the exhaust still needs piping away. The housing is insulated, so it leaks only a little heat. Refill it by hand, or put a hopper on its intake - the green-marked port on the side it faces - and it will draw fuel from that.</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Power/STB_IndustrialGasifier</texPath>
@@ -685,8 +685,8 @@
 		<comps>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
-				<fuelConsumptionRate>60.0</fuelConsumptionRate>
-				<fuelCapacity>360.0</fuelCapacity>
+				<fuelConsumptionRate>540</fuelConsumptionRate>
+				<fuelCapacity>600.0</fuelCapacity>
 				<fuelLabel>Trashbricks</fuelLabel>
 				<fuelFilter>
 					<thingDefs>
@@ -736,9 +736,9 @@
 				<cooledPowerFactor>1.2</cooledPowerFactor>
 				<heatRecoveryPowerFactor>0.6</heatRecoveryPowerFactor>
 				<heatLevels>
-					<li><key>Eco</key><watts>1500</watts><fuelPerDay>20</fuelPerDay><roomHeatPerSecond>8</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>90</waterPerDay></li>
-					<li><key>Normal</key><watts>2250</watts><fuelPerDay>33</fuelPerDay><roomHeatPerSecond>12</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>180</waterPerDay></li>
-					<li><key>High</key><watts>3000</watts><fuelPerDay>46</fuelPerDay><roomHeatPerSecond>20</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>240</waterPerDay></li>
+					<li><key>Eco</key><watts>4500</watts><fuelPerDay>144</fuelPerDay><roomHeatPerSecond>9</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>90</waterPerDay></li>
+					<li><key>Normal</key><watts>9000</watts><fuelPerDay>360</fuelPerDay><roomHeatPerSecond>18</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>180</waterPerDay></li>
+					<li><key>High</key><watts>12000</watts><fuelPerDay>540</fuelPerDay><roomHeatPerSecond>24</roomHeatPerSecond><stirlingWatts>0</stirlingWatts><waterPerDay>240</waterPerDay></li>
 				</heatLevels>
 				<!-- A proper safety valve: vents steam at high pressure instead of bursting. -->
 				<safetyValve>true</safetyValve>
@@ -783,7 +783,7 @@
 			</li>
 			<li Class="TrashbrickBurning.CompProperties_Exhaust">
 				<pollutionPerFuel>0.02</pollutionPerFuel>
-				<toxGasPerFuel>2000</toxGasPerFuel>
+				<toxGasPerFuel>1000</toxGasPerFuel>
 			</li>
 		</comps>
 		<placeWorkers>

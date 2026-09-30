@@ -3,8 +3,8 @@
 **Status:** the baseline chain is built in 0.7.0, waiting on playtesting.
 
 **Scope** (decided): get the baseline chain working well first: Cobbled / Trash Gasifier →
-pipe → turbines, Overpressure Tank and radiators. The large and industrial tiers get rethought
-after that. Until then they stay as they are.
+pipe → turbines, Overpressure Tank and radiators. The large and industrial tiers came after: they
+scale with footprint (3x and 6x the heat) and burn 10% / 20% less fuel per watt.
 
 Working notes for the rework. The baseline unit is defined first; everything else hangs off it.
 **Decided** is from your notes. **Proposed** is my suggestion, waiting on you. **Open** needs an answer.

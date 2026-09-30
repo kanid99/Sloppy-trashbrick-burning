@@ -39,14 +39,19 @@ The whole system is **trash gasification**. The **cobbled trash gasifier** is th
 **Simple mode:** the cobbled gasifier makes **1000W** on 20 bricks a day; the trash gasifier makes **1200W** on 12.
 
 ### Large and industrial burners (advanced mode, Power tab)
-Bigger burners with **no engine of their own**, so they need steam turbines. These will be rethought once the baseline chain has been playtested; for now they keep their numbers.
+Bigger burners with **no engine of their own**, so they need steam turbines. They scale with their size: the large ones make **three times** the heat of their small counterpart, the industrial one **six times** a trash gasifier's, and each gets more out of every brick than the small ones - the large tier burns 10% less fuel per watt, the industrial 20% less.
 
 | | Large cobbled trash gasifier | Large trash gasifier | Industrial trash gasifier |
 |---|---|---|---|
 | Size | 3x4 | 3x4 | 3x6 |
-| Eco / normal / high | 750 / 1000 / 1500W | 750 / 1000 / 1500W | 1500 / 2250 / 3000W |
-| Fuel a day | 22 / 31 / 54 | 11 / 15 / 24 | 20 / 33 / 46 |
+| Heat, eco / normal / high | 1800 / 3600 / 4800W | 2250 / 4500 / 6000W | 4500 / 9000 / 12000W |
+| Fuel a day | 108 / 270 / 405 | 81 / 202.5 / 304 | 144 / 360 / 540 |
+| Heat per brick a day (normal) | 13.3W (small: 12W) | 22.2W (small: 20W) | 25W |
+| Holds | 450 bricks | 300 bricks | 600 bricks |
+| Turbines it runs at full burn | one (high gear on normal) | one flat out | two flat out |
 | Safety valve | no, it bursts | yes | yes |
+
+They eat trash fast: an industrial gasifier on normal burns what 14 garbage compactors make. Feed them from hoppers or, with Vanilla Chemfuel Expanded, a chemfuel pipe.
 
 ### Steam turbines (advanced mode)
 Two tiers, both 2x3, with **three gears**. A higher gear turns more of the heat into power but needs more heat to turn at all. **Below its gear's minimum a turbine stalls**: it still takes its share of the heat, wastes it, and makes nothing.
@@ -96,9 +101,9 @@ Burning trash makes exhaust, in both play modes. It has to go somewhere:
 |---|---|---|---|
 | Cobbled trash gasifier | 0.06 | 1000 | 40,000 / 100,000 / 150,000 |
 | Trash gasifier | 0.02 | 1200 | 36,000 / 90,000 / 135,000 |
-| Large cobbled trash gasifier | 0.06 | 2000 | 44,000 / 62,000 / 108,000 |
-| Large trash gasifier | 0.02 | 3600 | 39,600 / 54,000 / 86,400 |
-| Industrial trash gasifier | 0.02 | 2000 | 40,000 / 66,000 / 92,000 |
+| Large cobbled trash gasifier | 0.06 | 1000 | 108,000 / 270,000 / 405,000 |
+| Large trash gasifier | 0.02 | 1200 | 97,200 / 243,000 / 364,500 |
+| Industrial trash gasifier | 0.02 | 1000 | 144,000 / 360,000 / 540,000 |
 | *(VRE garbage compactor)* | - | - | *about 30,000 while working* |
 
 On trashbricks; loose trash and wastepacks multiply the gas (below).
