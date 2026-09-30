@@ -507,7 +507,10 @@
 			<drawSize>(3,3)</drawSize>
 		</graphicData>
 		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
+		<!-- Pass-through, not impassable: RimWorld won't have an impassable building that can be
+		     seen and shot over, and a 90% tank is good cover. -->
+		<passability>PassThroughOnly</passability>
+		<pathCost>150</pathCost>
 		<fillPercent>0.9</fillPercent>
 		<blockWind>true</blockWind>
 		<castEdgeShadows>false</castEdgeShadows>
