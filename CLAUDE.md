@@ -18,6 +18,19 @@ game loads next**.
 
   Build branches are restore points: never move or delete one. To roll back,
   reset `main` to an earlier `build/...` branch - only when the owner asks.
+- **Every update carries its change notes** as BBCode (the Steam Workshop
+  change-notes format), in `Changelog/<build>.bbcode` - e.g.
+  `Changelog/0.9.N.bbcode` - committed in the same commit as the change, so
+  each `build/` branch carries its own notes. Write them for players: what was
+  added, changed and fixed, not how. Format:
+
+      [h2]Build 0.9.N[/h2]
+      [h3]Added[/h3]
+      [list]
+      [*]...
+      [/list]
+
+  Use only the sections that apply (Added, Changed, Fixed, Removed).
 - **Stamp the build number before every commit**: `<modVersion>` in
   `About/About.xml` and a `Build x.y` line at the top of its description, set to
   `0.9.<commit count after this commit>` (`git rev-list --count HEAD` + 1; needs
