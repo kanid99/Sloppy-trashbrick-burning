@@ -61,6 +61,12 @@ God mode on, then build a **cobbled trash gasifier**. Give it trashbricks (debug
   to a powered port. While it compacts it reads *its toxic gas goes down the exhaust pipe to 1 exhaust
   ports*, and the gas comes out at the port instead of at its work spot. Without a port it reads *no
   open, powered exhaust port* and gasses its work spot as before.
+- [ ] **Factory fumes** (Vanilla Furniture Expanded - Factory): an automated smelter running a job in a
+  closed room fills it with toxic gas slowly and reads *Fumes: 20000 toxic gas a day while working*;
+  idle, it says *(idle now)* and makes none. Exhaust pipe from it to a powered port: the gas comes out
+  at the port and it reads *goes down the exhaust pipe to 1 exhaust ports*. The conveyor crematorium
+  adds rot stink. An autoloom has no fumes. The settings checkbox turns it all off, and the
+  checkbox only shows with the Factory mod loaded.
 - [ ] **Burners are dirtier than the compactor:** a lit burner of any size, even on eco, gasses a
   closed room faster than a working compactor does.
 - [ ] **Dirty fuels:** refuel with **loose trash** or **toxic wastepacks**. The burner's readout shows

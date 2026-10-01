@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+	<!--
+		Vanilla Furniture Expanded - Factory: the dirty machines give off fumes while they work
+		(CompFactoryFumes) - toxic gas, a little ground pollution, and rot stink from the crematorium.
+		They join the exhaust network, so exhaust pipe to a powered port sends the fumes outside;
+		unpiped, they come out around the machine. A garbage compactor makes about 30000 toxic gas a
+		day, for scale. The clean machines (loom, saw, mincer, oven, assembler, distillery, machining
+		bay) are left alone. The exhaust comp goes last, so a machine's own pipe comp stays its first.
+	-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Vanilla Furniture Expanded - Factory</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[defName="VFEFactory_AutomatedSmelter"]/comps</xpath>
+					<value>
+						<li Class="PipeSystem.CompProperties_Resource">
+							<pipeNet>STB_ExhaustNet</pipeNet>
+						</li>
+						<li Class="TrashbrickBurning.CompProperties_FactoryFumes">
+							<toxGasPerDay>20000</toxGasPerDay>
+						<pollutionPerDay>1</pollutionPerDay>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[defName="VFEFactory_AutomatedAlloyForge"]/comps</xpath>
+					<value>
+						<li Class="PipeSystem.CompProperties_Resource">
+							<pipeNet>STB_ExhaustNet</pipeNet>
+						</li>
+						<li Class="TrashbrickBurning.CompProperties_FactoryFumes">
+							<toxGasPerDay>25000</toxGasPerDay>
+						<pollutionPerDay>1.5</pollutionPerDay>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[defName="VFEFactory_AutomatedBiofuelRefinery"]/comps</xpath>
+					<value>
+						<li Class="PipeSystem.CompProperties_Resource">
+							<pipeNet>STB_ExhaustNet</pipeNet>
+						</li>
+						<li Class="TrashbrickBurning.CompProperties_FactoryFumes">
+							<toxGasPerDay>15000</toxGasPerDay>
+						<pollutionPerDay>0.5</pollutionPerDay>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[defName="VFEFactory_NeutroamineSynthesizer"]/comps</xpath>
+					<value>
+						<li Class="PipeSystem.CompProperties_Resource">
+							<pipeNet>STB_ExhaustNet</pipeNet>
+						</li>
+						<li Class="TrashbrickBurning.CompProperties_FactoryFumes">
+							<toxGasPerDay>30000</toxGasPerDay>
+						<pollutionPerDay>1</pollutionPerDay>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[defName="VFEFactory_AutomatedAmmunitionPress"]/comps</xpath>
+					<value>
+						<li Class="PipeSystem.CompProperties_Resource">
+							<pipeNet>STB_ExhaustNet</pipeNet>
+						</li>
+						<li Class="TrashbrickBurning.CompProperties_FactoryFumes">
+							<toxGasPerDay>10000</toxGasPerDay>
+						<pollutionPerDay>0.5</pollutionPerDay>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[defName="VFEFactory_MedicineGranulator"]/comps</xpath>
+					<value>
+						<li Class="PipeSystem.CompProperties_Resource">
+							<pipeNet>STB_ExhaustNet</pipeNet>
+						</li>
+						<li Class="TrashbrickBurning.CompProperties_FactoryFumes">
+							<toxGasPerDay>8000</toxGasPerDay>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[defName="VFEFactory_AutomatedCrematorium"]/comps</xpath>
+					<value>
+						<li Class="PipeSystem.CompProperties_Resource">
+							<pipeNet>STB_ExhaustNet</pipeNet>
+						</li>
+						<li Class="TrashbrickBurning.CompProperties_FactoryFumes">
+							<toxGasPerDay>10000</toxGasPerDay>
+						<rotStinkPerDay>20000</rotStinkPerDay>
+						<pollutionPerDay>0.5</pollutionPerDay>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+
+</Patch>

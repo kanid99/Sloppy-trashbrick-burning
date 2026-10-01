@@ -93,6 +93,19 @@ Burning trash makes exhaust, in both play modes. It has to go somewhere:
 - **Exhaust pipe** (visible and hidden, one architect button) carries it to an **exhaust port**: a 1x1 soot-black stack (Electricity: 30 steel). Build the port outdoors; the ground around it slowly fills with pollution (Biotech's pollution). A port indoors gasses its room. Several ports on one network share the exhaust; a port's **damper** closes it. The stack and a **wall exhaust port** share one architect button. The wall port (35 steel) hangs on a wall like a wall lamp or an over-the-wall unit and blows the exhaust out on the side it hangs on: hang it on the outside of a wall and pipe to it under the wall. Exhaust pipe and pressurised hot water pipe are separate networks and can share a cell.
 - **Ports need power:** each port's draught fan draws 80W. Without power (or with its damper shut) a port is closed, and with no open port the exhaust **backs up into the burners** and comes out around them.
 - **Garbage compactor:** Vanilla Recycling Expanded's garbage compactor joins the exhaust network too. Run exhaust pipe under it to a powered port and the toxic gas it makes while compacting (300 every 10 seconds, about 30,000 a day) goes out of the port instead of around its work spot. Unpiped, it gasses its surroundings as usual.
+- **Factory fumes (Vanilla Furniture Expanded - Factory):** the dirty factory machines give off fumes while they're running a process, and join the exhaust network the same way. Pipe them to a powered port to send the fumes outside; unpiped, they come out around the machine. A settings checkbox switches it off, and the pollution slider scales it.
+
+| Machine | Toxic gas a day while working | Ground pollution a day |
+|---|---|---|
+| Automated smelter | 20,000 | 1 cell |
+| Automated alloy forge | 25,000 | 1.5 cells |
+| Automated biofuel refinery | 15,000 | 0.5 cells |
+| Neutroamine synthesizer | 30,000 | 1 cell |
+| Automated ammunition press | 10,000 | 0.5 cells |
+| Medicine granulator | 8,000 | - |
+| Conveyor crematorium | 10,000, plus 20,000 rot stink | 0.5 cells |
+
+The clean machines (autoloom, masonry saw, mincer, conveyor oven, assembler, distillery, machining bay) make none.
 - **At the port:** exhaust comes out as toxic gas (it drifts off outdoors, and builds up fast in a closed room), a little heat, and ground pollution.
 - **No exhaust pipe to an open port:** the burner lets its exhaust out around itself - **toxic gas** into the cells around it, and pollution on the ground there. Its readout says *EXHAUST* in capitals and a **Burner venting toxic exhaust** alert fires.
 - **How much:** by fuel burnt. Every burner, on every mode, makes more toxic gas than a working garbage compactor - burning trash is dirtier than crushing it. The trash gasifier's filters cut the ground pollution to a third; the gas only a little. A settings slider scales it.

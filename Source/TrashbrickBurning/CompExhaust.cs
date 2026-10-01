@@ -371,14 +371,18 @@ namespace TrashbrickBurning
     }
 
     /// <summary>
-    /// On something else that makes toxic gas - Vanilla Recycling Expanded's garbage compactor. Piped
-    /// to a powered exhaust port, the gas it would let out goes down the exhaust instead
-    /// (Patch_CompactorExhaust); otherwise it comes out as usual.
+    /// On something else that makes fumes - Vanilla Recycling Expanded's garbage compactor, or a
+    /// Vanilla Furniture Expanded - Factory machine (CompFactoryFumes). Piped to a powered exhaust
+    /// port, its fumes go down the exhaust instead (Patch_CompactorExhaust for the compactor);
+    /// otherwise they come out as usual.
     /// </summary>
     public class CompExhaustSource : ThingComp
     {
-        /// <summary>Takes the gas if it can: true if it went down the exhaust.</summary>
-        public bool TryRoute(int amount)
+        /// <summary>Takes the toxic gas if it can: true if it went down the exhaust.</summary>
+        public bool TryRoute(int amount) => TryRoute(amount, 0f, 0f);
+
+        /// <summary>Sends fumes to the open ports, split evenly: true if there was one to take them.</summary>
+        public bool TryRoute(float toxGas, float rotStink, float pollution)
         {
             List<CompExhaustPort> open = ExhaustNetwork.Ports(ExhaustNetwork.NetOf(parent));
             if (open.Count == 0)
@@ -387,7 +391,7 @@ namespace TrashbrickBurning
             }
             foreach (CompExhaustPort port in open)
             {
-                port.Receive(0f, (float)amount / open.Count, 0f);
+                port.Receive(pollution / open.Count, toxGas / open.Count, 0f, rotStink / open.Count);
             }
             return true;
         }
@@ -400,6 +404,113 @@ namespace TrashbrickBurning
                 return "STB_SourceToPorts".Translate(ports);
             }
             return ExhaustNetwork.NetOf(parent) != null ? "STB_SourceNoPort".Translate().Resolve() : null;
+        }
+    }
+
+    public class CompProperties_FactoryFumes : CompProperties_ExhaustSource
+    {
+        /// <summary>Toxic gas a day while the machine is working (a garbage compactor makes about 30000).</summary>
+        public float toxGasPerDay;
+
+        /// <summary>Rot stink a day while working: the crematorium.</summary>
+        public float rotStinkPerDay;
+
+        /// <summary>Ground cells polluted a day while working (Biotech).</summary>
+        public float pollutionPerDay;
+
+        public CompProperties_FactoryFumes()
+        {
+            compClass = typeof(CompFactoryFumes);
+        }
+    }
+
+    /// <summary>
+    /// A Vanilla Furniture Expanded - Factory machine's fumes: while its VEF processor is running a
+    /// process, it makes toxic gas (or rot stink) and a little ground pollution. Piped to a powered
+    /// exhaust port they come out there; otherwise around the machine. Scaled by the pollution
+    /// setting, and off with the factory fumes setting.
+    /// </summary>
+    public class CompFactoryFumes : CompExhaustSource
+    {
+        private const int Interval = GenTicks.TickRareInterval;
+
+        private float gasBuffer;
+        private float rotBuffer;
+        private float pollutionBuffer;
+        private bool working;
+
+        private CompProperties_FactoryFumes Props => (CompProperties_FactoryFumes)props;
+
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_Values.Look(ref gasBuffer, "fumesGas", 0f);
+            Scribe_Values.Look(ref rotBuffer, "fumesRot", 0f);
+            Scribe_Values.Look(ref pollutionBuffer, "fumesPollution", 0f);
+        }
+
+        public override void CompTick()
+        {
+            base.CompTick();
+            if (parent.IsHashIntervalTick(Interval))
+            {
+                Step();
+            }
+        }
+
+        public override void CompTickRare()
+        {
+            base.CompTickRare();
+            Step();
+        }
+
+        /// <summary>Running a process right now: VEF's processor has one under way with its ingredients in.</summary>
+        private bool Working
+        {
+            get
+            {
+                PipeSystem.CompAdvancedResourceProcessor processor = parent.GetComp<PipeSystem.CompAdvancedResourceProcessor>();
+                if (processor?.Process == null || !processor.Process.IsRunning)
+                {
+                    return false;
+                }
+                CompPowerTrader power = parent.GetComp<CompPowerTrader>();
+                return power == null || power.PowerOn;
+            }
+        }
+
+        private void Step()
+        {
+            working = parent.Spawned && TrashbrickBurningMod.S.factoryFumes && Working;
+            if (!working)
+            {
+                return;
+            }
+            float f = (float)Interval / GenDate.TicksPerDay * TrashbrickBurningMod.S.pollutionMultiplier;
+            float gas = Props.toxGasPerDay * f, rot = Props.rotStinkPerDay * f, pollution = Props.pollutionPerDay * f;
+            if (TryRoute(gas, rot, pollution))
+            {
+                return;
+            }
+            gasBuffer += gas;
+            rotBuffer += rot;
+            pollutionBuffer += pollution;
+            CompExhaust.Emit(parent, null, ref pollutionBuffer, ref gasBuffer, ref rotBuffer);
+        }
+
+        public override string CompInspectStringExtra()
+        {
+            if (!TrashbrickBurningMod.S.factoryFumes)
+            {
+                return null;
+            }
+            float mult = TrashbrickBurningMod.S.pollutionMultiplier;
+            string what = Props.rotStinkPerDay > 0f
+                ? "STB_FumesRot".Translate((Props.toxGasPerDay * mult).ToString("0"), (Props.rotStinkPerDay * mult).ToString("0"))
+                : "STB_FumesGas".Translate((Props.toxGasPerDay * mult).ToString("0"));
+            string line = (working ? "STB_FumesWorking" : "STB_FumesIdle").Translate(what);
+            string route = base.CompInspectStringExtra();
+            return route.NullOrEmpty() ? line : line + "\n" + route;
         }
     }
 }

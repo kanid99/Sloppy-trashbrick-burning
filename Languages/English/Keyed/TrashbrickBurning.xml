@@ -147,4 +147,10 @@
 	<STB_FuelMixRot>Burning corpses: rot stink x{0} (against trashbricks' toxic gas)</STB_FuelMixRot>
 	<STB_FuelOn>[on]</STB_FuelOn>
 	<STB_FuelOff>[off]</STB_FuelOff>
+	<STB_SettingFactoryFumes>Factory machines give off fumes (Vanilla Furniture Expanded - Factory)</STB_SettingFactoryFumes>
+	<STB_SettingFactoryFumesDesc>On: the dirty factory machines - smelter, alloy forge, biofuel refinery, neutroamine synthesizer, ammunition press, medicine granulator and conveyor crematorium - give off toxic gas while they work, and a little ground pollution; the crematorium adds rot stink. Run exhaust pipe under them to a powered exhaust port to send the fumes outside. The pollution slider scales them.</STB_SettingFactoryFumesDesc>
+	<STB_FumesGas>{0} toxic gas a day</STB_FumesGas>
+	<STB_FumesRot>{0} toxic gas and {1} rot stink a day</STB_FumesRot>
+	<STB_FumesWorking>Fumes: {0} while working</STB_FumesWorking>
+	<STB_FumesIdle>Fumes: {0} while working (idle now)</STB_FumesIdle>
 </LanguageData>

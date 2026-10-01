@@ -20,6 +20,9 @@ namespace TrashbrickBurning
         /// <summary>Burners also take wood and chemfuel, at their own fuel values.</summary>
         public bool otherFuels = true;
 
+        /// <summary>Vanilla Furniture Expanded - Factory machines give off fumes while they work (CompFactoryFumes).</summary>
+        public bool factoryFumes = true;
+
         /// <summary>With Dubs Bad Hygiene in advanced mode, burners only burn with plumbing water flowing.</summary>
         public bool requireWater = true;
 
@@ -34,6 +37,7 @@ namespace TrashbrickBurning
             Scribe_Values.Look(ref advanced, "advanced", true);
             Scribe_Values.Look(ref hazards, "hazards", true);
             Scribe_Values.Look(ref otherFuels, "otherFuels", true);
+            Scribe_Values.Look(ref factoryFumes, "factoryFumes", true);
             Scribe_Values.Look(ref requireWater, "requireWater", true);
             Scribe_Values.Look(ref fuelUseMultiplier, "fuelUseMultiplier", 1f);
             Scribe_Values.Look(ref powerMultiplier, "powerMultiplier", 1f);
@@ -72,6 +76,11 @@ namespace TrashbrickBurning
             list.Gap();
             list.CheckboxLabeled("STB_SettingHazards".Translate(), ref s.hazards, "STB_SettingHazardsDesc".Translate());
             list.CheckboxLabeled("STB_SettingOtherFuels".Translate(), ref s.otherFuels, "STB_SettingOtherFuelsDesc".Translate());
+            // Only with Vanilla Furniture Expanded - Factory loaded (its About.xml has no packageId to check).
+            if (DefDatabase<ThingDef>.GetNamedSilentFail("VFEFactory_AutomatedSmelter") != null)
+            {
+                list.CheckboxLabeled("STB_SettingFactoryFumes".Translate(), ref s.factoryFumes, "STB_SettingFactoryFumesDesc".Translate());
+            }
             if (ModsConfig.IsActive(CompStirlingEngine.DubsBadHygieneId))
             {
                 list.CheckboxLabeled("STB_SettingRequireWater".Translate(), ref s.requireWater, "STB_SettingRequireWaterDesc".Translate());
