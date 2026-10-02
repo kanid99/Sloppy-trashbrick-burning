@@ -73,33 +73,36 @@ God mode on, then build a **cobbled trash gasifier**. Give it trashbricks (debug
   *Fuel mix: x0.5 ground pollution, x3 toxic gas* (trash) or x0.25 / x8 (wastepacks),
   and an unpiped burner gasses its room much faster. Refuelling with bricks brings the mix back
   toward x1. The fuel hopper accepts both.
-- [ ] **Fuels menu:** a new burner's **Fuels** button reads *Fuels: 5 of 10* (with Biotech and Anomaly;
-  hay, cloth and bioferrite off). The menu lists each fuel with its worth, gas and pollution. Switch
-  wastepacks off: with wastepacks and bricks both lying around, colonists refuel it with bricks only,
-  and a hopper full of wastepacks doesn't feed it. Switch hay on and it gets fed hay.
-- [ ] **Corpses:** switch *Humanlike corpses* on. A colonist hauls a raider corpse to the burner; its
-  clothes and weapon drop beside it, the fuel goes up about 1.5, and the readout adds *Burning corpses:
+- [ ] **Fuel bill:** a new burner's **Fuel bill** button reads *Fuel bill: N of M* with hay, cloth,
+  bioferrite, deepchem and corpses refused. It opens a window with a search radius slider, Anything /
+  Trashbricks only, the fuel filter tree (search box, categories, rotten/fresh corpse filters) and a
+  list of fuel values. Refuse wastepacks: with wastepacks and bricks both lying around, colonists
+  refuel with bricks only, and a hopper full of wastepacks doesn't feed it. Allow hay: it gets fed hay.
+- [ ] **Search radius:** set it to 10 with bricks only 20 cells away: nobody refuels it and it reads
+  out of fuel. Move bricks within 10 cells, or set the radius back to Unlimited: it gets refuelled.
+- [ ] **Corpses:** allow humanlike corpses in the fuel bill. A colonist hauls a raider corpse to the burner; its
+  clothes and weapon drop beside it, the fuel goes up about 13, and the readout adds *Burning corpses:
   rot stink x...*. Unpiped, the room fills with rot stink (colonists get the stench thought); piped,
-  it comes out of the port. A muffalo corpse (body size 2.4) adds about 3.6. Mechanoid corpses aren't
+  it comes out of the port. A muffalo corpse adds about its mass / 4.5 (around 30). Rotten corpses can be refused with the bill's rotten filter. Mechanoid corpses aren't
   hauled.
 - [ ] **Deepchem** (with Vanilla Chemfuel Expanded): listed and off by default; on, a unit adds 3 fuel
   and the mix reads x4 pollution, x5 toxic gas.
-- [ ] A burner built in 0.9.1 and loaded now shows corpses (and deepchem) off, and keeps whatever
-  it had for hay, cloth and bioferrite.
+- [ ] A burner from a 0.9.49 save loads with its Fuels menu choices carried into the fuel bill
+  (e.g. hay allowed stays allowed, wastepacks refused stay refused).
 - [ ] **Chemfuel pipe** (Vanilla Chemfuel Expanded): run a chemfuel pipe from a tank with chemfuel
   in it under an empty burner. It fills up to its target; the tank drops by about 1 for every 2.5
   fuel it gains, and the mix readout moves toward x1.5 pollution / x0.6 gas. Switch chemfuel off on
-  its Fuels menu: it stops drawing.
+  its fuel bill: it stops drawing.
 - [ ] **Deepchem pipe:** the same with a deepchem pipe and tank. Nothing is drawn until deepchem is
-  switched on in the Fuels menu; then 1 deepchem per 3 fuel, and a filthy mix (x4 / x5).
+  allowed in the fuel bill; then 1 deepchem per 3 fuel, and a filthy mix (x4 / x5).
 - [ ] With the other-fuels setting off (restart), a burner on a chemfuel pipe draws nothing and
   nothing errors.
-- [ ] Fuels menu **Anything**: the button reads *Fuels: 10 of 10*. **Trashbricks only**: *1 of 10*,
+- [ ] Fuel bill **Anything**: the button reads *Fuel bill: M of M*. **Trashbricks only**: *1 of M*,
   and colonists bring nothing but bricks.
 - [ ] Refuel with **wood** only: the readout shows *Fuel mix: x0.3 ground pollution, x0.5 toxic gas*.
   With **chemfuel**: x1.5 / x0.6.
-- [ ] **Sync burners** copies the fuel choices. An old save whose burner had *Accept wastepacks* off
-  loads with wastepacks switched off in its Fuels menu.
+- [ ] **Sync burners** copies the fuel bill (filter and radius). An old save whose burner had *Accept
+  wastepacks* off loads with wastepacks refused in its fuel bill.
 - [ ] **Wall exhaust port:** hangs on a wall (it won't place away from one) without replacing it,
   drawn on the wall's face. Hung outside, gas drifts off and the ground below slowly pollutes. Hung
   inside a closed room, toxic gas builds up quickly and the room warms a little.

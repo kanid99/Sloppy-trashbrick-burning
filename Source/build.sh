@@ -35,6 +35,7 @@ build() {
   mcs -target:library -optimize+ -nostdlib -noconfig \
     -r:"$r/mscorlib.dll" -r:"$r/System.dll" -r:"$r/System.Core.dll" $extra \
     -r:"$r/Assembly-CSharp.dll" -r:"$r/UnityEngine.CoreModule.dll" \
+    -r:"$r/UnityEngine.IMGUIModule.dll" -r:"$r/UnityEngine.TextRenderingModule.dll" \
     -r:"$VEF_DIR/$game/Assemblies/PipeSystem.dll" -r:"$HARMONY" \
     -out:"$game/Assemblies/TrashbrickBurning.dll" Source/TrashbrickBurning/*.cs
   echo "built $game"

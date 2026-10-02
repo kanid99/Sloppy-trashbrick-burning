@@ -20,7 +20,7 @@ namespace TrashbrickBurning
 
     /// <summary>
     /// Vanilla Chemfuel Expanded's chemfuel and deepchem pipes feed a burner through VEF's
-    /// CompRefillWithPipes, which counts each pipe unit as one fuel unit and ignores the Fuels menu.
+    /// CompRefillWithPipes, which counts each pipe unit as one fuel unit and ignores the fuel bill.
     /// On our burners the burner does the refill instead (CompStirlingEngine.RefillFromPipe).
     /// </summary>
     [HarmonyPatch(typeof(PipeSystem.CompRefillWithPipes), nameof(PipeSystem.CompRefillWithPipes.Refill))]
@@ -81,7 +81,7 @@ namespace TrashbrickBurning
             {
                 Thing thing = fuelThings[fuelThings.Count - 1];
                 fuelThings.RemoveAt(fuelThings.Count - 1);
-                if (!engine.Accepts(thing.def))
+                if (!engine.Accepts(thing))
                 {
                     continue;
                 }
@@ -90,7 +90,7 @@ namespace TrashbrickBurning
                 {
                     corpse.Strip();
                 }
-                float value = Mathf.Max(0.01f, engine.Props.FuelValueOf(thing.def));
+                float value = Mathf.Max(0.01f, engine.Props.FuelValueOf(thing));
                 int count = Mathf.Min(thing.stackCount, Mathf.Max(1, Mathf.CeilToInt(room / value)));
                 engine.AddToMix(thing.def, count * value);
                 __instance.Refuel(count * value);
@@ -102,9 +102,9 @@ namespace TrashbrickBurning
     }
 
     /// <summary>
-    /// A burner set to refuse wastepacks: colonists look for other fuel instead. Vanilla's fuel
-    /// search only knows the def's filter, so a wastepack it picks is swapped for the nearest fuel
-    /// the burner does accept.
+    /// The burner's fuel bill: colonists only bring fuel it allows, from within its search radius.
+    /// Vanilla's fuel search only knows the def's filter, so a fuel it picks that the bill rules out
+    /// is swapped for the nearest one the bill allows.
     /// </summary>
     [HarmonyPatch(typeof(RefuelWorkGiverUtility), "FindBestFuel")]
     public static class Patch_RefuelWorkGiverUtility_FindBestFuel
@@ -113,14 +113,14 @@ namespace TrashbrickBurning
         {
             CompStirlingEngine engine = (refuelable as ThingWithComps)?.GetComp<CompStirlingEngine>();
             CompRefuelable fuel = (refuelable as ThingWithComps)?.GetComp<CompRefuelable>();
-            if (engine == null || fuel == null || __result == null || engine.Accepts(__result.def))
+            if (engine == null || fuel == null || __result == null || engine.Accepts(__result) && engine.InRange(__result))
             {
                 return;
             }
             ThingFilter filter = fuel.Props.fuelFilter;
             __result = GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, filter.BestThingRequest,
                 PathEndMode.ClosestTouch, TraverseParms.For(pawn), 9999f,
-                t => !t.IsForbidden(pawn) && pawn.CanReserve(t) && filter.Allows(t) && engine.Accepts(t.def));
+                t => !t.IsForbidden(pawn) && pawn.CanReserve(t) && filter.Allows(t) && engine.Accepts(t) && engine.InRange(t));
         }
     }
 
@@ -133,7 +133,11 @@ namespace TrashbrickBurning
             CompStirlingEngine engine = (refuelable as ThingWithComps)?.GetComp<CompStirlingEngine>();
             if (engine != null && __result != null)
             {
-                __result.RemoveAll(t => !engine.Accepts(t.def));
+                __result.RemoveAll(t => !engine.Accepts(t) || !engine.InRange(t));
+                if (__result.Count == 0)
+                {
+                    __result = null;
+                }
             }
         }
     }

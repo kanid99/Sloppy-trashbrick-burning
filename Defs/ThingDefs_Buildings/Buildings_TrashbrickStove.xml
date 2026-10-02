@@ -63,7 +63,7 @@
 						<li>VRecyclingE_Trash</li>
 						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
-					<!-- Corpses: off on every burner until allowed on its Fuels menu. Mechanoids don't burn. -->
+					<!-- Corpses: off on every burner until allowed on its fuel bill. Mechanoids don't burn. -->
 					<categories>
 						<li>CorpsesHumanlike</li>
 						<li>CorpsesAnimal</li>
@@ -108,7 +108,7 @@
 					<li><thing>WoodLog</thing><value>0.4</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.5</toxGasFactor></li>
 					<!-- Chemfuel burns hot and fairly clean in the air, but drips and soaks into the ground. -->
 					<li><thing>Chemfuel</thing><value>2.5</value><pollutionFactor>1.5</pollutionFactor><toxGasFactor>0.6</toxGasFactor></li>
-					<!-- Refused until allowed on each burner's Fuels menu: fodder, cloth, and Anomaly's bioferrite. -->
+					<!-- Refused until allowed on each burner's fuel bill: fodder, cloth, and Anomaly's bioferrite. -->
 					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
@@ -121,10 +121,10 @@
 					     ground pollution, and a lot of toxic gas. -->
 					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
-				<!-- Corpses (per unit of body size - a human is 1): little heat, little toxic gas, and a
-				     great deal of rot stink. Humanlike and animal corpses are separate on the Fuels menu,
-				     both refused until allowed. -->
-				<corpseFuel><value>1.5</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
+				<!-- Corpses: worth their mass against a trashbrick's at 1:5 (a trashbrick is compressed
+				     matter), so a 60kg human is about 13 bricks. Little toxic gas, and a great deal of rot
+				     stink. Refused until allowed on the burner's fuel bill. -->
+				<corpseFuel><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
 			</li>
 			<!-- Smoke from the flue, a flickering fire window, and the rattle. Points are in the art's
 			     own machine coordinates (a across the front, f front to back, z up). -->
@@ -236,7 +236,7 @@
 						<li>VRecyclingE_Trash</li>
 						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
-					<!-- Corpses: off on every burner until allowed on its Fuels menu. Mechanoids don't burn. -->
+					<!-- Corpses: off on every burner until allowed on its fuel bill. Mechanoids don't burn. -->
 					<categories>
 						<li>CorpsesHumanlike</li>
 						<li>CorpsesAnimal</li>
@@ -278,7 +278,7 @@
 					<li><thing>WoodLog</thing><value>0.4</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.5</toxGasFactor></li>
 					<!-- Chemfuel burns hot and fairly clean in the air, but drips and soaks into the ground. -->
 					<li><thing>Chemfuel</thing><value>2.5</value><pollutionFactor>1.5</pollutionFactor><toxGasFactor>0.6</toxGasFactor></li>
-					<!-- Refused until allowed on each burner's Fuels menu: fodder, cloth, and Anomaly's bioferrite. -->
+					<!-- Refused until allowed on each burner's fuel bill: fodder, cloth, and Anomaly's bioferrite. -->
 					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
@@ -291,10 +291,10 @@
 					     ground pollution, and a lot of toxic gas. -->
 					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
-				<!-- Corpses (per unit of body size - a human is 1): little heat, little toxic gas, and a
-				     great deal of rot stink. Humanlike and animal corpses are separate on the Fuels menu,
-				     both refused until allowed. -->
-				<corpseFuel><value>1.5</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
+				<!-- Corpses: worth their mass against a trashbrick's at 1:5 (a trashbrick is compressed
+				     matter), so a 60kg human is about 13 bricks. Little toxic gas, and a great deal of rot
+				     stink. Refused until allowed on the burner's fuel bill. -->
+				<corpseFuel><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
 			</li>
 			<!-- Steam wisps from the exhaust stack, where the safety valve vents too. -->
 			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
@@ -391,7 +391,7 @@
 						<li>VRecyclingE_Trash</li>
 						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
-					<!-- Corpses: off on every burner until allowed on its Fuels menu. Mechanoids don't burn. -->
+					<!-- Corpses: off on every burner until allowed on its fuel bill. Mechanoids don't burn. -->
 					<categories>
 						<li>CorpsesHumanlike</li>
 						<li>CorpsesAnimal</li>
@@ -436,7 +436,7 @@
 					<li><thing>WoodLog</thing><value>0.4</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.5</toxGasFactor></li>
 					<!-- Chemfuel burns hot and fairly clean in the air, but drips and soaks into the ground. -->
 					<li><thing>Chemfuel</thing><value>2.5</value><pollutionFactor>1.5</pollutionFactor><toxGasFactor>0.6</toxGasFactor></li>
-					<!-- Refused until allowed on each burner's Fuels menu: fodder, cloth, and Anomaly's bioferrite. -->
+					<!-- Refused until allowed on each burner's fuel bill: fodder, cloth, and Anomaly's bioferrite. -->
 					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
@@ -449,10 +449,10 @@
 					     ground pollution, and a lot of toxic gas. -->
 					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
-				<!-- Corpses (per unit of body size - a human is 1): little heat, little toxic gas, and a
-				     great deal of rot stink. Humanlike and animal corpses are separate on the Fuels menu,
-				     both refused until allowed. -->
-				<corpseFuel><value>1.5</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
+				<!-- Corpses: worth their mass against a trashbrick's at 1:5 (a trashbrick is compressed
+				     matter), so a 60kg human is about 13 bricks. Little toxic gas, and a great deal of rot
+				     stink. Refused until allowed on the burner's fuel bill. -->
+				<corpseFuel><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
 			</li>
 			<!-- Smoke from the flue, a flickering fire window, and the rattle. Points are in the art's
 			     own machine coordinates (a across the front, f front to back, z up). -->
@@ -552,7 +552,7 @@
 						<li>VRecyclingE_Trash</li>
 						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
-					<!-- Corpses: off on every burner until allowed on its Fuels menu. Mechanoids don't burn. -->
+					<!-- Corpses: off on every burner until allowed on its fuel bill. Mechanoids don't burn. -->
 					<categories>
 						<li>CorpsesHumanlike</li>
 						<li>CorpsesAnimal</li>
@@ -595,7 +595,7 @@
 					<li><thing>WoodLog</thing><value>0.4</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.5</toxGasFactor></li>
 					<!-- Chemfuel burns hot and fairly clean in the air, but drips and soaks into the ground. -->
 					<li><thing>Chemfuel</thing><value>2.5</value><pollutionFactor>1.5</pollutionFactor><toxGasFactor>0.6</toxGasFactor></li>
-					<!-- Refused until allowed on each burner's Fuels menu: fodder, cloth, and Anomaly's bioferrite. -->
+					<!-- Refused until allowed on each burner's fuel bill: fodder, cloth, and Anomaly's bioferrite. -->
 					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
@@ -608,10 +608,10 @@
 					     ground pollution, and a lot of toxic gas. -->
 					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
-				<!-- Corpses (per unit of body size - a human is 1): little heat, little toxic gas, and a
-				     great deal of rot stink. Humanlike and animal corpses are separate on the Fuels menu,
-				     both refused until allowed. -->
-				<corpseFuel><value>1.5</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
+				<!-- Corpses: worth their mass against a trashbrick's at 1:5 (a trashbrick is compressed
+				     matter), so a 60kg human is about 13 bricks. Little toxic gas, and a great deal of rot
+				     stink. Refused until allowed on the burner's fuel bill. -->
+				<corpseFuel><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
 			</li>
 			<!-- Steam wisps from the exhaust stack, where the safety valve vents too. -->
 			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
@@ -704,7 +704,7 @@
 						<li>VRecyclingE_Trash</li>
 						<li MayRequire="Ludeon.RimWorld.Biotech">Wastepack</li>
 					</thingDefs>
-					<!-- Corpses: off on every burner until allowed on its Fuels menu. Mechanoids don't burn. -->
+					<!-- Corpses: off on every burner until allowed on its fuel bill. Mechanoids don't burn. -->
 					<categories>
 						<li>CorpsesHumanlike</li>
 						<li>CorpsesAnimal</li>
@@ -747,7 +747,7 @@
 					<li><thing>WoodLog</thing><value>0.4</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.5</toxGasFactor></li>
 					<!-- Chemfuel burns hot and fairly clean in the air, but drips and soaks into the ground. -->
 					<li><thing>Chemfuel</thing><value>2.5</value><pollutionFactor>1.5</pollutionFactor><toxGasFactor>0.6</toxGasFactor></li>
-					<!-- Refused until allowed on each burner's Fuels menu: fodder, cloth, and Anomaly's bioferrite. -->
+					<!-- Refused until allowed on each burner's fuel bill: fodder, cloth, and Anomaly's bioferrite. -->
 					<li><thing>Hay</thing><value>0.15</value><pollutionFactor>0.2</pollutionFactor><toxGasFactor>0.4</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li><thing>Cloth</thing><value>0.25</value><pollutionFactor>0.5</pollutionFactor><toxGasFactor>1.5</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
 					<li MayRequire="Ludeon.RimWorld.Anomaly"><thing>Bioferrite</thing><value>4</value><pollutionFactor>1</pollutionFactor><toxGasFactor>2</toxGasFactor><refusedByDefault>true</refusedByDefault></li>
@@ -760,10 +760,10 @@
 					     ground pollution, and a lot of toxic gas. -->
 					<li MayRequire="Ludeon.RimWorld.Biotech"><thing>Wastepack</thing><value>0.5</value><pollutionFactor>0.25</pollutionFactor><toxGasFactor>8</toxGasFactor><optional>false</optional></li>
 				</otherFuels>
-				<!-- Corpses (per unit of body size - a human is 1): little heat, little toxic gas, and a
-				     great deal of rot stink. Humanlike and animal corpses are separate on the Fuels menu,
-				     both refused until allowed. -->
-				<corpseFuel><value>1.5</value><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
+				<!-- Corpses: worth their mass against a trashbrick's at 1:5 (a trashbrick is compressed
+				     matter), so a 60kg human is about 13 bricks. Little toxic gas, and a great deal of rot
+				     stink. Refused until allowed on the burner's fuel bill. -->
+				<corpseFuel><pollutionFactor>0.3</pollutionFactor><toxGasFactor>0.3</toxGasFactor><rotStinkFactor>6</rotStinkFactor><optional>false</optional><refusedByDefault>true</refusedByDefault></corpseFuel>
 			</li>
 			<!-- Steam wisps from the exhaust stack, where the safety valve vents too. -->
 			<li Class="TrashbrickBurning.CompProperties_MachineEffects">
